@@ -2,7 +2,7 @@
 /**
  *
  *
- * PHP Mailer - From Form Builder
+ * PHP Mailer 
  * Author: David Voglgsnag
  * @version     1.0
  * @since       1.0
