@@ -2,7 +2,7 @@
 /**
  *
  *
- * PHP Mailer 
+ * PHP Mailer
  * Author: David Voglgsnag
  * @version     1.0
  * @since       1.0
@@ -369,6 +369,7 @@
   */
   function Get(){
     $this->BuildMail();
+    $this->strTo = implode( ", ", $this->sendto );
     $mail = "To: " . $this->strTo . "\n";
     $mail .= $this->headers . "\n";
     $mail .= $this->fullBody;
