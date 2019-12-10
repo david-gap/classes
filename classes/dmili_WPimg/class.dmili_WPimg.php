@@ -209,7 +209,7 @@ class dmili_WPimg extends bd_Blog {
 
   /* SAVE COMINANT
   /------------------------*/
-  function saveDominantColor(int $id = 0, bool $return = false){
+  public static function saveDominantColor(int $id = 0, bool $return = false){
     $file_type = get_post_mime_type($id);
     if(!in_array($file_type, array('video/mp4', 'video/quicktime', 'video/videopress', 'audio/mpeg'))):
       $full_image_url = wp_get_attachment_image_src($id, 'full');
