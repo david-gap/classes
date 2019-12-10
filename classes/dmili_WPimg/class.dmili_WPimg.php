@@ -12,7 +12,7 @@
  * Change the $assets to false if you use your own backend.js and ajax file
  */
 
-class bd_WPimg extends bd_Blog {
+class dmili_WPimg extends bd_Blog {
 
   var $assets = true;
 
@@ -38,7 +38,7 @@ class bd_WPimg extends bd_Blog {
   /* ENQUEUE BACKEND SCRIPTS/STYLES
   /------------------------*/
   function WPimg_backend_enqueue_scripts_and_styles(){
-    $class_path = get_template_directory_uri() . '/classes/bd_WPimg/';
+    $class_path = get_template_directory_uri() . '/classes/dmili_WPimg/';
     wp_enqueue_script('backend/WPimg-script', $class_path . 'scripts.js', false, null);
     // Define path for ajax requests
     $backend_ajax_action_file = $class_path . 'ajax.php';
