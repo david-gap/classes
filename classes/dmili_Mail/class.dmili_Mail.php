@@ -3,6 +3,7 @@
  *
  *
  * PHP Mailer
+ * https://github.com/david-gap/classes
  * Author: David Voglgsnag
  * @version     1.0
  * @since       1.0
