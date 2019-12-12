@@ -11,7 +11,7 @@
  * In combination with dmili_Mail.php
  */
 
- class dmili_Wichteln {
+ class prefix_Wichteln {
 
    /* FUNCTIONS
    /===================================================== */

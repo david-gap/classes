@@ -4,12 +4,12 @@
   CALL CLASSES
 ==================================================================================*/
 // Add all custom classses
-function dmili_registerFunction($class) {
-  if ( 0 !== strpos( $class, 'dmili_' ) ) {
+function class_registerFunction($class) {
+  if ( 0 !== strpos( $class, 'prefix_' ) ) {
       return;
   }
   require_once("$class/classes/class.$class.php");
 }
-spl_autoload_register('dmili_registerFunction');
+spl_autoload_register('class_registerFunction');
 
 ?>

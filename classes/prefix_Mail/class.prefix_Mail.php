@@ -9,7 +9,7 @@
  * @since       1.0
  */
 
- class dmili_Mail {
+ class prefix_Mail {
 
   /* DEFAULT SETTINGS
   /===================================================== */

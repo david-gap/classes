@@ -13,7 +13,7 @@ if($run_action) {
 
   /* CONNECT TO DATABASE
   /===================================================== */
-  $allow_connection = array('DominantColors');
+  $allow_connection = array('DominantColors', 'LoadLazyIMG');
   if(in_array($run_action, $allow_connection)):
       $url = (!empty($_SERVER['HTTPS'])) ? "https://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'] : "http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
       $url = $_SERVER['REQUEST_URI'];
@@ -34,6 +34,16 @@ if($run_action) {
     echo $output;
   }
 
+  /* LOAD SINGLE IMG
+  /------------------------*/
+  function getIMG(){
+    $output  = '';
+    // call class
+    $output .= bd_WPimg::getIMG($_POST['id']);
+    // return message
+    echo $output;
+  }
+
 
 
   /* RUN FUNCTIONS
@@ -41,6 +51,9 @@ if($run_action) {
   switch ($run_action) {
     case "DominantColors":
       setDominantColor();
+      break;
+    case "LoadLazyIMG":
+      getIMG();
       break;
 
     default:
