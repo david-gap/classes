@@ -5,9 +5,8 @@
  *
  * Additional functions for WP Media
  * https://github.com/david-gap/classes
- * Author:      David Voglgsnag
+ * Author:      David Voglgsang
  * @version     1.0
- * @since       1.0
  *
  * Change the $assets to false if you use your own backend.js and ajax file
  */
@@ -46,7 +45,7 @@ class prefix_WPimg {
   /* ENQUEUE BACKEND SCRIPTS/STYLES
   /------------------------*/
   function WPimg_backend_enqueue_scripts_and_styles(){
-    $class_path = get_template_directory_uri() . '/classes/prefix_WPimg/';
+    $class_path = __DIR__ . '/';
     wp_enqueue_script('backend/WPimg-script', $class_path . 'backend-scripts.js', false, null);
     // Define path for ajax requests
     $backend_ajax_action_file = $class_path . 'ajax.php';

@@ -4,9 +4,8 @@
  *
  * Chrismas Wichteln
  * https://github.com/david-gap/classes
- * Author: David Voglgsnag
+ * Author: David Voglgsang
  * @version     1.0
- * @since       1.0
  *
  * In combination with dmili_Mail.php
  */
