@@ -1,0 +1,152 @@
+/**
+ * WPintranet CSS File
+ *
+ * @author         David Voglgsang
+ * @version        1.0
+ * rem dimention   20px
+ *
+ */
+
+
+$color__text: #000000;
+$color__error: #d42323;
+$color__theme: #0175bc;
+
+/*==================================================================================
+  GLOBAL
+==================================================================================*/
+#intranet {
+  margin: 2rem 0;
+  .intranet-header {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    h3 {
+      color: $color__theme;
+      font-weight: 500;
+    }
+    .logout {
+      color: $color__text;
+      font-size: .65rem;
+      border-bottom: 1px solid transparent;
+      &:hover {
+        color: $color__text;
+        border-bottom: 1px solid $color__text;
+      }
+    }
+  }
+  .directories {
+    display: flex;
+    flex-wrap: wrap;
+    list-style-type: none;
+    margin: 1rem 0 0;
+    padding: 0;
+    li {
+      color: $color__bright;
+      font-size: .65rem;
+      font-weight: 500;
+      line-height: normal;
+      padding: .5rem;
+      margin-top: .5rem;
+      margin-right: .5rem;
+      background-color: $color__theme;
+      cursor: pointer;
+      transition: .4s;
+      opacity: .6;
+      &.active,
+      &:hover {
+        transition: .4s;
+        opacity: 1;
+        //background-color: $color__textblue;
+      }
+      &:before {
+        display: none;
+      }
+    }
+  }
+  #myftp {
+    margin-top: 1rem;
+    iframe {
+      border: 0;
+      width: 100%;
+      overflow: hidden;
+    }
+  }
+}
+
+
+/* LOGIN FORM
+/––––––––––––––––––––––––*/
+.login-area {
+  h3 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    margin: 3rem 0 1.4rem;
+    color: $color__text;
+    @include mobile {
+      font-size: 1.3rem;
+    }
+  }
+  p.desc {
+    font-weight: 600;
+    margin-bottom: .8rem;
+    @include mobile {
+      font-size: 1.1rem;
+    }
+  }
+  a {
+    color: $nav__linkcolor;
+    @include mobile {
+      font-size: 1rem;
+    }
+  }
+  #loginform {
+    width: 100%;
+    max-width: 350px;
+    p {
+      margin-bottom: 1.2rem;
+      input {
+        width: 100%;
+        line-height: 1rem;
+        padding: .5rem;
+        font-size: .75rem;
+        @include mobile {
+          font-size: 1rem;
+          padding: .75rem;
+        }
+      }
+      input[type="text"],
+      input[type="password"] {
+        border: 1px solid $color__text;
+        &.not-valid {
+          border: $color__error 1px solid;
+        }
+      }
+      input[type="submit"] {
+        display: block;
+        color: white;
+        background-color: $color__text;
+        transition: .3s;
+        margin-top: 2.2rem;
+        text-transform: uppercase;
+        cursor: pointer;
+        border: 0 solid;
+        appearance: none;
+        &:hover {
+          background-color: $color__theme;
+          transition: .3s;
+        }
+      }
+    }
+  }
+  .login-message {
+    width: 100%;
+    margin: 1.2rem 0;
+    &.login_error {
+      color: $color__error;
+    }
+    &.login_success {
+      color: $nav__linkcolor;
+    }
+  }
+}
