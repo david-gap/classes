@@ -24,7 +24,7 @@ class prefix_WPintranet {
   */
   static $wp_roles = 'intranet';
   static $root = ABSPATH;
-  static $mode = "0777";
+  static $mode = 0777;
   static $directory = 'intranet';
   static $folders = array('Folder 1', 'Folder 2', 'Folder 3');
 
@@ -84,7 +84,8 @@ class prefix_WPintranet {
     $check = SELF::CheckDir($DirName);
     // create the folder
     if(!$check):
-      if (mkdir($DirName, SELF::$mode, true)):
+      if (mkdir($DirName)):
+          chmod($DirName, SELF::$mode);
           $debug['CreateDir'] = 'Dir ' . $DirName . " does not exist";
           return true;
       else:
@@ -104,8 +105,8 @@ class prefix_WPintranet {
     // open the source directory
     $dir = opendir($src);
     // Make the destination directory if not exist
-    @mkdir($dst, SELF::$mode, true);
-    sleep(1);
+    @mkdir($dst);
+    chmod($dst, SELF::$mode);
     // Loop through the files in source directory
     while( $file = readdir($dir) ) {
         if (( $file != '.' ) && ( $file != '..' )) {
@@ -136,12 +137,9 @@ class prefix_WPintranet {
     if(!$parent_exists):
       // create main directory
       SELF::CreateDirectory(SELF::$root . SELF::$directory);
-      sleep(1);
       SELF::CreateDirectory(SELF::$root . SELF::$directory . '/list-resources');
-      sleep(1);
       SELF::copyDirectory(__DIR__ . '/list-resources', SELF::$root . SELF::$directory . '/list-resources');
       // wait before creating child folders
-      sleep(1);
     endif;
     // create child folders
     if(SELF::$folders):
@@ -151,7 +149,6 @@ class prefix_WPintranet {
         $child_exists = SELF::CheckDir(SELF::$root . SELF::$directory . '/' . $folder);
         if(!$child_exists):
           SELF::CreateDirectory(SELF::$root . SELF::$directory . '/' . $folder);
-          sleep(1);
           copy(__DIR__ . '/folders/index.php', SELF::$root . SELF::$directory . '/' . $folder . '/index.php');
         endif;
       }
