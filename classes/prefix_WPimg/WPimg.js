@@ -15,7 +15,7 @@ jQuery(function ($) {
   /* Global Settings
   /––––––––––––––––––––––––*/
   // mobile breakpoint
-  var breakpoint = 1130;
+  var breakpoint = 800;
 
 
   /* Debouncer
@@ -71,8 +71,15 @@ jQuery(function ($) {
       success: function(data) {
         // DEBUG: console.log("Ajax update success");
         // DEBUG: console.log(data);
-        $(getdata.container).html(data);
-        fallbackCheck(getdata.id);
+        if(getdata.action == 'LoadLazyIMG'){
+          $(getdata.container).html(data);
+          fallbackCheck(getdata.id, "lazy-img");
+        } else if (getdata.action == 'PostPopUp') {
+          $('.popup[data-container="' + getdata.container + '"] .popup-container .popup-content').removeClass('loading');
+          $('.popup[data-container="' + getdata.container + '"] .popup-container .popup-content').html(data);
+          showPopUpArrows(getdata.container, getdata.id);
+          fallbackCheck(getdata.id, "post-flex");
+        }
       },
       error:function(){
         // DEBUG: console.log("Ajax update failed");
@@ -101,13 +108,13 @@ jQuery(function ($) {
 
   /* IMG srcset fallback
   /––––––––––––––––––––––––*/
-  function fallbackCheck(id) {
-    var srcset = $('.lazy-img[data-id="' + id + '"] img').attr('srcset');
+  function fallbackCheck(id, target) {
+    var srcset = $('.' + target + '[data-id="' + id + '"] img').attr('srcset');
     if (!srcset){
-      var src = $('.lazy-img[data-id="' + id + '"] img').attr('data-src');
-      $('.lazy-img[data-id="' + id + '"] img').attr("src", src);
+      var src = $('.' + target + '[data-id="' + id + '"] img').attr('data-src');
+      $('.' + target + '[data-id="' + id + '"] img').attr("src", src);
     }
-    $('.lazy-img[data-id="' + id + '"]').removeClass("lazy-img");
+    $('.' + target + '[data-id="' + id + '"]').removeClass("lazy-img");
   }
 
 
@@ -159,6 +166,76 @@ jQuery(function ($) {
 
 
 
+  /* POP UP
+  /===================================================== */
+  /* OPEN POP-UP
+  /––––––––––––––––––––––––*/
+  function openPopUp(container) {
+    // toogle popup classes
+    $('.popup[data-container="' + container + '"]').removeClass('dn');
+    setTimeout(function() {
+      $('html').addClass('popup-noscroll');
+      $('.popup[data-container="' + container + '"]').removeClass('closed');
+    }, 500);
+    $('.popup[data-container="' + container + '"] .popup-container .popup-content').addClass('loading');
+  }
+
+  /* ADD POP-UP
+  /––––––––––––––––––––––––*/
+  function cleanPopUpContent(container) {
+      $('.popup[data-container="' + container + '"] .popup-container .popup-content .post-flex').remove();
+      $('.popup[data-container="' + container + '"] .popup-container .popup-content').addClass('loading');
+  }
+
+  /* SHOW POP-UP ARROWS
+  /––––––––––––––––––––––––*/
+  function showPopUpArrows(container, id) {
+    var current_class = $('[data-id="' + container + '"]').attr('class');
+
+    if(current_class == 'swiper'){
+      var updated_id = id.replace("img-", ""),
+          prev_id    = $('[data-id="' + container + '"] article[data-id="' + updated_id + '"]').prev( "article" ).attr('data-id'),
+          next_id    = $('[data-id="' + container + '"] article[data-id="' + updated_id + '"]').next( "article" ).attr('data-id');
+    } else {
+      var prev_id   = $('[data-id="' + container + '"] article #' + id).parents('article').prev( "article" ).find('img').attr('id'),
+          next_id   = $('[data-id="' + container + '"] article #' + id).parents('article').next( "article" ).find('img').attr('id');
+    }
+
+    // show arrows
+    if(prev_id){
+      $('.popup[data-container="' + container + '"] .popup-container .popup-content').find('.popup-arrow.back').removeClass('hidden');
+    }
+    if(next_id){
+      $('.popup[data-container="' + container + '"] .popup-container .popup-content').find('.popup-arrow.next').removeClass('hidden');
+    }
+  }
+
+  /* ADD POP-UP
+  /––––––––––––––––––––––––*/
+  function addPopUpCode(container) {
+    if ( $( '.popup[data-container="' + container + '"]' ).length ) {
+      // DEBUG: console.log("POPUP div exists");
+    } else {
+      // DEBUG: console.log("POPUP div added");
+      $( "body" ).append( '<div class="popup dn closed" data-container="' + container + '" data-content="img-popup"><div class="popup-container"><span class="close">X</span><div class="popup-content"></div></div></div>' );
+    }
+    openPopUp(container);
+  }
+
+  /* LOAD POP-UP CONTENT
+  /––––––––––––––––––––––––*/
+  function getPopUpContent(id, container) {
+    // vars
+    var data = {
+          action: 'PostPopUp',
+          id: id,
+          container: container
+        };
+    WPimg_ajaxCall(data);
+  }
+
+
+
   /* ACTIONS
   /===================================================== */
   $(document).ready(function () {
@@ -197,6 +274,64 @@ jQuery(function ($) {
     $('.swiper .back').on('click', function() {
       var swiperID = $(this).parents('.swiper').attr('data-id');
       SwiperArrowNav(swiperID, 'back');
+    });
+
+
+    /* CALL POP-UP POST/IMG
+    /––––––––––––––––––––––––*/
+    $( '.grid article' ).click(function() {
+      var get_id     = $(this).attr('id'),
+          container  = $(this).parents('.grid').attr('data-id');
+      addPopUpCode(container);
+      getPopUpContent(get_id, container);
+    });
+    $( '.swiper .swiper-container article' ).click(function() {
+      var get_id     = 'img-' + $(this).attr('data-id'),
+          container  = $(this).parents('.swiper').attr('data-id');
+      addPopUpCode(container);
+      getPopUpContent(get_id, container);
+    });
+
+    /* BACK POP-UP
+    /––––––––––––––––––––––––*/
+    $(document).on("click", '.popup .back', function(event) {
+      cleanPopUpContent('grid-popup');
+      var active_id = $(this).parents('.post-flex').attr('data-id'),
+          container = $(this).parents('.popup').attr('data-container'),
+          get_id    = $('[data-id="' + container + '"] article #' + active_id).parents('article').prev( "article" ).find('img').attr('id');
+      if(get_id){
+        getPopUpContent(get_id, container);
+      } else {
+        var updated_active = active_id.replace("img-", "");
+        var new_id = $('[data-id="' + container + '"] article[data-id="' + updated_active + '"]').prev( "article" ).attr('data-id');
+        getPopUpContent(new_id, container);
+      }
+      // DEBUG: console.log(get_id);
+    });
+
+    /* NEXT POP-UP
+    /––––––––––––––––––––––––*/
+    $(document).on("click", '.popup .next', function(event) {
+      cleanPopUpContent('grid-popup');
+      var active_id = $(this).parents('.post-flex').attr('data-id'),
+          container = $(this).parents('.popup').attr('data-container'),
+          get_id    = $('[data-id="' + container + '"] article #' + active_id).parents('article').next( "article" ).find('img').attr('id');
+      if(get_id){
+        getPopUpContent(get_id, container);
+      } else {
+        var updated_active = active_id.replace("img-", "");
+        var new_id = $('[data-id="' + container + '"] article[data-id="' + updated_active + '"]').next( "article" ).attr('data-id');
+        getPopUpContent(new_id, container);
+      }
+      // DEBUG: console.log(get_id);
+    });
+
+    /* CLOSE POP-UP
+    /––––––––––––––––––––––––*/
+    $(document).on("click", '.popup .close', function(event) {
+      $('html').removeClass('popup-noscroll');
+      $(this).parents('.popup').addClass('closed');
+      $(this).parents('.popup').remove();
     });
   });
 

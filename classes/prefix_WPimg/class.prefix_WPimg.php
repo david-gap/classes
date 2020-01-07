@@ -6,7 +6,7 @@
  * Additional functions for WP Media
  * https://github.com/david-gap/classes
  * Author:      David Voglgsang
- * @version     1.0
+ * @version     1.1
  *
  * Change the $assets to false if you use your own backend.js and ajax file
  */
@@ -16,6 +16,8 @@ class prefix_WPimg {
   static $WPimg_content      = true;
   static $WPimg_assets       = true;
   static $WPimg_js_loading   = true;
+  static $parent_element     = 'div';
+  static $WPimg_popupContent = false;
   static $nocolor_files      = array('video/mp4', 'video/quicktime', 'video/videopress', 'audio/mpeg');
   static $WPimg_defaultcolor = 'ffffff';
 
@@ -211,7 +213,7 @@ class prefix_WPimg {
   /------------------------*/
   public static function saveDominantColor(int $id = 0, bool $return = false){
     $file_type = get_post_mime_type($id);
-    if(!in_array($file_type, $this->nocolor_files)):
+    if(!in_array($file_type, SELF::$nocolor_files)):
       $full_image_url = wp_get_attachment_image_src($id, 'full');
       $thumb_image_url = wp_get_attachment_image_src($id, 'thumbnail');
       $img_url = $thumb_image_url ? $thumb_image_url : $full_image_url;
@@ -369,7 +371,7 @@ class prefix_WPimg {
       $get_color = get_post_meta( $id, 'WPimg_DominantColor', true);
       $color = $get_color ? $get_color : "false";
       // fallback color
-      if($color == false):
+      if($color == "false"):
         if($fallback_bg == '' || $file_type == 'image/svg+xml'):
           $image_url = $thumb_image_url[0] ? $thumb_image_url[0] : $full_image_url[0];
           $color = SELF::IMGcolor($image_url);
@@ -405,6 +407,7 @@ class prefix_WPimg {
   public static function getContentIMG(string $attr = ''){
     $output = '';
     $additional = '';
+    $css = '';
     // fallback for content img
     if($attr !== ''):
       $attr_array = explode(" ", $attr);
@@ -435,6 +438,50 @@ class prefix_WPimg {
     if($id > 0):
       return SELF::getIMG($id, $additional, $css);
     endif;
+  }
+
+
+  /* POP-UP CONTENT
+  /------------------------*/
+  /**
+    * @param int $id: img id
+  */
+  public static function postPopUp(int $id = 0){
+    $output = '';
+    $posttype = get_post_type($id);
+    $video_types = array('video/mp4', 'video/videopress');
+    $img_id = $posttype == 'attachment' ? $id : get_post_thumbnail_id($id);
+    $file_type = get_post_mime_type($img_id);
+        $output .= '<div class="post-flex" data-id="img-' . $id . '">';
+        // content img
+        if(SELF::$WPimg_popupContent !== false):
+          $output .= '<div class="column-img">';
+        endif;
+            $output .= '<span class="popup-arrow back hidden"></span>';
+            if($posttype == 'attachment' && in_array($file_type, $video_types)):
+              $output .= do_shortcode('[video src="' . wp_get_attachment_url($img_id) . '"]');
+            elseif($posttype == 'attachment' && $file_type == 'video/quicktime'):
+              $output .= '<video id="sampleMovie" src="' . wp_get_attachment_url($img_id) . '" controls></video>';
+            elseif($posttype == 'attachment' && $file_type == 'audio/mpeg'):
+              $output .= do_shortcode('[audio src="' . wp_get_attachment_url($img_id) . '"]');
+            elseif($posttype == 'attachment' && $file_type == 'application/pdf'):
+              $output .= '';
+            else:
+              $output .= bd_WPimg::getIMG($img_id);
+            endif;
+            $output .= '<span class="popup-arrow next hidden"></span>';
+        if(SELF::$WPimg_popupContent !== false):
+          $output .= '</div>';
+          // content text
+          $output .= '<div class="column-content">';
+            $output .= '<div>';
+              // add your content here
+            $output .= '</div>';
+          $output .= '</div>';
+        endif;
+    $output .= '</div>';
+
+    return $output;
   }
 
 
@@ -479,13 +526,13 @@ class prefix_WPimg {
     $get_color = get_post_meta( $img_id, 'WPimg_DominantColor', true);
     $color = $get_color ? $get_color : "false";
     // fallback color if meta dont exists
-    if($color == false):
+    if($color == "false"):
       $file_type = get_post_mime_type($img_id);
-      if(!in_array($file_type, $this->nocolor_files)):
+      if(!in_array($file_type, SELF::$nocolor_files)):
         $full_image_url = wp_get_attachment_image_src($id, 'full');
         $thumb_image_url = wp_get_attachment_image_src($id, 'thumbnail');
         $img_url = $thumb_image_url ? $thumb_image_url : $full_image_url;
-        $color = SELF::IMGcolor($image_url);
+        $color = SELF::IMGcolor($img_url[0]);
       else:
         // fallback color
         $color = SELF::$WPimg_defaultcolor;
@@ -521,6 +568,7 @@ class prefix_WPimg {
           'post_status' => 'publish',
           'id' => '-1',
           'template' => 'grid',
+          'class' => '',
         ), $atts );
         // all files
         if($config['id'] == "-1"):
@@ -543,11 +591,11 @@ class prefix_WPimg {
         endif;
 
         // output
-        $output .= '<section class="' . $config['template'] . '" id="' . $id . '">';
+        $output .= '<' . SELF::$parent_element . ' class="' . $config['template'] . ' ' . $config['class'] . '" id="' . $id . '" data-id="' . $id . '">';
           // swiper navigation
           if($config['template'] == "swiper"):
-            $output .= '<span class="arrow back hidden"></span>';
-            $output .= '<span class="arrow next hidden"></span>';
+            $output .= '<span class="swiper-arrow back hidden"></span>';
+            $output .= '<span class="swiper-arrow next hidden"></span>';
           endif;
           if($config['template'] == "swiper"):
             $output .= '<div class="swiper-container">';
@@ -558,7 +606,7 @@ class prefix_WPimg {
           if($config['template'] == "swiper"):
             $output .= '</div>';
           endif;
-        $output .= '</section>';
+        $output .= '</' . SELF::$parent_element . '>';
 
         return $output;
     endif;

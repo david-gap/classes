@@ -13,7 +13,7 @@ if($run_action) {
 
   /* CONNECT TO DATABASE
   /===================================================== */
-  $allow_connection = array('DominantColors', 'LoadLazyIMG');
+  $allow_connection = array('DominantColors', 'LoadLazyIMG', 'PostPopUp');
   if(in_array($run_action, $allow_connection)):
       $url = (!empty($_SERVER['HTTPS'])) ? "https://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'] : "http://".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
       $url = $_SERVER['REQUEST_URI'];
@@ -44,6 +44,20 @@ if($run_action) {
     echo $output;
   }
 
+  /* GET POPUP CONTENT
+  /------------------------*/
+  function getPopupPost(){
+    $output  = '';
+    // call class
+    // check if save form or call error
+    $clean_id = str_replace('img-', '' , $_POST['id']);
+    if($clean_id > 0):
+      $output .= bd_WPimg::postPopUp($clean_id);
+    endif;
+    // return message
+    echo $output;
+  }
+
 
 
   /* RUN FUNCTIONS
@@ -54,6 +68,9 @@ if($run_action) {
       break;
     case "LoadLazyIMG":
       getIMG();
+      break;
+    case "PostPopUp":
+      getPopupPost();
       break;
 
     default:
