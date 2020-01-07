@@ -2,7 +2,7 @@
  * javascript/jQuery functions for WPimg Class
  *
  * @author      David Voglgsang
- * @version     1.0
+ * @version     1.1.1
  *
  */
 
@@ -280,7 +280,7 @@ jQuery(function ($) {
     /* CALL POP-UP POST/IMG
     /––––––––––––––––––––––––*/
     $( '.grid article' ).click(function() {
-      var get_id     = $(this).attr('id'),
+      var get_id     = 'img-' + $(this).attr('data-id'),
           container  = $(this).parents('.grid').attr('data-id');
       addPopUpCode(container);
       getPopUpContent(get_id, container);
