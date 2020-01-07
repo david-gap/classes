@@ -2,10 +2,36 @@
  * WPimg CSS File
  *
  * @author         David Voglgsang
- * @version        1.0
+ * @version        1.1
  * rem dimention   20px
  *
  */
+
+
+
+/*==================================================================================
+  FUNCTIONS
+==================================================================================*/
+@keyframes loadingdots {
+  0%, 20% {
+    color: rgba(0,0,0,0);
+    text-shadow:
+      .25em 0 0 rgba(0,0,0,0),
+      .5em 0 0 rgba(0,0,0,0);}
+  40% {
+    color: black;
+    text-shadow:
+      .25em 0 0 rgba(0,0,0,0),
+      .5em 0 0 rgba(0,0,0,0);}
+  60% {
+    text-shadow:
+      .25em 0 0 black,
+      .5em 0 0 rgba(0,0,0,0);}
+  80%, 100% {
+    text-shadow:
+      .25em 0 0 black,
+      .5em 0 0 black;}
+}
 
 
 
@@ -39,7 +65,7 @@
   }
   article {
     width: 100%;
-    height: 12rem;
+    height: 8rem;
     transition: .3s;
     @include mobile {
       height: calc(50vw - 3.75vw);
@@ -54,7 +80,7 @@
 ==================================================================================*/
 .swiper {
   width: 100%;
-  height: calc(12rem - 30px);
+  height: calc(8rem - 30px);
   overflow: hidden;
   @include mobile {
     height: calc(47.5vw - 30px);
@@ -113,7 +139,7 @@
       justify-content: center;
       align-items: center;
       max-width: calc(calc(100% / 4) - .5rem);
-      height: 12rem;
+      height: 8rem;
       margin: 0 .75rem 0 0;
       @include mobile {
         flex: 0 0 47.5vw;
@@ -160,54 +186,292 @@
 
 
 /*==================================================================================
-  10.0 NAVIGATION ARROWS
+  POP UP
+==================================================================================*/
+.loading {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  align-content: center;
+  align-items: center;
+  background-image: url('images/loading-white.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 5rem;
+  min-width: 150px;
+  padding-top: 6rem!important;
+  &:after {
+    content: ' .';
+    animation: loadingdots 1s steps(5, end) infinite;
+    height: 1rem;
+    font-size: .8rem;
+  }
+  &:before {
+    display: block;
+    content: "";
+    height: 1rem;
+    font-size: .8rem;
+    content: "wird geladen";
+    html[data-lang="en"] & {
+      content: "loading";
+    }
+    html[data-lang="fr"] & {
+      content: "en cours de chargement";
+    }
+  }
+}
+.popup-noscroll {
+  overflow: hidden;
+}
+.popup {
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, .75);
+  width: 100vw;
+  height: 100vh;
+  padding: 0;
+  overflow: scroll;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  z-index: 1199;
+  opacity: 1;
+  pointer-events: auto;
+  transition: $transition_fast;
+  @include mobile {
+    background-color: rgb(0, 0, 0);
+    height: 100vh;
+    overflow: scroll;
+    &.closed {
+      height: 0;
+      overflow: hidden;
+    }
+  }
+  &[data-content="img-popup"]{
+    .popup-container {
+      max-width: 1200px;
+      width: fit-content;
+      margin: 6rem 3rem;
+      max-height: calc(100vh - 14rem);
+      @include mobile {
+        margin: 0;
+        max-height: inherit;
+        width: 100%;
+      }
+      .popup-content {
+        padding: 0;
+        background-color: transparent;
+        .post-flex {
+          display: flex;
+          flex-wrap: nowrap;
+          @include mobile {
+            flex-direction: column;
+          }
+          .column-img {
+            position: relative;
+            width: calc(100% - 32rem);
+            margin: 0 6rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            @include mobile {
+              width: 100%;
+              margin: 0;
+            }
+            iframe,
+            .wp-video {
+              display: block;
+              margin: auto;
+            }
+            .popup-arrow {
+              top: calc(50% - 3rem);
+              width: 3rem;
+              height: 6rem;
+              @include mobile {
+                top: calc(50% - 1.5rem);
+                width: 2rem;
+                height: 3rem;
+              }
+              &.back {
+                left: -4rem;
+                @include mobile {
+                  left: 5vw;
+                }
+              }
+              &.next {
+                right: -4rem;
+                @include mobile {
+                  right: 5vw;
+                }
+              }
+            }
+            > .pdfemb-viewer,
+            > video,
+            img {
+              margin: auto;
+              display: block;
+              max-width: 100%;
+              max-height: calc(100vh - 14rem);
+              &.image-gif,
+              &.image-svg-xml {
+                min-width: 9rem;
+                background-size: 40%;
+                @include mobile {
+                  min-height: 50vh;
+                }
+              }
+              @include mobile {
+                max-height: 100vh;
+              }
+            }
+          }
+          .column-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 20rem;
+            font-size: .9rem;
+            @include mobile {
+              margin: 2rem auto;
+              html[data-touch="true"] & {
+                margin: 2rem auto 8rem;
+              }
+            }
+            div {
+              h5 {
+                font-size: 1rem;
+                line-height: 1.2;
+                padding-bottom: 3px;
+                border-bottom: 1px solid $color__grey;
+              }
+              * + h5 {
+                margin-top: 2.5rem;
+              }
+            }
+            div + div {
+              margin-top: 2.5rem;
+            }
+          }
+        }
+      }
+    }
+  }
+  &.closed {
+    opacity: 0;
+    pointer-events: none;
+    z-index: -1;
+  }
+  .popup-container {
+    position: relative;
+    width: 100%;
+    max-width: 40rem;
+    min-width: 304px;
+    margin: 2rem;
+    max-height: 100%;
+    @include mobile {
+      margin: 0;
+    }
+    .popup-content {
+        background-color: black;
+        padding: 1.5rem .5rem;
+        position: relative;
+        margin: 0;
+        @include mobile {
+          width: 100vw;
+          height: 100vh;
+          overflow: scroll;
+          padding: 1rem 5vw;
+        }
+    }
+    .close {
+      color: transparent;
+      display: -webkit-box;
+      display: -moz-box;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      width: 38px;
+      height: 38px;
+      text-align: center;
+      justify-content: center;
+      align-content: center;
+      cursor: pointer;
+      position: absolute;
+      z-index: 231;
+      right: -40px;
+      top: -40px;
+      background-image: url('images/icon-close.svg');
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 30px;
+      @include mobile {
+        background-color: rgba(0,0,0,.4);
+        top: 1rem;
+        right: 1rem;
+        width: 2rem;
+        height: 2rem;
+        background-size: 1rem 1rem;
+      }
+    }
+  }
+}
+
+
+
+/*==================================================================================
+  NAVIGATION ARROWS
 ==================================================================================*/
 .swiper {
   &:hover {
-    .arrow {
+    .swiper-arrow {
       opacity: 1;
     }
   }
-  .arrow {
-    background-color: rgba(0, 0, 0, .4);
-    cursor: pointer;
-    display: block;
-    position: absolute;
-    top: calc(50% - 1.75rem);
-    border: solid transparent;
-    border-width: .25rem .5rem;
-    background-image: url('images/popup-arrow.svg');
-    background-size: contain;
-    background-position: center;
-    width: 2rem;
-    height: 3.5rem;
-    transition: .3s;
-    .swiper & {
-      opacity: 0;
-      @include mobile {
-        opacity: 1;
-      }
-    }
+}
+.swiper-arrow,
+.popup-arrow {
+  background-color: rgba(0, 0, 0, .4);
+  cursor: pointer;
+  display: block;
+  position: absolute;
+  top: calc(50% - 1.75rem);
+  border: solid transparent;
+  border-width: .25rem .5rem;
+  background-image: url('images/swiper-arrow.svg');
+  background-size: contain;
+  background-position: center;
+  width: 2rem;
+  height: 3.5rem;
+  transition: .3s;
+  .swiper & {
+    opacity: 0;
     @include mobile {
-      top: calc(50% - 1.5rem);
-      width: 2rem;
-      height: 3rem;
+      opacity: 1;
     }
-    &.back {
-      left: 1rem;
-      @include mobile {
-        left: 5vw;
-      }
+  }
+  @include mobile {
+    top: calc(50% - 1.5rem);
+    width: 2rem;
+    height: 3rem;
+  }
+  &.back {
+    left: 1rem;
+    @include mobile {
+      left: 5vw;
     }
-    &.next {
-      transform: rotate(180deg);
-      right: 1rem;
-      @include mobile {
-        right: 5vw;
-      }
+  }
+  &.next {
+    transform: rotate(180deg);
+    right: 1rem;
+    @include mobile {
+      right: 5vw;
     }
-    &.hidden {
-      opacity: 0;
-    }
+  }
+  &.hidden {
+    opacity: 0;
   }
 }
