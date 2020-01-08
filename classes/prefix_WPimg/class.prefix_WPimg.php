@@ -57,7 +57,6 @@ class prefix_WPimg {
     // styles
     wp_enqueue_style('frontend/WPimg-styles', $class_path . 'WPimg.css', false, null);
   }
-  add_action('wp_enqueue_scripts', 'WPimg_frontend_enqueue_scripts_and_styles');
 
 
   /* ENQUEUE BACKEND SCRIPTS/STYLES
@@ -262,8 +261,8 @@ class prefix_WPimg {
       endif;
     else:
       $color = SELF::$WPimg_defaultcolor;
-      update_post_meta($id, 'WPimg_DominantColor', $color);
     endif;
+    update_post_meta($id, 'WPimg_DominantColor', $color);
     if($return):
       return $color;
     endif;
