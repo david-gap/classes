@@ -2,7 +2,7 @@
  * javascript/jQuery functions for WPimg Class
  *
  * @author      David Voglgsang
- * @version     1.1.1
+ * @version     1.1.2
  *
  */
 
@@ -65,7 +65,7 @@ jQuery(function ($) {
     // ajax is active - disable reload
     // event.preventDefault();
     $.ajax({
-      url: directory + "/functions/functions-ajax.php",
+      url: WPimg_Ajax,
       type: 'POST',
       data: getdata,
       success: function(data) {
@@ -79,6 +79,7 @@ jQuery(function ($) {
           $('.popup[data-container="' + getdata.container + '"] .popup-container .popup-content').html(data);
           showPopUpArrows(getdata.container, getdata.id);
           fallbackCheck(getdata.id, "post-flex");
+          $('.popup[data-container="' + getdata.container + '"] .popup-container .popup-content video').trigger('play');
         }
       },
       error:function(){
@@ -113,6 +114,13 @@ jQuery(function ($) {
     if (!srcset){
       var src = $('.' + target + '[data-id="' + id + '"] img').attr('data-src');
       $('.' + target + '[data-id="' + id + '"] img').attr("src", src);
+      // video play button
+      if(target == "lazy-img"){
+        var imgclass = $('.' + target + '[data-id="' + id + '"] img').attr('class');
+        if (imgclass.includes("video")) {
+          $('.' + target + '[data-id="' + id + '"]').addClass("videobutton");
+        }
+      }
     }
     $('.' + target + '[data-id="' + id + '"]').removeClass("lazy-img");
   }

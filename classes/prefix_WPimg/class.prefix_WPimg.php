@@ -6,7 +6,7 @@
  * Additional functions for WP Media
  * https://github.com/david-gap/classes
  * Author:      David Voglgsang
- * @version     1.1
+ * @version     1.2
  *
  * Change the $assets to false if you use your own backend.js and ajax file
  */
@@ -37,11 +37,27 @@ class prefix_WPimg {
     add_action( 'admin_menu', array( $this, 'WPimg_backendPage' ) );
     // add class assets
     if(SELF::$WPimg_assets !== false):
+      add_action('wp_enqueue_scripts', array( $this, 'WPimg_frontend_enqueue_scripts_and_styles' ) );
       add_action('admin_enqueue_scripts', array( $this, 'WPimg_backend_enqueue_scripts_and_styles' ) );
     endif;
     // shortcodes
     add_shortcode( 'gallery', array( $this, 'MyGallery' ) );
   }
+
+
+  /* ENQUEUE FRONTEND SCRIPTS/STYLES
+  /------------------------*/
+  function WPimg_frontend_enqueue_scripts_and_styles() {
+    $class_path = __DIR__ . '/';
+    $backend_ajax_action_file = $class_path . 'ajax.php';
+    // scripts
+    wp_register_script('frontend/WPimg-script', $class_path . 'WPimg.js', false, array( 'jquery' ), true);
+    wp_enqueue_script('frontend/WPimg-script');
+    wp_localize_script('frontend/WPimg-script', 'WPimg_Ajax', $backend_ajax_action_file);
+    // styles
+    wp_enqueue_style('frontend/WPimg-styles', $class_path . 'WPimg.css', false, null);
+  }
+  add_action('wp_enqueue_scripts', 'WPimg_frontend_enqueue_scripts_and_styles');
 
 
   /* ENQUEUE BACKEND SCRIPTS/STYLES
@@ -146,6 +162,7 @@ class prefix_WPimg {
         $output .= '<tr>';
           $output .= '<td style="background-color: #' . $new_color . '">';
             $output .= '&nbsp;';
+            $output .= $new_color == 'file_missing' ? __( 'Current image file is missing', 'WPimg' ) : '';
           $output .= '</td>';
           $output .= '<td>';
             $output .= '<img src="' . $full_image_url[0] . '" width="50" height="50" style="object-fit: cover;"> ';
@@ -209,6 +226,25 @@ class prefix_WPimg {
   /* FUNCTIONS
   /===================================================== */
 
+  /* ABSOLUTE FILE EXISTS
+  /------------------------*/
+  /**
+  * check if absolute url exists
+  * @return bool true/false
+  */
+  public function checkRemoteFile($url){
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL,$url);
+    curl_setopt($ch, CURLOPT_NOBODY, 1);
+    curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    if(curl_exec($ch)!==FALSE):
+        return true;
+    else:
+        return false;
+    endif;
+  }
+
   /* SAVE COMINANT
   /------------------------*/
   public static function saveDominantColor(int $id = 0, bool $return = false){
@@ -216,13 +252,18 @@ class prefix_WPimg {
     if(!in_array($file_type, SELF::$nocolor_files)):
       $full_image_url = wp_get_attachment_image_src($id, 'full');
       $thumb_image_url = wp_get_attachment_image_src($id, 'thumbnail');
-      $img_url = $thumb_image_url ? $thumb_image_url : $full_image_url;
-      $color = SELF::IMGcolor($img_url[0]);
+      $img_url = $thumb_image_url[0] ? $thumb_image_url[0] : $full_image_url[0];
+      // check if file exists
+      $check_file = SELF::checkRemoteFile($img_url);
+      if ($check_file == true):
+        $color = SELF::IMGcolor($img_url);
+      else:
+        $color = 'file_missing';
+      endif;
     else:
       $color = SELF::$WPimg_defaultcolor;
+      update_post_meta($id, 'WPimg_DominantColor', $color);
     endif;
-    update_post_meta($id, 'WPimg_DominantColor', $color);
-
     if($return):
       return $color;
     endif;
@@ -330,7 +371,7 @@ class prefix_WPimg {
       // get img url
       $full_image_url = wp_get_attachment_image_src($id, 'full');
       $thumb_image_url = wp_get_attachment_image_src($id, 'thumbnail');
-      $img_url = $thumb_image_url ? $thumb_image_url : $full_image_url;
+      $img_url = $thumb_image_url[0] ? $thumb_image_url[0] : $full_image_url[0];
       // fallback for missing srcset
       $sizes = wp_get_attachment_image_sizes( $id );
       $srcset = wp_get_attachment_image_srcset( $id );
@@ -353,9 +394,9 @@ class prefix_WPimg {
         endif;
       endif;
       // img fallback
-      $src_fb = $thumb_image_url[0];
+      $src_fb = $img_url;
       $fallback_bg = '';
-      if(in_array($file_type, array('video/mp4', 'video/quicktime', 'video/videopress'))):
+      if(in_array($file_type, SELF::$nocolor_files)):
         $icon = str_replace(" ", "", get_bloginfo('url') . '/wp-includes/images/media/video.png');
         $fallback_bg .= ' background-image:url(\'' . $icon . '\');';
         $src_fb = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=';
@@ -373,10 +414,21 @@ class prefix_WPimg {
       // fallback color
       if($color == "false"):
         if($fallback_bg == '' || $file_type == 'image/svg+xml'):
-          $image_url = $thumb_image_url[0] ? $thumb_image_url[0] : $full_image_url[0];
+          $image_url = $img_url;
           $color = SELF::IMGcolor($image_url);
         else:
           $color = SELF::$WPimg_defaultcolor;
+        endif;
+      endif;
+      // fallback for no img types
+      if($fallback_bg !== ''):
+        $thumb_id = get_post_thumbnail_id($id);
+        if($thumb_id):
+          // get img url
+          $full_noimage_url = wp_get_attachment_image_src($thumb_id, 'full');
+          $thumb_noimage_url = wp_get_attachment_image_src($thumb_id, 'thumbnail');
+          $noimage_url = $thumb_noimage_url[0] ? $thumb_noimage_url[0] : $full_noimage_url[0];
+          $src_fb = $noimage_url;
         endif;
       endif;
       // output
@@ -385,13 +437,12 @@ class prefix_WPimg {
           $output .= ' id="img-' . $id . '"';
           $output .= ' ' . $additional;
           $output .= ' data-src="' . $src_fb . '"';
-          $output .= ' data-status="update"';
           $output .= $srcset !== '' ? ' srcset="' . $srcset . '"' : '';
           $output .= $srcset !== '' ? ' sizes="' .  $sizes . '"' : '';
           $output .= ' style="background-color: #' . $color . ';' . $fallback_bg . '"';
           $output .= ' alt="' . $alt . '"';
           $output .= ' src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="';
-      $output .= '/>';
+      $output .= ' />';
     endif;
 
     return $output;
@@ -458,7 +509,7 @@ class prefix_WPimg {
           $output .= '<div class="column-img">';
         endif;
             $output .= '<span class="popup-arrow back hidden"></span>';
-            if($posttype == 'attachment' && in_array($file_type, $video_types)):
+            if($posttype == 'attachment' && in_array($file_type, SELF::$nocolor_files)):
               $output .= do_shortcode('[video src="' . wp_get_attachment_url($img_id) . '"]');
             elseif($posttype == 'attachment' && $file_type == 'video/quicktime'):
               $output .= '<video id="sampleMovie" src="' . wp_get_attachment_url($img_id) . '" controls></video>';
