@@ -2,7 +2,7 @@
  * javascript/jQuery functions for WPimg Class
  *
  * @author      David Voglgsang
- * @version     1.2.1
+ * @version     1.2.2
  *
  */
 
@@ -77,6 +77,7 @@ jQuery(function ($) {
         } else if (getdata.action == 'PostPopUp') {
           $('.popup[data-container="' + getdata.container + '"] .popup-container .popup-content').removeClass('loading');
           $('.popup[data-container="' + getdata.container + '"] .popup-container .popup-content').html(data);
+          checkImgVisible();
           showPopUpArrows(getdata.container, getdata.id);
           fallbackCheck(getdata.id, "post-flex");
           $('.popup[data-container="' + getdata.container + '"] .popup-container .popup-content video').trigger('play');
