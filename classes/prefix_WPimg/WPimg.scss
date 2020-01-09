@@ -2,7 +2,7 @@
  * WPimg CSS File
  *
  * @author         David Voglgsang
- * @version        1.2
+ * @version        1.2.1
  * rem dimention   20px
  *
  */
@@ -271,6 +271,7 @@
   z-index: 1199;
   opacity: 1;
   pointer-events: auto;
+  user-select: none;
   transition: $transition_fast;
   @include mobile {
     background-color: rgb(0, 0, 0);
@@ -285,7 +286,7 @@
     .popup-container {
       max-width: 1200px;
       width: fit-content;
-      margin: 6rem 3rem;
+      margin: 2rem;
       max-height: calc(100vh - 14rem);
       @include mobile {
         margin: 0;

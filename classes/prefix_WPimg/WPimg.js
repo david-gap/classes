@@ -2,7 +2,7 @@
  * javascript/jQuery functions for WPimg Class
  *
  * @author      David Voglgsang
- * @version     1.1.2
+ * @version     1.2.1
  *
  */
 
@@ -334,13 +334,39 @@ jQuery(function ($) {
       // DEBUG: console.log(get_id);
     });
 
-    /* CLOSE POP-UP
+    /* KEYBOARD ARROWS POP-UP
+    /––––––––––––––––––––––––*/
+    $(document).on("keydown", function(event) {
+      if (event.keyCode == 37) {
+        var imgclass = $('.popup .back').attr('class');
+        if (!imgclass.includes("hidden")) {
+          $('.popup .back').trigger("click");
+        }
+      } else if (event.keyCode == 39) {
+          var imgclass = $('.popup .next').attr('class');
+          if (!imgclass.includes("hidden")) {
+            $('.popup .next').trigger("click");
+          }
+      } else if (event.keyCode == 38) {} else if (event.keyCode == 40) {}
+    });
+
+    /* CLOSE POP-UP - X
     /––––––––––––––––––––––––*/
     $(document).on("click", '.popup .close', function(event) {
       $('html').removeClass('popup-noscroll');
       $(this).parents('.popup').addClass('closed');
       $(this).parents('.popup').remove();
     });
+
+    /* CLOSE POP-UP - BG
+    /––––––––––––––––––––––––*/
+    $('body').click(function(event) {
+      var target_class = $(event.target).attr('class');
+      if(target_class == "popup"){
+        $(this).find(".close").trigger( "click" );
+      }
+    });
+
   });
 
 

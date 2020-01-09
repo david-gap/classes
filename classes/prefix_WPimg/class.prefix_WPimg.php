@@ -6,7 +6,7 @@
  * Additional functions for WP Media
  * https://github.com/david-gap/classes
  * Author:      David Voglgsang
- * @version     1.2
+ * @version     1.2.1
  *
  * Change the $assets to false if you use your own backend.js and ajax file
  */
@@ -475,7 +475,7 @@ class prefix_WPimg {
           preg_match('/src="(.*?)"/s', $value, $match_src);
           $imgurl = $match_src[1];
           $mainurl = str_replace(array('https:/', 'http:/'), array('', ''), get_bloginfo('url'));
-          $remove_vars = substr($imgurl, 0, strpos($imgurl, "?"));
+          $remove_vars = strpos($imgurl, '?') !== false ? substr($imgurl, 0, strpos($imgurl, "?")) : $imgurl;
           $remove_cdn = get_bloginfo('url') . strstr($remove_vars, '/wp-content');
           $id = attachment_url_to_postid($remove_cdn);
         elseif($check_alt !== false || $check_srcset !== false):
