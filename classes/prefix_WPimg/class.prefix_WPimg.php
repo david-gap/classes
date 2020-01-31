@@ -6,13 +6,25 @@
  * Additional functions for WP Media
  * https://github.com/david-gap/classes
  * Author:      David Voglgsang
- * @version     1.2.1
+ * @version     1.2.2
  *
  * Change the $assets to false if you use your own backend.js and ajax file
  */
 
 class prefix_WPimg {
 
+  /* CONFIGURATION
+  /===================================================== */
+  /**
+    * default vars
+    * @param static boolable $WPimg_content: simple way to disable the lazy loading inside the_content
+    * @param static boolable $WPimg_assets: include classes assets. Disable it if you use your own files
+    * @param static boolable $WPimg_js_loading: lazy load with JS
+    * @param static string $parent_element: parent container typ (div, section)
+    * @param static boolable $WPimg_popupContent: On klick open media in a lightbox
+    * @param static array $nocolor_files: exclude file types from dominant color generator
+    * @param static string $WPimg_defaultcolor: default color
+  */
   static $WPimg_content      = true;
   static $WPimg_assets       = true;
   static $WPimg_js_loading   = true;
@@ -20,6 +32,8 @@ class prefix_WPimg {
   static $WPimg_popupContent = false;
   static $nocolor_files      = array('video/mp4', 'video/quicktime', 'video/videopress', 'audio/mpeg');
   static $WPimg_defaultcolor = 'ffffff';
+
+
 
   /* INIT
   /===================================================== */
@@ -225,25 +239,6 @@ class prefix_WPimg {
   /* FUNCTIONS
   /===================================================== */
 
-  /* ABSOLUTE FILE EXISTS
-  /------------------------*/
-  /**
-  * check if absolute url exists
-  * @return bool true/false
-  */
-  public function checkRemoteFile($url){
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL,$url);
-    curl_setopt($ch, CURLOPT_NOBODY, 1);
-    curl_setopt($ch, CURLOPT_FAILONERROR, 1);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    if(curl_exec($ch)!==FALSE):
-        return true;
-    else:
-        return false;
-    endif;
-  }
-
   /* SAVE COMINANT
   /------------------------*/
   public static function saveDominantColor(int $id = 0, bool $return = false){
@@ -253,7 +248,7 @@ class prefix_WPimg {
       $thumb_image_url = wp_get_attachment_image_src($id, 'thumbnail');
       $img_url = $thumb_image_url[0] ? $thumb_image_url[0] : $full_image_url[0];
       // check if file exists
-      $check_file = SELF::checkRemoteFile($img_url);
+      $check_file = PARENT::checkRemoteFile($img_url);
       if ($check_file == true):
         $color = SELF::IMGcolor($img_url);
       else:
@@ -266,36 +261,6 @@ class prefix_WPimg {
     if($return):
       return $color;
     endif;
-  }
-
-
-  /* GENERATE SHORT ID
-  /------------------------*/
-  /**
-    * @param int $length: ID length
-    * @param string $type: ID chars int/letters both on default
-    * @return string random id
-  */
-  function galShortID(int $length = 10, string $type = ''){
-    if($type == 'int'):
-      return substr(str_shuffle("0123456789"), 0, $length);
-    elseif($type == 'letters'):
-      return substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, $length);
-    else:
-      return substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyz"), 0, $length);
-    endif;
-  }
-
-
-  /* EXPLODE SHORTCODE ATTRIBUTE
-  /------------------------*/
-  function AttrToArray(string $attr){
-    // remove spaces from string
-    $clean = str_replace(", ", ",", $attr);
-    // create array
-    $array = explode(',', $clean);
-
-    return $array;
   }
 
 
@@ -612,7 +577,7 @@ class prefix_WPimg {
     if(!is_admin()):
         // vars
         $output = '';
-        $id = SELF::galShortID(10, 'letters');
+        $id = PARENT::ShortID(10, 'letters');
         $config = shortcode_atts( array(
           'post_type' => 'attachment',
           'post_status' => 'publish',
@@ -623,9 +588,9 @@ class prefix_WPimg {
         // all files
         if($config['id'] == "-1"):
           $args = array(
-            'post_type'=> SELF::AttrToArray($config['post_type']),
+            'post_type'=> PARENT::AttrToArray($config['post_type']),
             'posts_per_page' =>  -1,
-            'post_status' => SELF::AttrToArray($config['post_status'])
+            'post_status' => PARENT::AttrToArray($config['post_status'])
           );
           $wp_query = new WP_Query($args);
           $ids = array();
@@ -637,7 +602,7 @@ class prefix_WPimg {
             wp_reset_postdata();
           endif;
         else:
-          $ids = SELF::AttrToArray($config['id']);
+          $ids = PARENT::AttrToArray($config['id']);
         endif;
 
         // output

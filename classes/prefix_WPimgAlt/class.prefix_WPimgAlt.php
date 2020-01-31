@@ -9,7 +9,7 @@
  *
 */
 
-class prefix_WPimgAlt extends prefix_bd_Base {
+class prefix_WPimgAlt extends prefix_BaseFunctions {
 
   /* CONFIGURATION
   /===================================================== */
@@ -22,7 +22,7 @@ class prefix_WPimgAlt extends prefix_bd_Base {
   */
   static $WPimgAlt_content      = true;
   static $WPimgAlt_attachment   = true;
-  static $WPimgAlt_languages    = array("de", "fr", "it");
+  static $WPimgAlt_languages    = array("de", "en", "fr", "it");
   static $WPimgAlt_prefix       = 'WPimgAlt_';
 
 
@@ -94,13 +94,13 @@ class prefix_WPimgAlt extends prefix_bd_Base {
       endif;
     endif;
     // save fields
-    SELF::saveAltAttributes($post_id);
+    SELF::WPimgAlt_saveAltAttributes($post_id);
   }
 
 
   /* SAVE CUSTOM FIELDS
   /------------------------*/
-  public function saveAltAttributes(int $id = 0){
+  public function WPimgAlt_saveAltAttributes(int $id = 0){
     // save field for each language
     foreach (SELF::$WPimgAlt_languages as $key => $lang) {
       if($key > 0):

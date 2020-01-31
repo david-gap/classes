@@ -5,7 +5,7 @@
  * PHP Mailer
  * https://github.com/david-gap/classes
  * Author: David Voglgsang
- * @version     1.0
+ * @version     1.0.1
  */
 
  class prefix_Mail {

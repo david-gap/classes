@@ -5,7 +5,7 @@
  * Intranet
  * https://github.com/david-gap/classes
  * Author: David Voglgsang
- * @version     1.0
+ * @version     1.0.2
  *
  * Class running with http://www.directorylister.com
 */
@@ -59,44 +59,6 @@ class prefix_WPintranet {
   /===================================================== */
 
   /**
-    * check if folder exists
-    * @param string $DirName: folder name
-    * @return true/false
-  */
-  function CheckDir($DirName) {
-    if (file_exists($DirName)) {
-        $debug['CheckDir'] = 'Dir ' . $DirName . " exists";
-        return true;
-    } else {
-        $debug['CheckDir'] = 'Dir ' . $DirName . " does not exist";
-        return false;
-    }
-  }
-
-
-  /**
-    * create folder
-    * @param string $DirName: folder name
-    * @return true/false
-  */
-  function CreateDirectory($DirName) {
-    // check the folder
-    $check = SELF::CheckDir($DirName);
-    // create the folder
-    if(!$check):
-      if (mkdir($DirName)):
-          chmod($DirName, SELF::$mode);
-          $debug['CreateDir'] = 'Dir ' . $DirName . " does not exist";
-          return true;
-      else:
-          $debug['CreateDir'] = 'Dir ' . $DirName . " does not exist";
-          return false;
-      endif;
-    endif;
-  }
-
-
-  /**
     * copy intanet res to intranet folder
     * @param string $src: source directory
     * @param string $dst: destination directory
@@ -132,12 +94,12 @@ class prefix_WPintranet {
   */
   public function initialIntranet(){
     // check if main directory exists
-    $parent_exists = SELF::CheckDir(SELF::$root . SELF::$directory);
+    $parent_exists = PARENT::CheckDir(SELF::$root . SELF::$directory);
     // create main directory
     if(!$parent_exists):
       // create main directory
-      SELF::CreateDirectory(SELF::$root . SELF::$directory);
-      SELF::CreateDirectory(SELF::$root . SELF::$directory . '/list-resources');
+      PARENT::CreateDirectory(SELF::$root . SELF::$directory);
+      PARENT::CreateDirectory(SELF::$root . SELF::$directory . '/list-resources');
       SELF::copyDirectory(__DIR__ . '/list-resources', SELF::$root . SELF::$directory . '/list-resources');
       // wait before creating child folders
     endif;
@@ -146,9 +108,9 @@ class prefix_WPintranet {
       // if child folders are given
       foreach (SELF::$folders as $folder) {
         // check if main directory exists
-        $child_exists = SELF::CheckDir(SELF::$root . SELF::$directory . '/' . $folder);
+        $child_exists = PARENT::CheckDir(SELF::$root . SELF::$directory . '/' . $folder);
         if(!$child_exists):
-          SELF::CreateDirectory(SELF::$root . SELF::$directory . '/' . $folder);
+          PARENT::CreateDirectory(SELF::$root . SELF::$directory . '/' . $folder);
           copy(__DIR__ . '/folders/index.php', SELF::$root . SELF::$directory . '/' . $folder . '/index.php');
         endif;
       }
@@ -156,25 +118,10 @@ class prefix_WPintranet {
   }
 
 
-  /**
-    * Check if checkbox is checked
-    * @param string $value: input value to check
-    * @param array/string $range: checked array/string value
-    * @return checked attribute if input value is in post array
-    * @used in: UserCustomFields()
-  */
-  public function setChecked($value,$range) {
-    if(!is_array($range)) {
-      return ($value==$range) ? "checked='checked'" : "";
-    } else {
-      return (in_array($value,$range)) ? "checked='checked'" : "";
-    }
-  }
-
-
 
   /* USER FUNCTIONS
   /===================================================== */
+
   /*
     add user role for the intranet
   */
@@ -239,7 +186,7 @@ class prefix_WPintranet {
                 else:
                   $value = $access;
                 endif;
-                $checked = SELF::setChecked($value, $active_value);
+                $checked = PARENT::setChecked($value, $active_value);
                 $output .= '<div>';
                   $output .= '<label>';
                       $output .= '<input type="checkbox" name="intranet_access[]" value="' . $value . '" ' . $checked . '>';
@@ -379,7 +326,7 @@ class prefix_WPintranet {
         $output .= '<ul class="directories">';
           foreach (SELF::$folders as $folder) {
             if($all_directorys == true || in_array($folder, $active_folders) && $num_folders > 1):
-              $output .= '<li data-directory="' . $folder . '" data-title="' . $folder . '">';
+              $output .= '<li data-directory="' . $folder . '" data-title="' . $folder . '" tabindex="0">';
               $output .= '' . $folder;
               $output .= '</li>';
             endif;

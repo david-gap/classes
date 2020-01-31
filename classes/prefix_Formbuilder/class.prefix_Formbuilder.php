@@ -5,10 +5,10 @@
  * Form Builder
  * https://github.com/david-gap/classes
  * Author: David Voglgsang
- * @version     1.0
+ * @version     1.0.1
  */
 
-class prefix_Formbuilder {
+class prefix_Formbuilder extends prefix_BaseFunctions {
 
   /* INIT FUNCTIONS
   /===================================================== */
@@ -22,63 +22,10 @@ class prefix_Formbuilder {
 
   /* FUNCTIONS
   /===================================================== */
-  /* GET POST
+
+  /* INPUT BUILDER
   /------------------------*/
   /**
-    * @param string $name: variable name
-    * @param $default: default text for nonexistent or empty variables
-    * @return string from called value or default text
-  */
-  static function getFormPost(string $name, $default=""){
-      // check if given variable exists
-      if(isset($_REQUEST[$name])):
-        $s = $_REQUEST[$name];
-      elseif (isset($_POST[$name])):
-        $s = $_POST[$name];
-      elseif (isset($_GET[$name])):
-        $s = $_GET[$name];
-      else:
-        $s = $default;
-      endif;
-      // return value
-      return ($s) == "" ? $default : $s;
-  }
-
-
-  /* CHECK IF OPTION IS SELECTED
-  /------------------------*/
-  /**
-    * @param string $value: input value to check
-    * @param array/string $range: selected array/string value
-    * @return selected attribute if input value is in post array
-  */
-  static function setSelected($value,$range) {
-    if(!is_array($range)) {
-      return ($value==$range) ? "selected='selected'" : "";
-    } else {
-      return (in_array($value,$range)) ? "selected='selected'" : "";
-    }
-  }
-
-
-  /* CHECK IF CHECKBOX IS CHECKED
-  /------------------------*/
-  /**
-    * @param string $value: input value to check
-    * @param array/string $range: checked array/string value
-    * @return checked attribute if input value is in post array
-  */
-  static function setChecked($value,$range) {
-    if(!is_array($range)) {
-      return ($value==$range) ? "checked='checked'" : "";
-    } else {
-      return (in_array($value,$range)) ? "checked='checked'" : "";
-    }
-  }
-
-
-  /**
-    * Build the input
     * @param array $input has to be a array
     * @param string $prefix prefix for name and classes
     * @return string form input
@@ -112,7 +59,7 @@ class prefix_Formbuilder {
     // input conditions
     $i_addition = '';
     $i_addition .= $name ? 'name="'. $prefix . '-' . $name . '" ' : '';
-    $i_addition .= array_key_exists('placeholder', $input) ? 'placeholder="' . $input['placeholder'] . '" ' : '';
+    $i_addition .= array_key_exists('placeholder', $input) && $type !== 'select' ? 'placeholder="' . $input['placeholder'] . '" ' : '';
     $i_addition .= $disabled ? 'disabled ' : '';
     // output
     switch ($type) {
@@ -132,25 +79,25 @@ class prefix_Formbuilder {
                     $output .= '<option selected="selected">' . $input['placeholder'] . '</option>';
                   endif;
                   foreach ($value as $option) {
-                    $select = SELF::setSelected($option, SELF::getFormPost($prefix . '-' . $name));
+                    $select = PARENT::setSelected($option, PARENT::getFormPost($prefix . '-' . $name));
                     $output .= '<option value="' . $option . '" ' . $select . '>' . $option . '</option>';
                   }
                 $output .= '</select>';
                 break;
               case "textarea":
-                $output .= '<textarea ' . $i_addition . ' id="for-' . $name . '">' . SELF::getFormPost($prefix . '-' . $name, $value) . '</textarea>';
+                $output .= '<textarea ' . $i_addition . ' id="for-' . $name . '">' . PARENT::getFormPost($prefix . '-' . $name, $value) . '</textarea>';
                 break;
               case "checkbox":
                 if (is_array($value)):
                   foreach ($value as $checkbox) {
-                    $checked = SELF::setChecked($checkbox, SELF::getFormPost($prefix . '-' . $name));
+                    $checked = PARENT::setChecked($checkbox, PARENT::getFormPost($prefix . '-' . $name));
                     $output .= '<label>';
                       $output .= '<input type="checkbox" name="' . $prefix . '-' . $name . '[]" value="' . $checkbox . '" ' . $checked . '>';
                       $output .= '<span>' . $checkbox . '</span>';
                     $output .= '</label>';
                   }
                 else:
-                  $checked = SELF::setChecked($value, SELF::getFormPost($prefix . '-' . $name));
+                  $checked = PARENT::setChecked($value, PARENT::getFormPost($prefix . '-' . $name));
                   $output .= '<label>';
                     $output .= '<input type="checkbox" name="' . $prefix . '-' . $name . '" value="' . $value . '" ' . $checked . '>';
                     $output .= '<span>' . $value . '</span>';
@@ -160,7 +107,7 @@ class prefix_Formbuilder {
               case "radio":
                 if (is_array($value)):
                   foreach ($value as $radio) {
-                    $checked = SELF::setChecked($radio, SELF::getFormPost($prefix . '-' . $name));
+                    $checked = PARENT::setChecked($radio, PARENT::getFormPost($prefix . '-' . $name));
                     $output .= '<label>';
                       $output .= '<input type="radio" name="' . $prefix . '-' . $name . '[]" value="' . $radio . '" ' . $checked . '>';
                       $output .= '<span>' . $radio . '</span>';
@@ -171,7 +118,7 @@ class prefix_Formbuilder {
                 endif;
                 break;
               default:
-                $output .= '<input type="' . $type . '" id="for-' . $name . '" value="' . SELF::getFormPost($prefix . '-' . $name, $value) . '" ' . $i_addition . '>';
+                $output .= '<input type="' . $type . '" id="for-' . $name . '" value="' . PARENT::getFormPost($prefix . '-' . $name, $value) . '" ' . $i_addition . '>';
             }
           $output .= '</span>';
           $output .= array_key_exists('form_input_after', $input) ? $input['form_input_after'] : '';
@@ -182,7 +129,7 @@ class prefix_Formbuilder {
 
 
 
-  /* OUTPUTS
+  /* FORM BUILDER
   /===================================================== */
   /**
     * Formular
