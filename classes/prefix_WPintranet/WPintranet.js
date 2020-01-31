@@ -2,7 +2,7 @@
  * javascript/jQuery functions for WPintranet Class
  *
  * @author      David Voglgsang
- * @version     1.0
+ * @version     1.0.1
  *
  */
 
@@ -84,6 +84,12 @@ jQuery(function ($) {
         title: $('#intranet li.active').data('title')
       };
       WPintranet_ajaxCall(data);
+    });
+    // tabindex click
+    $(".intranet-directories li").keypress(function (e) {
+       if (e.which == 13) {
+           $(this).trigger( "click" );
+       }
     });
   });
 
