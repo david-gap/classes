@@ -5,7 +5,7 @@
  * Wordpress - add custom fields for alt tag translations
  * https://github.com/david-gap/classes
  * Author: David Voglgsang
- * @version     1.0.1
+ * @version     1.0.2
  *
 */
 
@@ -22,6 +22,7 @@ class prefix_WPimgAlt extends prefix_BaseFunctions {
   */
   static $WPimgAlt_content      = true;
   static $WPimgAlt_attachment   = true;
+  static $WPimgAlt_shortcode    = true;
   static $WPimgAlt_languages    = array("de", "en", "fr", "it");
   static $WPimgAlt_prefix       = 'WPimgAlt_';
 
@@ -41,6 +42,10 @@ class prefix_WPimgAlt extends prefix_BaseFunctions {
     // alt img in the_content
     if(SELF::$WPimgAlt_content !== false):
       add_filter('the_content', array( $this, 'IMGalt_Content' ) );
+    endif;
+    // alt img in do_shortcode
+    if(SELF::$WPimgAlt_shortcode !== false):
+      add_filter('do_shortcode', array( $this, 'IMGalt_Content' ) );
     endif;
     // alt img for attachments
     if(SELF::$WPimgAlt_attachment !== false):
@@ -184,7 +189,7 @@ class prefix_WPimgAlt extends prefix_BaseFunctions {
           endif;
         }
       else:
-        $orginal = $image->getAttribute('src');
+        $orginal = strpos($image->getAttribute('src'), 'http') !== false ? $image->getAttribute('src') : get_option( 'siteurl' ) . $image->getAttribute('src');
       endif;
       // get orginal img id and call alt
       $id = attachment_url_to_postid($orginal);
