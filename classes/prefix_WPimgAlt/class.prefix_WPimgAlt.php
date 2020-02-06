@@ -5,7 +5,7 @@
  * Wordpress - add custom fields for alt tag translations
  * https://github.com/david-gap/classes
  * Author: David Voglgsang
- * @version     1.0
+ * @version     1.0.1
  *
 */
 
@@ -127,7 +127,7 @@ class prefix_WPimgAlt extends prefix_BaseFunctions {
     $output = '';
     $lang = PARENT::getCurrentLang();
     // check if active lang is default or not
-    if($lang = SELF::$WPimgAlt_languages[0]):
+    if($lang == SELF::$WPimgAlt_languages[0]):
       // default language
       $output .= get_post_meta($id, '_wp_attachment_image_alt', TRUE);
     else:
