@@ -2,7 +2,7 @@
  * javascript/jQuery functions for WPimg Class
  *
  * @author      David Voglgsang
- * @version     1.2.2
+ * @version     1.2.3
  *
  */
 
@@ -364,7 +364,9 @@ jQuery(function ($) {
     $('body').click(function(event) {
       var target_class = $(event.target).attr('class');
       if(target_class == "popup"){
-        $(this).find(".close").trigger( "click" );
+        $('html').removeClass('popup-noscroll');
+        $(event.target).addClass('closed');
+        $(event.target).remove();
       }
     });
 
