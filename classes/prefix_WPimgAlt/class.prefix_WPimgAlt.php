@@ -17,6 +17,7 @@ class prefix_WPimgAlt extends prefix_BaseFunctions {
     * default vars
     * @param static string $WPimgAlt_content: simple way to disable img alt for the_content
     * @param static string $WPimgAlt_attachmentt: simple way to disable img attachment alt
+    * @param static string $WPimgAlt_shortcode: simple way to disable img in shortcode alt
     * @param static array $WPimgAlt_languages: List of Languages, first one is default
     * @param static string $WPimgAlt_prefix: Prefix for variables
   */
