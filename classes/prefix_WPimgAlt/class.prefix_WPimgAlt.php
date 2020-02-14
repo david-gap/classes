@@ -163,43 +163,45 @@ class prefix_WPimgAlt extends prefix_BaseFunctions {
   /* IMG ALT TAG - CONTENT
   /------------------------*/
   function IMGalt_Content($content) {
-    // encode content
-    $content  = mb_convert_encoding($content, 'HTML-ENTITIES', "UTF-8");
-    $document = new \DOMDocument();
-    // Disable libxml errors and allow user to fetch error information as needed
-    libxml_use_internal_errors(true);
-    $document->loadHTML(utf8_decode($content));
-    // get img tag from content
-    $images = $document->getElementsByTagName('img');
-    foreach ($images as $image) {
-      // get orginal from srcset
-      if( $image->hasAttribute('srcset') ):
-        $orginal = '';
-        // get srcset from content and explode to array
-        $srcset = $image->getAttribute('srcset');
-        $srcset_array = explode(", ", $srcset);
-        // get orginal size
-        foreach ($srcset_array as $key => $value) {
-          $single_srcset = explode(" ", $value);
-          $src_size = str_replace("w", "", end($single_srcset));
-          if(strpos($single_srcset[0], $src_size) !== false):
-            // not the orginal size
-            // $orginal .= $single_srcset[0] . ' ' . $src_size;
-          else:
-            $orginal .= $single_srcset[0];
-          endif;
-        }
-      else:
-        $orginal = strpos($image->getAttribute('src'), 'http') !== false ? $image->getAttribute('src') : get_option( 'siteurl' ) . $image->getAttribute('src');
-      endif;
-      // get orginal img id and call alt
-      $id = attachment_url_to_postid($orginal);
-      $alt = SELF::getAltAttribute($id);
-      $image->removeAttribute('alt');
-      $image->setAttribute('alt', $alt);
-    }
-    // output
-    return $document->saveHTML();
+    if($content):
+      // encode content
+      $content  = mb_convert_encoding($content, 'HTML-ENTITIES', "UTF-8");
+      $document = new \DOMDocument();
+      // Disable libxml errors and allow user to fetch error information as needed
+      libxml_use_internal_errors(true);
+      $document->loadHTML(utf8_decode($content), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+      // get img tag from content
+      $images = $document->getElementsByTagName('img');
+      foreach ($images as $image) {
+        // get orginal from srcset
+        if( $image->hasAttribute('srcset') ):
+          $orginal = '';
+          // get srcset from content and explode to array
+          $srcset = $image->getAttribute('srcset');
+          $srcset_array = explode(", ", $srcset);
+          // get orginal size
+          foreach ($srcset_array as $key => $value) {
+            $single_srcset = explode(" ", $value);
+            $src_size = str_replace("w", "", end($single_srcset));
+            if(strpos($single_srcset[0], $src_size) !== false):
+              // not the orginal size
+              // $orginal .= $single_srcset[0] . ' ' . $src_size;
+            else:
+              $orginal .= $single_srcset[0];
+            endif;
+          }
+        else:
+          $orginal = strpos($image->getAttribute('src'), 'http') !== false ? $image->getAttribute('src') : get_option( 'siteurl' ) . $image->getAttribute('src');
+        endif;
+        // get orginal img id and call alt
+        $id = attachment_url_to_postid($orginal);
+        $alt = SELF::getAltAttribute($id);
+        $image->removeAttribute('alt');
+        $image->setAttribute('alt', $alt);
+      }
+      // output
+      return $document->saveHTML();
+    endif;
   }
 
 
