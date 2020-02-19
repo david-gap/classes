@@ -9,10 +9,33 @@
  *
 */
 
+/*=======================================================
+Table of Contents:
+---------------------------------------------------------
+1.0 INIT & VARS
+  1.1 CONFIGURATION
+  1.2 ON LOAD RUN
+  1.3 BACKEND ARRAY
+2.0 FUNCTIONS
+  2.1 ACTIVATE CONTAINER CSS CLASS FOR HEADER/FOOTER
+  2.2 ADD CUSTOM FIELDS
+  2.3 SAVE METABOXES
+  2.4 SAVE CUSTOM FIELDS
+  2.5 IMG ALT TAG
+  2.6 IMG ALT TAG - ATTACHMENT
+3.0 OUTPUT
+  3.1 IMG ALT TAG - CONTENT
+=======================================================*/
+
+
 class prefix_WPimgAlt extends prefix_core_BaseFunctions {
 
-  /* CONFIGURATION
-  /===================================================== */
+  /*==================================================================================
+    1.0 INIT & VARS
+  ==================================================================================*/
+
+  /* 1.1 CONFIGURATION
+  /------------------------*/
   /**
     * default vars (if configuration file is missing or broken)
     * @param static string $WPimgAlt_content: simple way to disable img alt for the_content
@@ -28,9 +51,8 @@ class prefix_WPimgAlt extends prefix_core_BaseFunctions {
   static $WPimgAlt_prefix       = 'WPimgAlt_';
 
 
-
-  /* INIT
-  /===================================================== */
+  /* 1.2 ON LOAD RUN
+  /------------------------*/
   public function __construct() {
     // update default vars with configuration file
     SELF::updateVars();
@@ -57,130 +79,147 @@ class prefix_WPimgAlt extends prefix_core_BaseFunctions {
   }
 
 
-  /* GET SETTINGS FROM CONFIGURATION FILE
+  /* 1.3 BACKEND ARRAY
   /------------------------*/
-  private function updateVars(){
-    // get configuration
-    global $configuration;
-    // if configuration file exists && class-settings
-    if($configuration && array_key_exists('prefix_WPimgAlt', $configuration)):
-      // class configuration
-      $myConfig = $configuration['prefix_WPimgAlt'];
-      // update vars
-      SELF::$WPimgAlt_content = array_key_exists('WPimgAlt_content', $myConfig) ? $myConfig['WPimgAlt_content'] : SELF::$WPimgAlt_content;
-      SELF::$WPimgAlt_attachment = array_key_exists('WPimgAlt_attachment', $myConfig) ? $myConfig['WPimgAlt_attachment'] : SELF::$WPimgAlt_attachment;
-      SELF::$WPimgAlt_shortcode = array_key_exists('WPimgAlt_shortcode', $myConfig) ? $myConfig['WPimgAlt_shortcode'] : SELF::$WPimgAlt_shortcode;
-      SELF::$WPimgAlt_languages = array_key_exists('WPimgAlt_languages', $myConfig) ? $myConfig['WPimgAlt_languages'] : SELF::$WPimgAlt_languages;
-    endif;
-  }
+  static $backend = array(
+    "key" => array(
+      "label" => "",
+      "type" => "",
+      "value" => ""
+    ),
+  );
 
 
-  /* ADD CUSTOM FIELDS
-  /------------------------*/
-  function WPimgAlt_meta_CustomFields( $form_fields, $post ) {
-    //output for each language
-    if(is_array(SELF::$WPimgAlt_languages)):
-      // repeat output for each language (exept first one - is default)
-      foreach (SELF::$WPimgAlt_languages as $key => $lang) {
-        if($key > 0):
-          // get saved value
-          $var_name = SELF::$WPimgAlt_prefix . $lang;
-          $value = get_post_meta($post->ID, $var_name, true);
-          // create custom field
-          $form_fields[$var_name] = array(
-              'value' => $value ? $value : '',
-              'label' => __( 'Alternative Text', 'WPimgAlt' ) . ' (' . $lang . ')',
-              'input' => 'text'
-          );
-        endif;
-      }
-    endif;
-    // output
-    return $form_fields;
-  }
 
+  /*==================================================================================
+    2.0 FUNCTIONS
+  ==================================================================================*/
 
-  /* SAVE METABOXES
-  /------------------------*/
-  public function WPimgAlt_meta_Attachments_Save($post_id) {
-    if( isset( $_POST['attachment'] ) ):
-      //Not save if the user hasn't submitted changes
-      if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ):
-        return;
-      endif;
-      // Verifying whether input is coming from the proper form
-      if ( ! wp_verify_nonce ( $_POST['WPimgAlt_lang_de'] ) ):
-        return;
-      endif;
-      // Making sure the user has permission
-      if( 'post' == $_POST['attachment'] ):
-        if( ! current_user_can( 'edit_post', $post_id ) ):
-          return;
-        endif;
-      endif;
-    endif;
-    // save fields
-    SELF::WPimgAlt_saveAltAttributes($post_id);
-  }
-
-
-  /* SAVE CUSTOM FIELDS
-  /------------------------*/
-  public function WPimgAlt_saveAltAttributes(int $id = 0){
-    // save field for each language
-    foreach (SELF::$WPimgAlt_languages as $key => $lang) {
-      if($key > 0):
-        // get field name
-        $var_name = SELF::$WPimgAlt_prefix . $lang;
-        // save value
-        if ( isset( $_REQUEST['attachments'][ $id ][$var_name] ) ):
-            $new_value = $_REQUEST['attachments'][ $id ][$var_name];
-            update_post_meta( $id, $var_name, $new_value );
-        endif;
+    /* 2.1 ACTIVATE CONTAINER CSS CLASS FOR HEADER/FOOTER
+    /------------------------*/
+    private function updateVars(){
+      // get configuration
+      global $configuration;
+      // if configuration file exists && class-settings
+      if($configuration && array_key_exists('prefix_WPimgAlt', $configuration)):
+        // class configuration
+        $myConfig = $configuration['prefix_WPimgAlt'];
+        // update vars
+        SELF::$WPimgAlt_content = array_key_exists('WPimgAlt_content', $myConfig) ? $myConfig['WPimgAlt_content'] : SELF::$WPimgAlt_content;
+        SELF::$WPimgAlt_attachment = array_key_exists('WPimgAlt_attachment', $myConfig) ? $myConfig['WPimgAlt_attachment'] : SELF::$WPimgAlt_attachment;
+        SELF::$WPimgAlt_shortcode = array_key_exists('WPimgAlt_shortcode', $myConfig) ? $myConfig['WPimgAlt_shortcode'] : SELF::$WPimgAlt_shortcode;
+        SELF::$WPimgAlt_languages = array_key_exists('WPimgAlt_languages', $myConfig) ? $myConfig['WPimgAlt_languages'] : SELF::$WPimgAlt_languages;
       endif;
     }
-  }
+
+
+    /* 2.2 ADD CUSTOM FIELDS
+    /------------------------*/
+    function WPimgAlt_meta_CustomFields( $form_fields, $post ) {
+      //output for each language
+      if(is_array(SELF::$WPimgAlt_languages)):
+        // repeat output for each language (exept first one - is default)
+        foreach (SELF::$WPimgAlt_languages as $key => $lang) {
+          if($key > 0):
+            // get saved value
+            $var_name = SELF::$WPimgAlt_prefix . $lang;
+            $value = get_post_meta($post->ID, $var_name, true);
+            // create custom field
+            $form_fields[$var_name] = array(
+                'value' => $value ? $value : '',
+                'label' => __( 'Alternative Text', 'WPimgAlt' ) . ' (' . $lang . ')',
+                'input' => 'text'
+            );
+          endif;
+        }
+      endif;
+      // output
+      return $form_fields;
+    }
+
+
+    /* 2.3 SAVE METABOXES
+    /------------------------*/
+    public function WPimgAlt_meta_Attachments_Save($post_id) {
+      if( isset( $_POST['attachment'] ) ):
+        //Not save if the user hasn't submitted changes
+        if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ):
+          return;
+        endif;
+        // Verifying whether input is coming from the proper form
+        if ( ! wp_verify_nonce ( $_POST['WPimgAlt_lang_de'] ) ):
+          return;
+        endif;
+        // Making sure the user has permission
+        if( 'post' == $_POST['attachment'] ):
+          if( ! current_user_can( 'edit_post', $post_id ) ):
+            return;
+          endif;
+        endif;
+      endif;
+      // save fields
+      SELF::WPimgAlt_saveAltAttributes($post_id);
+    }
+
+
+    /* 2.4 SAVE CUSTOM FIELDS
+    /------------------------*/
+    public function WPimgAlt_saveAltAttributes(int $id = 0){
+      // save field for each language
+      foreach (SELF::$WPimgAlt_languages as $key => $lang) {
+        if($key > 0):
+          // get field name
+          $var_name = SELF::$WPimgAlt_prefix . $lang;
+          // save value
+          if ( isset( $_REQUEST['attachments'][ $id ][$var_name] ) ):
+              $new_value = $_REQUEST['attachments'][ $id ][$var_name];
+              update_post_meta( $id, $var_name, $new_value );
+          endif;
+        endif;
+      }
+    }
+
+
+    /* 2.5 IMG ALT TAG
+    /------------------------*/
+    public static function getAltAttribute(int $id = 0){
+      // vars
+      $output = '';
+      $lang = PARENT::getCurrentLang();
+      // check if active lang is default or not
+      if($lang == SELF::$WPimgAlt_languages[0]):
+        // default language
+        $output .= get_post_meta($id, '_wp_attachment_image_alt', TRUE);
+      else:
+        // alternative text
+        $name = SELF::$WPimgAlt_prefix . $lang;
+        $output .= get_post_meta($id, $name, true);
+      endif;
+      // output
+      return $output;
+    }
+
+
+    /* 2.6 IMG ALT TAG - ATTACHMENT
+    /------------------------*/
+    function IMGalt_Attachment($attributes, $attachment){
+      // print_r($attributes);
+      // print_r($attachment);
+      // get up to date alt attribute
+      $alt = SELF::getAltAttribute($attachment->ID);
+      // set alt tag
+      $attributes['alt'] = $alt;
+      // output
+      return $attributes;
+    }
 
 
 
-  /* FUNCTIONS
-  /===================================================== */
+  /*==================================================================================
+    3.0 OUTPUT
+  ==================================================================================*/
 
-  /* IMG ALT TAG
-  /------------------------*/
-  public static function getAltAttribute(int $id = 0){
-    // vars
-    $output = '';
-    $lang = PARENT::getCurrentLang();
-    // check if active lang is default or not
-    if($lang == SELF::$WPimgAlt_languages[0]):
-      // default language
-      $output .= get_post_meta($id, '_wp_attachment_image_alt', TRUE);
-    else:
-      // alternative text
-      $name = SELF::$WPimgAlt_prefix . $lang;
-      $output .= get_post_meta($id, $name, true);
-    endif;
-    // output
-    return $output;
-  }
-
-
-  /* IMG ALT TAG - ATTACHMENT
-  /------------------------*/
-  function IMGalt_Attachment($attributes, $attachment){
-    // print_r($attributes);
-    // print_r($attachment);
-    // get up to date alt attribute
-    $alt = SELF::getAltAttribute($attachment->ID);
-    // set alt tag
-    $attributes['alt'] = $alt;
-    // output
-    return $attributes;
-  }
-
-
-  /* IMG ALT TAG - CONTENT
+  /* 3.1 IMG ALT TAG - CONTENT
   /------------------------*/
   function IMGalt_Content($content) {
     if($content):
