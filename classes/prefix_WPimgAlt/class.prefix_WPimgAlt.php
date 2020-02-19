@@ -5,7 +5,7 @@
  * Wordpress - add custom fields for alt tag translations
  * https://github.com/david-gap/classes
  * Author: David Voglgsang
- * @version     1.0.2
+ * @version     1.1
  *
 */
 
@@ -14,7 +14,7 @@ class prefix_WPimgAlt extends prefix_core_BaseFunctions {
   /* CONFIGURATION
   /===================================================== */
   /**
-    * default vars
+    * default vars (if configuration file is missing or broken)
     * @param static string $WPimgAlt_content: simple way to disable img alt for the_content
     * @param static string $WPimgAlt_attachmentt: simple way to disable img attachment alt
     * @param static string $WPimgAlt_shortcode: simple way to disable img in shortcode alt
@@ -32,6 +32,8 @@ class prefix_WPimgAlt extends prefix_core_BaseFunctions {
   /* INIT
   /===================================================== */
   public function __construct() {
+    // update default vars with configuration file
+    SELF::updateVars();
     // add custom fields
     if(SELF::$WPimgAlt_content !== false || SELF::$WPimgAlt_attachment !== false):
       // add custom fields
@@ -51,6 +53,24 @@ class prefix_WPimgAlt extends prefix_core_BaseFunctions {
     // alt img for attachments
     if(SELF::$WPimgAlt_attachment !== false):
       add_filter( 'wp_get_attachment_image_attributes', array( $this, 'IMGalt_Attachment' ), 10, 2 );
+    endif;
+  }
+
+
+  /* GET SETTINGS FROM CONFIGURATION FILE
+  /------------------------*/
+  private function updateVars(){
+    // get configuration
+    global $configuration;
+    // if configuration file exists && class-settings
+    if($configuration && array_key_exists('prefix_WPimgAlt', $configuration)):
+      // class configuration
+      $myConfig = $configuration['prefix_WPimgAlt'];
+      // update vars
+      SELF::$WPimgAlt_content = array_key_exists('WPimgAlt_content', $myConfig) ? $myConfig['WPimgAlt_content'] : SELF::$WPimgAlt_content;
+      SELF::$WPimgAlt_attachment = array_key_exists('WPimgAlt_attachment', $myConfig) ? $myConfig['WPimgAlt_attachment'] : SELF::$WPimgAlt_attachment;
+      SELF::$WPimgAlt_shortcode = array_key_exists('WPimgAlt_shortcode', $myConfig) ? $myConfig['WPimgAlt_shortcode'] : SELF::$WPimgAlt_shortcode;
+      SELF::$WPimgAlt_languages = array_key_exists('WPimgAlt_languages', $myConfig) ? $myConfig['WPimgAlt_languages'] : SELF::$WPimgAlt_languages;
     endif;
   }
 

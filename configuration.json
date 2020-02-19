@@ -1,26 +1,12 @@
 {
-  "general": {
-    "container": true,
-    "gutenberg": true,
-    "google_fonts": {
-      "0": "Roboto"
-    },
-    "coloring": "light",
-    "placeholder": {
-      "active": true,
-      "address": true,
-      "notification": "",
-      "custom": ""
-    },
-    "address": {
-      "company": "Company",
-      "street": "Street",
-      "street2": "Street 2",
-      "postalCode": "Postal Code",
-      "city": "City",
-      "phone": "0041",
-      "mobile": "0041 2",
-      "email": "info@dmili.com"
+  "prefix_WPimgAlt": {
+    "WPimgAlt_content": true,
+    "WPimgAlt_attachment": true,
+    "WPimgAlt_shortcode": true,
+    "WPimgAlt_languages": {
+      "0": "de",
+      "1": "en",
+      "2": "fr"
     }
   }
 }

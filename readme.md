@@ -12,7 +12,7 @@ Copy main files (configuration.php, configuration.json) to your template and inc
 ```php
 require('config/configuration.php');
 ```
-Select all classes you want to run init settings inside configuration.php on line 84. (classes with core_ do not have a init)
+Select all classes you want to run init settings inside configuration.php on line 80. (classes with core_ do not have a init)
 ```php
 $runClasses = array('WPimg', 'WPimgAlt');
 ```

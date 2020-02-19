@@ -21,6 +21,9 @@ Table of Contents:
   1.3 REGISTER ALL THE CLASSES
   1.4 RUN CLASSES INIT
   1.5 DEBUGING
+2.0 RUN FUNCTIONS
+  2.1 CONFIGURATION
+  2.1 DEBUGING
 =======================================================*/
 
 
@@ -41,7 +44,7 @@ Table of Contents:
 
   /* 1.2 CALL CONFIGURATION FILE
   /------------------------*/
-  function dmili_JSON_as_Global(){
+  function prefix_JSON_as_Global(){
     // get file
     $configuration_file = get_stylesheet_directory() . '/config/configuration.json';
     // check if file exists or empty
@@ -59,33 +62,27 @@ Table of Contents:
     endif;
   }
 
-  // Check if WP is installed else run global function
-  if (function_exists('add_action')):
-    add_action( 'init', 'dmili_JSON_as_Global', 1 );
-  else:
-    dmili_JSON_as_Global();
-  endif;
-
 
   /* 1.3 REGISTER ALL THE CLASSES
   /------------------------*/
-  function dmili_registerFunction($class) {
+  function prefix_registerFunction($class) {
     if ( 0 !== strpos( $class, 'prefix_' ) ) {
         return;
     }
     require_once("classes/$class/class.$class.php");
   }
-  spl_autoload_register('dmili_registerFunction');
 
 
   /* 1.4 RUN CLASSES INIT
   /------------------------*/
-  // selection
-  $runClasses = array();
-  // init classes
-  foreach ($runClasses as $key => $class) {
-    $class_name = "prefix_" . $class;
-    $$class = new  $class_name();
+  function prefix_RunClassesInit(){
+    // selection
+    $runClasses = array();
+    // init classes
+    foreach ($runClasses as $key => $class) {
+      $class_name = "prefix_" . $class;
+      $$class = new  $class_name();
+    }
   }
 
 
@@ -109,9 +106,37 @@ Table of Contents:
       echo $output;
     }
   }
-  // Check if WP is installed else run global function
+
+
+  /*==================================================================================
+    2.0 RUN FUNCTIONS
+  ==================================================================================*/
+
+  /* 2.1 CONFIGURATION
+  /------------------------*/
+  if (function_exists('add_action')):
+    // set global
+    add_action( 'init', 'prefix_JSON_as_Global' );
+    // register
+    add_action( 'init', function(){
+      spl_autoload_register('prefix_registerFunction');
+    } );
+    // register
+    add_action( 'init', 'prefix_RunClassesInit' );
+  else:
+    // set global
+    prefix_JSON_as_Global();
+    // register
+    spl_autoload_register('prefix_registerFunction');
+    // run classes init
+    prefix_RunClassesInit();
+  endif;
+
+
+  /* 2.2 DEBUGING
+  /------------------------*/
   if ($debug && function_exists('add_action')):
-    add_action( 'init', 'classesDebug', 10 );
+    add_action( 'init', 'classesDebug' );
   elseif($debug):
     classesDebug();
   endif;

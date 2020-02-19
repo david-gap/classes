@@ -9,8 +9,21 @@ Custom class "WPimgAlt" adding custom fields for each language to WP media and i
 * $WPimgAlt_languages: List of Languages, first one is default
 * $WPimgAlt_prefix: Prefix for variables
 
-## USAGE
+## CONFIGURATION FILE
+```
+"prefix_WPimgAlt": {
+  "WPimgAlt_content": true,
+  "WPimgAlt_attachment": true,
+  "WPimgAlt_shortcode": true,
+  "WPimgAlt_languages": {
+    "0": "de",
+    "1": "en",
+    "2": "fr"
+  }
+}
+```
 
+## USAGE
 You can insert the alternative text by inserting the static function into the alt attribute like this:
 (You only need the img ID)
 ```
