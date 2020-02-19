@@ -5,10 +5,10 @@
  * PHP Mailer
  * https://github.com/david-gap/classes
  * Author: David Voglgsang
- * @version     1.0.1
+ * @version     1.0.2
  */
 
- class prefix_Mail {
+ class prefix_core_Mail {
 
   /* DEFAULT SETTINGS
   /===================================================== */

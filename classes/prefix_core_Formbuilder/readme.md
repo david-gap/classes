@@ -1,4 +1,4 @@
-**Version 1.0.1** (31.01.2020)
+**Version 1.0.2** (19.02.2020)
 
 Custom class "Formbuilder": Build a formular simply by creating a array and inserting it into a new class season.
 
@@ -36,7 +36,7 @@ array(
 * return the formular with your arguments and if needed a prefix for form and inputs
 ```php
 // without prefix
-echo prefix_Formbuilder::FormBuilder($args;
+echo prefix_core_Formbuilder::FormBuilder($args;
 // with prefix
-echo prefix_Formbuilder::FormBuilder($args, "prefix");
+echo prefix_core_Formbuilder::FormBuilder($args, "prefix");
 ```

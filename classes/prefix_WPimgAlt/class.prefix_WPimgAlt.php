@@ -9,7 +9,7 @@
  *
 */
 
-class prefix_WPimgAlt extends prefix_BaseFunctions {
+class prefix_WPimgAlt extends prefix_core_BaseFunctions {
 
   /* CONFIGURATION
   /===================================================== */

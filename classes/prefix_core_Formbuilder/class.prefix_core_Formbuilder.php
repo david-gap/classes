@@ -5,10 +5,10 @@
  * Form Builder
  * https://github.com/david-gap/classes
  * Author: David Voglgsang
- * @version     1.0.1
+ * @version     1.0.2
  */
 
-class prefix_Formbuilder extends prefix_BaseFunctions {
+class prefix_core_Formbuilder extends prefix_core_BaseFunctions {
 
   /* INIT FUNCTIONS
   /===================================================== */

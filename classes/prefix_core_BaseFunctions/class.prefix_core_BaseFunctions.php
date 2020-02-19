@@ -8,7 +8,7 @@
  *
  */
 
-class prefix_BaseFunctions {
+class prefix_core_BaseFunctions {
 
   /* FOR DEVELOPMENT
   /===================================================== */

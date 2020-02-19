@@ -1,11 +1,11 @@
-**Version 1.0.1** (31.01.2020)
+**Version 1.0.2** (19.02.2020)
 
 Custom class "Mail" creates a mail content and send it.
 
 ## USAGE
 * Build a new Mail
 ```php
-$mail = new prefix_Mail();
+$mail = new prefix_core_Mail();
 ```
 * Mail configuration
 ```php
