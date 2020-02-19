@@ -6,7 +6,7 @@
  * Additional functions for WP Media
  * https://github.com/david-gap/classes
  * Author:      David Voglgsang
- * @version     1.2.2
+ * @version     1.2.4
  *
  * Change the $assets to false if you use your own backend.js and ajax file
  */
@@ -422,7 +422,7 @@ class prefix_WPimg {
   public static function getContentIMG(string $attr = ''){
     $output = '';
     $additional = '';
-    $css = '';
+    $css = SELF::$WPimg_js_loading ? 'lazy-content-img' : '';
     // fallback for content img
     if($attr !== ''):
       $attr_array = explode(" ", $attr);

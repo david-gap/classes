@@ -2,7 +2,7 @@
  * javascript/jQuery functions for WPimg Class
  *
  * @author      David Voglgsang
- * @version     1.2.3
+ * @version     1.2.4
  *
  */
 
@@ -103,6 +103,17 @@ jQuery(function ($) {
               container: '.lazy-img[data-id="' + id + '"]'
             };
         WPimg_ajaxCall(data);
+      }
+    });
+    // fallback for content images
+    $( ".lazy-content-img" ).each(function() {
+      if ($(this).isOnScreen()) {
+        var srcset = $(this).attr('srcset');
+        if (!srcset){
+          var src = $(this).attr('data-src');
+          $(this).attr("src", src);
+        }
+        $(this).removeClass("lazy-content-img");
       }
     });
   }
