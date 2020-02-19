@@ -1,4 +1,4 @@
-**Version 1.2.4** (19.02.2020)
+**Version 1.3** (19.02.2020)
 
 Custom class "WPimg" adding custom field with img dominant color for lazy loading. Gallery option (grid/swiper).
 
@@ -10,6 +10,24 @@ Custom class "WPimg" adding custom field with img dominant color for lazy loadin
 * $WPimg_popupContent: On klick open media in a lightbox
 * $nocolor_files: exclude file types from dominant color generator
 * $WPimg_defaultcolor: default color
+
+## CONFIGURATION FILE
+```
+"prefix_WPimg": {
+  "WPimg_content": true,
+  "WPimg_assets": true,
+  "WPimg_js_loading": true,
+  "WPimg_parent_element": "div",
+  "WPimg_popupContent": false,
+  "WPimg_nocolor_files": {
+    "0": "video/mp4",
+    "1": "video/quicktime",
+    "2": "video/videopress",
+    "3": "audio/mpeg"
+  },
+  "WPimg_defaultcolor": "ffffff"
+}
+```
 
 ## USAGE
 
@@ -25,6 +43,7 @@ echo prefix_WPimg::getIMG($img_id, "", "custom-css");
 ```
 
 To build a gallery use the shortcode [gallery] and select the IDs and template.
+
 ### Shortcode attribute
 * post_type: default "attachment"
 * post_status: default "publish"

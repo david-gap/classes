@@ -1,4 +1,18 @@
 {
+  "prefix_WPimg": {
+    "WPimg_content": true,
+    "WPimg_assets": true,
+    "WPimg_js_loading": true,
+    "WPimg_parent_element": "div",
+    "WPimg_popupContent": false,
+    "WPimg_nocolor_files": {
+      "0": "video/mp4",
+      "1": "video/quicktime",
+      "2": "video/videopress",
+      "3": "audio/mpeg"
+    },
+    "WPimg_defaultcolor": "ffffff"
+  },
   "prefix_WPimgAlt": {
     "WPimgAlt_content": true,
     "WPimgAlt_attachment": true,
