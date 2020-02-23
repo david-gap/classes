@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.0
+ * @version     1.0.1
  *
 */
 
@@ -48,17 +48,17 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
       * @param static string $WPinit_css_path: theme styling path (theme is root)
       * @param static bool $WPinit_js: activate theme js
       * @param static string $WPinit_js_path: theme js path (theme is root)
-      * @param static bool $WPinit_gutenberg_jquery: activate jquery
+      * @param static bool $WPinit_jquery: activate jquery
     */
     static $WPinit_gutenberg        = true;
     static $WPinit_gutenberg_css    = true;
-    static $WPinit_support          = array("title-tag", "menus", "html5");
+    static $WPinit_support          = array("title-tag", "menus", "html5", "post-thumbnails");
     static $WPinit_google_fonts     = array("Roboto");
     static $WPinit_css              = true;
     static $WPinit_css_path         = "/dist/style.min.css";
     static $WPinit_js               = true;
     static $WPinit_js_path          = "/dist/script.min.js";
-    static $WPinit_gutenberg_jquery = true;
+    static $WPinit_jquery = true;
 
 
     /* 1.2 ON LOAD RUN
@@ -67,7 +67,7 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
       // update default vars with configuration file
       SELF::updateVars();
       // clean wp head
-      add_action('after_setup_theme', array( $this, 'wp_headcleanup' ));
+      add_action('wp_head', array( $this, 'WPinit_headcleanup' ), 1);
       // clean WP head
       add_action( 'admin_head', array( $this, 'wp_onlyadmin_update' ), 1 );
       // template translation files
@@ -77,9 +77,9 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
       // thumbnail dimensions
       add_filter( 'post_thumbnail_html', array( $this, 'wp_remove_thumbnail_dimensions' ), 10, 3);
       // frontend css/js files
-      add_action('wp_enqueue_scripts', array( $this, 'wp_enqueue' ));
+      add_action('wp_enqueue_scripts', array( $this, 'WPinit_enqueue' ));
       // add theme support
-      add_action( 'after_setup_theme', array( $this, 'theme_support' ));
+      SELF::theme_support();
       // add google fonts
       add_action( 'wp_footer', array( $this, 'GoogleFonts' ) );
     }
@@ -118,14 +118,14 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
         SELF::$WPinit_css_path = array_key_exists('csspath', $myConfig) ? $myConfig['csspath'] : SELF::$WPinit_css_path;
         SELF::$WPinit_js = array_key_exists('js', $myConfig) ? $myConfig['js'] : SELF::$WPinit_js;
         SELF::$WPinit_js_path = array_key_exists('jspath', $myConfig) ? $myConfig['jspath'] : SELF::$WPinit_js_path;
-        SELF::$WPinit_gutenberg_jquery = array_key_exists('jquery', $myConfig) ? $myConfig['jquery'] : SELF::$WPinit_gutenberg_jquery;
+        SELF::$WPinit_jquery = array_key_exists('jquery', $myConfig) ? $myConfig['jquery'] : SELF::$WPinit_jquery;
       endif;
     }
 
     /* 2.2 HEADER CLEANUP
     /------------------------*/
     // remove unused stuff from wp_head()
-    function wp_headcleanup () {
+    public function WPinit_headcleanup () {
       // remove the generator meta tag
       remove_action('wp_head', 'wp_generator', 10);
       // remove wlwmanifest link
@@ -164,24 +164,24 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
     /------------------------*/
     // enqueues scripts and styles (optional typekit embed)
     // >> https://developer.wordpress.org/reference/functions/wp_enqueue_script/
-    function wp_enqueue() {
+    function WPinit_enqueue() {
       // jQuery (from wp core)
-      if (!SELF::$WPinit_gutenberg_jquery):
+      if (SELF::$WPinit_jquery !== false):
         wp_deregister_script( 'jquery' );
         wp_register_script('jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js', false, '3.3.1');
         wp_enqueue_script( 'jquery' );
       endif;
       // scripts
-      if (!SELF::$WPinit_js):
+      if (SELF::$WPinit_js !== false):
         wp_register_script('theme/scripts', get_stylesheet_directory_uri() . SELF::$WPinit_js_path, false, array( 'jquery' ), true);
         wp_enqueue_script('theme/scripts');
       endif;
       // disable Gutenberg block styles
-      if (!SELF::$WPinit_gutenberg_css) :
+      if (SELF::$WPinit_gutenberg_css !== false) :
         wp_dequeue_style( 'wp-block-library' );
       endif;
       // styles
-      if (!SELF::$WPinit_css):
+      if (SELF::$WPinit_css !== false):
         wp_enqueue_style('theme/styles', get_stylesheet_directory_uri() . SELF::$WPinit_css_path, false, null);
       endif;
     }
@@ -189,7 +189,7 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
 
     /* 2.5 EMBED GOOGLE FONTS
     /------------------------*/
-    public static function GoogleFonts(){
+    function GoogleFonts(){
       if(SELF::$WPinit_google_fonts):
         // embed start
         $output = '<link href="https://fonts.googleapis.com/css?family=';
@@ -216,7 +216,7 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
     /------------------------*/
     function DisableGutenberg(){
       // check if gutenberg is disabled
-      if(SELF::$WPinit_gutenberg == true):
+      if(SELF::$WPinit_gutenberg !== true):
         // disable for posts
         add_filter('use_block_editor_for_post', '__return_false', 10);
         // disable for post types
@@ -237,9 +237,11 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
     /* 2.8 THEME SUPPORT
     /------------------------*/
     function theme_support()  {
-      foreach (SELF::$WPinit_support as $key => $value) {
-        add_theme_support($value);
-      }
+      if(SELF::$WPinit_support):
+        foreach (SELF::$WPinit_support as $key => $value) {
+          add_theme_support($value);
+        }
+      endif;
     }
 
 
