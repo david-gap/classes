@@ -8,7 +8,7 @@
  * • include all php classes
  *
  * @author      David Voglgsang
- * @version     1.0
+ * @version     1.0.1
  *
 */
 
@@ -120,7 +120,7 @@ Table of Contents:
     // register
     add_action( 'init', function(){
       spl_autoload_register('prefix_registerFunction');
-    } );
+    }, 1 );
     // register
     add_action( 'init', 'prefix_RunClassesInit' );
   else:
