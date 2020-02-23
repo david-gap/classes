@@ -1,0 +1,70 @@
+/**
+ * WPnews CSS File
+ *
+ * @author         David Voglgsang
+ * @version        1.0
+ * rem dimention   20px
+ *
+ */
+
+
+/*==================================================================================
+  VARS
+==================================================================================*/
+$news__block_width: 300px;
+$news__label_bg: #ce0909;
+$news__label_color: #FFFFFF;
+$news__div_bg: #000;
+$news__div_color: #FFFFFF;
+
+
+ /*==================================================================================
+   FUNCTIONS
+ ==================================================================================*/
+
+
+
+/*==================================================================================
+  GLOBAL
+==================================================================================*/
+.news-block {
+  max-width: $news__block_width;
+  width: 100%;
+  &.active {
+    > div {
+      opacity: 1;
+      height: auto;
+    }
+  }
+  label {
+    display: block;
+    padding: 7px 10px;
+    background-color: $news__label_bg;
+    color: $news__label_color;
+    font-size: 150%;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-align: center;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: 1px solid $news__label_bg;
+    transition: .3s;
+    opacity: .7;
+    &:hover {
+      opacity: 1;
+    }
+  }
+  > div {
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    transition: .3s;
+    background-color: $news__div_bg;
+    color: $news__div_color;
+    padding: 7px 10px;
+    font-size: 120%;
+    h5 {
+      font-size: 130%;
+    }
+  }
+}

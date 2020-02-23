@@ -1,4 +1,9 @@
 {
+  "WPnews": {
+    "block_label": "News",
+    "block_max": -1,
+    "detailpage": true
+  },
   "prefix_WPimg": {
     "WPimg_content": true,
     "WPimg_assets": true,
