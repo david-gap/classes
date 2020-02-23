@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.0
+ * @version     1.0.1
  *
 */
 
@@ -179,21 +179,24 @@ class prefix_WPnews extends prefix_core_BaseFunctions {
       $config = shortcode_atts( array(
         'id' => '-1'
       ), $atts );
-
-      $args = array(
-        'post_type'=>'news',
-        'post_status'=>'publish',
-        'posts_per_page'=> SELF::$WPnews_block_max
-      );
-      $news_query = new WP_Query( $args );
       // create array with all ids
       $ids = array();
-      if ( $news_query->have_posts() ) :
-        while ( $news_query->have_posts() ) : $news_query->the_post();
-            $ids[] += get_the_ID();
-        endwhile;
-        // reset query
-        wp_reset_postdata();
+      if($config['id'] == "-1"):
+        // wp query
+        $args = array(
+          'post_type'=>'news',
+          'post_status'=>'publish',
+          'posts_per_page'=> SELF::$WPnews_block_max
+        );
+        $news_query = new WP_Query( $args );
+        // get ids from WP query
+        if ( $news_query->have_posts() ) :
+          while ( $news_query->have_posts() ) : $news_query->the_post();
+              $ids[] += get_the_ID();
+          endwhile;
+          // reset query
+          wp_reset_postdata();
+        endif;
       else:
         $ids = PARENT::AttrToArray($config['id']);
       endif;
