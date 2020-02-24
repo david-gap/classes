@@ -4,14 +4,15 @@
  *
  * Base dev functions - parent for all custom classes
  * Author:      David Voglgsnag
- * @version     1.0
+ * @version     1.1
  *
  */
 
 class prefix_core_BaseFunctions {
 
-  /* FOR DEVELOPMENT
-  /===================================================== */
+  /*==================================================================================
+    1.0 FOR DEVELOPMENT
+  ==================================================================================*/
 
   /* ABSOLUTE FILE EXISTS
   /------------------------*/
@@ -135,9 +136,42 @@ class prefix_core_BaseFunctions {
   }
 
 
+  /* COPY FOLDER CONTENT AND SUB FOLDERS
+  /------------------------*/
+  /**
+    * copy intanet res to intranet folder
+    * @param string $src: source directory
+    * @param string $dst: destination directory
+    * @param int $mode: folder settings
+  */
+  function copyDirectory($src, $dst, $mode){
+    // open the source directory
+    $dir = opendir($src);
+    // Make the destination directory if not exist
+    @mkdir($dst);
+    chmod($dst, $mode);
+    // Loop through the files in source directory
+    while( $file = readdir($dir) ) {
+        if (( $file != '.' ) && ( $file != '..' )) {
+            if ( is_dir($src . '/' . $file) )
+            {
+                // Recursively calling custom copy function
+                // for sub directory
+                SELF::copyDirectory($src . '/' . $file, $dst . '/' . $file);
+            }
+            else {
+                copy($src . '/' . $file, $dst . '/' . $file);
+            }
+        }
+    }
+    closedir($dir);
+  }
 
-  /* FOR FORMULARS
-  /===================================================== */
+
+
+  /*==================================================================================
+    2.0 FOR FORMULARS
+  ==================================================================================*/
 
   /* GET POST
   /------------------------*/
@@ -195,8 +229,9 @@ class prefix_core_BaseFunctions {
 
 
 
-  /* FOR WORDPRESS
-  /===================================================== */
+  /*==================================================================================
+    3.0 FOR WORDPRESS
+  ==================================================================================*/
 
   /* GET CURRENT LANGUAGE
   /------------------------*/
@@ -216,6 +251,94 @@ class prefix_core_BaseFunctions {
       // LANGUAGE FALLBACK
        return substr(get_locale(), 0, 2);
     }
+  }
+
+
+  /* ADD USER ROLE
+  /------------------------*/
+  /**
+  * get WP login formular
+  * @param bool $name: User role name and slug
+  * @param bool $editor: activate/disable default editing
+  * @param bool $user_args: add or rewrite user role access
+  */
+  function setWProle(string $name = "", bool $editor = false, $user_args = array()){
+    // merge given with default settings
+    $defaults = array(
+      'read' => $editor, // true allows this capability
+      'edit_posts' => $editor, // Allows user to edit their own posts
+      'edit_pages' => $editor, // Allows user to edit pages
+      'edit_others_posts' => $editor, // Allows user to edit others posts not just their own
+      'create_posts' => $editor, // Allows user to create new posts
+      'manage_categories' => $editor, // Allows user to manage post categories
+      'publish_posts' => $editor, // Allows the user to publish, otherwise posts stays in draft mode
+      'edit_themes' => $editor, // false denies this capability. User can’t edit your theme
+      'install_plugins' => $editor, // User cant add new plugins
+      'update_plugin' => $editor, // User can’t update any plugins
+      'update_core' => $editor // user cant perform core updates
+    );
+    $config = array_merge($defaults, $user_args);
+    // remove space from role name
+    if($name !== ""):
+      $role = str_replace(' ', '', $name);
+      // create role
+      $result = add_role(
+        $role,
+        __($name, 'WP User'),
+        $config
+      );
+    endif;
+  }
+
+
+  /* LOGIN FORMULAR
+  /------------------------*/
+  /**
+  * get WP login formular
+  * @param bool $redirect: redirect url
+  * @return string login formular
+  */
+  public function WPLoginForm(string $redirect = "") {
+    // vars
+    $output = '';
+
+    $output .= '<div class="login-area">';
+        if($_GET['login'] == "logged_out"){
+          $output .= '<p class="login-message login_success">';
+            $output .= __('You have been logged out successfully', 'WP Login');
+          $output .= '</p>';
+        }
+        $output .= '<h3>' . __( 'Login', 'WP Login' ) . '</h3>';
+        $output .= '<p class="desc">' . __( 'Please enter your user data to login', 'WP Login' ) . '</p>';
+        // login form configuration
+        $args = array(
+          'echo'           => false,
+          'remember'       => false,
+          'redirect'       => $redirect !== '' ? $redirect : ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
+          'form_id'        => 'loginform',
+          'id_username'    => 'user_login',
+          'id_password'    => 'user_pass',
+          'id_remember'    => 'rememberme',
+          'id_submit'      => 'wp-submit',
+          'label_username' => __( 'Username', 'WP Login' ),
+          'label_password' => __( 'Password', 'WP Login' ),
+          'label_remember' => __( 'Remember Me', 'WP Login' ),
+          'label_log_in'   => __( 'Log In', 'WP Login' ),
+          'value_username' => '',
+          'value_remember' => false
+        );
+        // login form
+        $output .= wp_login_form( $args );
+        // error message if login has failed
+        if($_GET['login'] == "failed"){
+          $output .= '<p class="login-message login_error">';
+            $output .= __('Username and/or password is wrong', 'WP Login');
+          $output .= '</p>';
+        }
+        $output .= '<a href="' . wp_lostpassword_url() . '">' . __( 'Lost Password?', 'WP Login' ) . '</a>';
+    $output .= '</div>';
+
+    return $output;
   }
 
 
