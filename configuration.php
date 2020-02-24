@@ -8,7 +8,7 @@
  * • include all php classes
  *
  * @author      David Voglgsang
- * @version     1.0.1
+ * @version     1.0.2
  *
 */
 
@@ -77,7 +77,16 @@ Table of Contents:
   /------------------------*/
   function prefix_RunClassesInit(){
     // selection
-    $runClasses = array();
+    $runClasses = array(
+      "template",
+      "WPimg",
+      "WPimgAlt",
+      "WPinit",
+      "WPintranet",
+      "WPmenu",
+      "WPnews",
+      "WPseo"
+    );
     // init classes
     foreach ($runClasses as $key => $class) {
       $class_name = "prefix_" . $class;

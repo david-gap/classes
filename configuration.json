@@ -1,5 +1,133 @@
 {
+  "wp": {
+    "gutenberg": true,
+    "gutenberg_css": true,
+    "support": {
+      "0": "title-tag",
+      "1": "menus",
+      "2": "html5"
+    },
+    "google_fonts": {
+      "0": "Roboto"
+    },
+    "css" : true,
+    "csspath" : "/dist/style.min.css",
+    "js" : true,
+    "jspath" : "/dist/script.min.js",
+    "jquery" : true
+  },
+  "general": {
+    "container": true,
+    "coloring": "light",
+    "placeholder": {
+      "active": true,
+      "address": true,
+      "custom": ""
+    },
+    "address": {
+      "company": "Company",
+      "street": "Street",
+      "street2": "Street 2",
+      "postalCode": "Postal Code",
+      "country": "Country",
+      "city": "City",
+      "phone": "0041",
+      "mobile": "0041 2",
+      "email": "info@dmili.com"
+    },
+    "contactblock": {
+      "phone": "",
+      "mail": "",
+      "whatsapp": ""
+    },
+    "socialmedia": {
+      "facebook": "",
+      "instagram": ""
+    }
+  },
+  "header": {
+    "sort": {
+      "logo": true,
+      "menu": true,
+      "socialmedia": true,
+      "custom": false
+    },
+    "logo_desktop": {
+      "img": "",
+      "width": "",
+      "height": ""
+    },
+    "logo_mobile": {
+      "img": "",
+      "width": "",
+      "height": ""
+    },
+    "divider": true,
+    "sticky": true,
+    "desktop_menu": false,
+    "custom": ""
+  },
+  "footer": {
+    "active": true,
+    "copyright": "Copyright © DMili 2020",
+    "custom": "<div>custom</div>",
+    "sort": {
+      "menu": true,
+      "socialmedia": true,
+      "copyright": true,
+      "address": true,
+      "custom": false
+    }
+  },
+  "seo": {
+    "logo": "",
+    "google-tracking": "",
+    "favicon": "",
+    "apple-touch-icon": "",
+    "apple-touch-icon-72": "",
+    "apple-touch-icon-114": "",
+    "data-structure": true,
+    "data-structure-add": {
+      "type": "Website"
+    },
+    "address": {
+      "company": "Company",
+      "street": "Street",
+      "street2": "Street 2",
+      "postalCode": "Postal Code",
+      "country": "Country",
+      "city": "City",
+      "phone": "0041",
+      "mobile": "0041 2",
+      "email": "info@dmili.com"
+    }
+  },
+  "WPmenu": {
+    "menus": {
+      "mainmenu" => "Main Menu",
+      "footermenu" => "Footer Menu"
+    }
+  },
+  "WPintranet": {
+    "roles": "intranet",
+    "root": "ABSPATH",
+    "mode": 0777,
+    "directory": "intranet",
+    "folders": {
+      "0": "Folder 1",
+      "1": "Folder 2",
+      "2": "Folder 3"
+    },
+  },
   "WPnews": {
+    "label": "News",
+    "rewrite": "news",
+    "icon": "dashicons-testimonial",
+    "support": {
+      "0": "title",
+      "1": "editor",
+      "2": "thumbnail"
+    },
     "block_label": "News",
     "block_max": -1,
     "detailpage": true
