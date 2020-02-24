@@ -5,7 +5,7 @@
  * Intranet
  * https://github.com/david-gap/classes
  * Author: David Voglgsang
- * @version     1.1
+ * @version     1.1.1
  *
  * Class running with http://www.directorylister.com
 */
@@ -43,16 +43,20 @@ class prefix_WPintranet extends prefix_core_BaseFunctions {
   /**
     * default vars
     * @param string/array $WPintranet_roles: define wp roles. if it is a string and folder access is by role, add folderaccess to array
+    * @param bool $WPintranet_editor: basic access for WP
+    * @param array $WPintranet_roles_arg: add access slugs
     * @param string $WPintranet_root: root directory
     * @param static $WPintranet_mode: folder settings
     * @param static $WPintranet_directory: main directory
     * @param static $WPintranet_folders: folders to create inside the main directory
   */
-  static $WPintranet_roles = 'intranet';
-  static $WPintranet_root = ABSPATH;
-  static $WPintranet_mode = 0777;
+  static $WPintranet_roles     = 'intranet';
+  static $WPintranet_editor    = false;
+  static $WPintranet_roles_arg = array();
+  static $WPintranet_root      = ABSPATH;
+  static $WPintranet_mode      = 0777;
   static $WPintranet_directory = 'intranet';
-  static $WPintranet_folders = array('Folder 1', 'Folder 2', 'Folder 3');
+  static $WPintranet_folders   = array('Folder 1', 'Folder 2', 'Folder 3');
 
 
   /* 1.2 ON LOAD RUN
@@ -138,6 +142,8 @@ class prefix_WPintranet extends prefix_core_BaseFunctions {
         $myConfig = $configuration['WPintranet'];
         // update vars
         SELF::$WPintranet_roles = array_key_exists('roles', $myConfig) ? $myConfig['roles'] : SELF::$WPintranet_roles;
+        SELF::$WPintranet_editor = array_key_exists('editor', $myConfig) ? $myConfig['editor'] : SELF::$WPintranet_editor;
+        SELF::$WPintranet_roles_arg = array_key_exists('access', $myConfig) ? $myConfig['access'] : SELF::$WPintranet_roles_arg;
         SELF::$WPintranet_root = array_key_exists('root', $myConfig) ? $myConfig['root'] : SELF::$WPintranet_root;
         SELF::$WPintranet_mode = array_key_exists('mode', $myConfig) ? $myConfig['mode'] : SELF::$WPintranet_mode;
         SELF::$WPintranet_directory = array_key_exists('directory', $myConfig) ? $myConfig['directory'] : SELF::$WPintranet_directory;
@@ -216,10 +222,10 @@ class prefix_WPintranet extends prefix_core_BaseFunctions {
       // check if string or array
       if( is_array(SELF::$WPintranet_roles) ):
         foreach (SELF::$WPintranet_roles as $role_name) {
-          PARENT::setWProle($role_name['name'], SELF::$WPintranet_roles_arg);
+          PARENT::setWProle($role_name['name'], SELF::$WPintranet_editor, SELF::$WPintranet_roles_arg);
         }
       else:
-        PARENT::setWProle(SELF::$WPintranet_roles, SELF::$WPintranet_roles_arg);
+        PARENT::setWProle(SELF::$WPintranet_roles, SELF::$WPintranet_editor, SELF::$WPintranet_roles_arg);
       endif;
     }
 
