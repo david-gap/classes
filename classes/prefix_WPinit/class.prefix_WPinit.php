@@ -18,7 +18,7 @@ Table of Contents:
   1.2 ON LOAD RUN
   1.3 BACKEND ARRAY
 2.0 FUNCTIONS
-  2.1 ACTIVATE CONTAINER CSS CLASS FOR HEADER/FOOTER
+  2.1 GET CONFIGURATION FORM CONFIG FILE
   2.2 HEADER CLEANUP
   2.3 RESET INLINE IMAGE DIMENSIONS (FOR CSS-SCALING OF IMAGES)
   2.4 ENQUEUE SCRIPTS/STYLES
@@ -100,7 +100,7 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
     2.0 FUNCTIONS
   ==================================================================================*/
 
-    /* 2.1 ACTIVATE CONTAINER CSS CLASS FOR HEADER/FOOTER
+    /* 2.1 GET CONFIGURATION FORM CONFIG FILE
     /------------------------*/
     private function updateVars(){
       // get configuration

@@ -1,4 +1,4 @@
-**Version 1.3** (19.02.2020)
+**Version 1.3.1** (24.02.2020)
 
 Custom class "WPimg" adding custom field with img dominant color for lazy loading. Gallery option (grid/swiper).
 

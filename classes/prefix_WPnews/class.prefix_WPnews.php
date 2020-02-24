@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.0.1
+ * @version     1.0.2
  *
 */
 
@@ -17,7 +17,7 @@ Table of Contents:
   1.3 BACKEND ARRAY
   1.4 CREATE CPT
 2.0 FUNCTIONS
-  2.1 ACTIVATE CONTAINER CSS CLASS FOR HEADER/FOOTER
+  2.1 GET CONFIGURATION FORM CONFIG FILE
   2.2 REDIRECT CPT TO HOME SITE
 3.0 OUTPUT
   3.1 SINGLE OUTPUT
@@ -35,10 +35,18 @@ class prefix_WPnews extends prefix_core_BaseFunctions {
     /------------------------*/
     /**
       * default vars (if configuration file is missing or broken)
+      * @param static string $WPnews_cpt_label: CPT Label
+      * @param static string $WPnews_cpt_rewrite: CPT rewrite
+      * @param static string $WPnews_cpt_icon: CPT backend icon
+      * @param static string $WPnews_cpt_support: CPT support
       * @param static string $WPnews_block_label: Label for block
       * @param static int $WPnews_block_max: max entries on block list
       * @param static bool $WPnews_detailpage: enable detail page for cpt
     */
+    static $WPnews_cpt_label    = 'Services';
+    static $WPnews_cpt_rewrite  = 'services';
+    static $WPnews_cpt_icon     = "dashicons-testimonial";
+    static $WPnews_cpt_support  = array( 'title', 'editor' );
     static $WPnews_block_label  = 'News';
     static $WPnews_block_max    = -1;
     static $WPnews_detailpage   = false;
@@ -48,7 +56,7 @@ class prefix_WPnews extends prefix_core_BaseFunctions {
     /------------------------*/
     public function __construct() {
       // update default vars with configuration file
-      SELF::updateVars();
+      SELF::updateVars()
       // register cpt and redirect pages
       add_action( 'init', array( $this, 'WPnews_register_cpt_news' ) );
       // redirect detail page
@@ -75,19 +83,19 @@ class prefix_WPnews extends prefix_core_BaseFunctions {
     /------------------------*/
     public function WPnews_register_cpt_news() {
       $labels = array(
-          'name' => __( 'News', 'WPNews' ),
+          'name' => __( SELF::$WPnews_cpt_label, 'WPNews' ),
       );
       $args = array(
           'labels' => $labels,
           'hierarchical' => true,
-          'description' => 'News',
+          'description' => SELF::$WPnews_cpt_label,
           'show_in_rest' => true,
-          'supports' => array( 'title', 'editor' ),
+          'supports' => SELF::$WPnews_cpt_support,
           'public' => true,
           'show_ui' => true,
           'show_in_menu' => true,
           'menu_position' => 5,
-          'menu_icon' => 'dashicons-testimonial',
+          'menu_icon' => SELF::$WPnews_cpt_icon,
           'show_in_nav_menus' => false,
           'publicly_queryable' => false,
           'exclude_from_search' => true,
@@ -102,7 +110,7 @@ class prefix_WPnews extends prefix_core_BaseFunctions {
         $args['has_archive'] = true;
         $args['publicly_queryable'] = true;
         $args['show_in_nav_menus'] = true;
-        $args['rewrite'] = true;
+        $args['rewrite'] = array('slug' => SELF::$WPnews_cpt_rewrite);
       endif;
       register_post_type( 'news', $args );
     }
@@ -113,7 +121,7 @@ class prefix_WPnews extends prefix_core_BaseFunctions {
     2.0 FUNCTIONS
   ==================================================================================*/
 
-    /* 2.1 ACTIVATE CONTAINER CSS CLASS FOR HEADER/FOOTER
+    /* 2.1 GET CONFIGURATION FORM CONFIG FILE
     /------------------------*/
     private function updateVars(){
       // get configuration
@@ -123,6 +131,10 @@ class prefix_WPnews extends prefix_core_BaseFunctions {
         // class configuration
         $myConfig = $configuration['WPnews'];
         // update vars
+        SELF::$WPnews_cpt_label = array_key_exists('label', $myConfig) ? $myConfig['label'] : SELF::$WPnews_cpt_label;
+        SELF::$WPnews_cpt_rewrite = array_key_exists('rewrite', $myConfig) ? $myConfig['rewrite'] : SELF::$WPnews_cpt_rewrite;
+        SELF::$WPnews_cpt_icon = array_key_exists('icon', $myConfig) ? $myConfig['icon'] : SELF::$WPnews_cpt_icon;
+        SELF::$WPServices_cpt_support = array_key_exists('support', $myConfig) ? $myConfig['support'] : SELF::$WPServices_cpt_support;
         SELF::$WPnews_block_label = array_key_exists('block_label', $myConfig) ? $myConfig['block_label'] : SELF::$WPnews_block_label;
         SELF::$WPnews_block_max = array_key_exists('block_max', $myConfig) ? $myConfig['block_max'] : SELF::$WPnews_block_max;
         SELF::$WPnews_detailpage = array_key_exists('detailpage', $myConfig) ? $myConfig['detailpage'] : SELF::$WPnews_detailpage;

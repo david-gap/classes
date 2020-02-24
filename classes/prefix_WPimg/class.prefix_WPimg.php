@@ -6,7 +6,7 @@
  * Additional functions for WP Media
  * https://github.com/david-gap/classes
  * Author:      David Voglgsang
- * @version     1.3
+ * @version     1.3.1
  *
  * Change the $assets to false if you use your own backend.js and ajax file
  */
@@ -19,7 +19,7 @@ Table of Contents:
   1.2 ON LOAD RUN
   1.3 BACKEND ARRAY
 2.0 FUNCTIONS
-  2.1 ACTIVATE CONTAINER CSS CLASS FOR HEADER/FOOTER
+  2.1 GET CONFIGURATION FORM CONFIG FILE
   2.2 ENQUEUE FRONTEND SCRIPTS/STYLES
   2.3 ENQUEUE BACKEND SCRIPTS/STYLES
   2.4 ADD CUSTOM FIELDS
@@ -108,7 +108,7 @@ class prefix_WPimg extends prefix_core_BaseFunctions {
     2.0 FUNCTIONS
   ==================================================================================*/
 
-    /* 2.1 ACTIVATE CONTAINER CSS CLASS FOR HEADER/FOOTER
+    /* 2.1 GET CONFIGURATION FORM CONFIG FILE
     /------------------------*/
     private function updateVars(){
       // get configuration

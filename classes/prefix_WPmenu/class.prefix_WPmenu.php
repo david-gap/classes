@@ -16,7 +16,7 @@ Table of Contents:
   1.2 ON LOAD RUN
   1.3 BACKEND ARRAY
 2.0 FUNCTIONS
-  2.1 ACTIVATE CONTAINER CSS CLASS FOR HEADER/FOOTER
+  2.1 GET CONFIGURATION FORM CONFIG FILE
   2.2 REGISTER MENUS
 3.0 OUTPUT
 =======================================================*/
@@ -65,7 +65,7 @@ class prefix_WPmenu extends prefix_core_BaseFunctions {
     2.0 FUNCTIONS
   ==================================================================================*/
 
-    /* 2.1 ACTIVATE CONTAINER CSS CLASS FOR HEADER/FOOTER
+    /* 2.1 GET CONFIGURATION FORM CONFIG FILE
     /------------------------*/
     private function updateVars(){
       // get configuration

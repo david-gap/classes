@@ -5,7 +5,7 @@
  * Wordpress - add custom fields for alt tag translations
  * https://github.com/david-gap/classes
  * Author: David Voglgsang
- * @version     1.1
+ * @version     1.1.1
  *
 */
 
@@ -17,7 +17,7 @@ Table of Contents:
   1.2 ON LOAD RUN
   1.3 BACKEND ARRAY
 2.0 FUNCTIONS
-  2.1 ACTIVATE CONTAINER CSS CLASS FOR HEADER/FOOTER
+  2.1 GET CONFIGURATION FORM CONFIG FILE
   2.2 ADD CUSTOM FIELDS
   2.3 SAVE METABOXES
   2.4 SAVE CUSTOM FIELDS
@@ -95,7 +95,7 @@ class prefix_WPimgAlt extends prefix_core_BaseFunctions {
     2.0 FUNCTIONS
   ==================================================================================*/
 
-    /* 2.1 ACTIVATE CONTAINER CSS CLASS FOR HEADER/FOOTER
+    /* 2.1 GET CONFIGURATION FORM CONFIG FILE
     /------------------------*/
     private function updateVars(){
       // get configuration
