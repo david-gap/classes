@@ -4,7 +4,7 @@
  *
  * Base dev functions - parent for all custom classes
  * Author:      David Voglgsnag
- * @version     1.1
+ * @version     1.2
  *
  */
 
@@ -165,6 +165,30 @@ class prefix_core_BaseFunctions {
         }
     }
     closedir($dir);
+  }
+
+
+  /* GET CONTENT FROM STRING BETWEEN TWO CHARS/CHAR GROUPS
+  /------------------------*/
+  /**
+    * copy intanet res to intranet folder
+    * @param string $string: content
+    * @param string $start: start parameter
+    * @param string $end: end parameter
+    * @return string between start and end
+  */
+  public static function getBetween(string $string = "", string $start = "", string $end = ""){
+    if (strpos($string, $start)):
+        $startCharCount = strpos($string, $start) + strlen($start);
+        $firstSubStr = substr($string, $startCharCount, strlen($string));
+        $endCharCount = strpos($firstSubStr, $end);
+        if ($endCharCount == 0):
+            $endCharCount = strlen($firstSubStr);
+        endif;
+        return substr($firstSubStr, 0, $endCharCount);
+    else:
+        return '';
+    endif;
   }
 
 
