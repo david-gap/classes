@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.0
+ * @version     1.0.1
  *
 */
 
@@ -71,15 +71,24 @@ class prefix_template extends prefix_core_BaseFunctions {
   static $template_ph_address      = true;
   static $template_ph_custom       = "";
   static $template_address         = array(
-    "company" => "",
-    "street" => "",
-    "street2" => "",
-    "postalCode" => "",
-    "country" => "",
-    "city" => "",
-    "phone" => "",
-    "mobile" => "",
-    "email" => ""
+    'company' => '',
+    'street' => '',
+    'street2' => '',
+    'postalCode' => '',
+    'city' => '',
+    'phone' => '',
+    'mobile' => '',
+    'email' => '',
+    'labels' => array(
+      'company' => '',
+      'street' => '',
+      'street2' => '',
+      'postalCode' => '',
+      'city' => '',
+      'phone' => '',
+      'mobile' => '',
+      'email' => ''
+    )
   );
   static $template_socialmedia     = array(
     "facebook" => "",
@@ -412,8 +421,24 @@ class prefix_template extends prefix_core_BaseFunctions {
           $output .= $config["postalCode"] !== '' && $config["city"] !== '' ? ' ' : '';
           $output .= $config["city"] !== '' ? '<span class="city">' . $config["labels"]["city"] . $config["city"] . '</span>' : '';
         $output .= $config["postalCode"] !== '' && $config["city"] !== '' ? '</span>' : '';
-        $output .= $config["phone"] !== '' ? '<a href="tel:' . str_replace(array('+', ' '), array('00', ''), $config["phone"]) . '" class="call phone_nr">' . $config["labels"]["phone"] . $config["phone"] . '</a>' : '';
-        $output .= $config["mobile"] !== '' ? '<a href="tel:' . str_replace(array('+', ' '), array('00', ''), $config["mobile"]) . '" class="call mobile_nr">' . $config["labels"]["mobile"] . $config["mobile"] . '</a>' : '';
+        if($config["phone"] !== ''):
+          $update_phone = str_replace(array('+', ' '), array('00', ''), $config["phone"]);
+          if(strpos($update_phone, '(') !== false):
+            $update_phone_l = substr($update_phone, 0, 1);
+            $phone_text_between = PARENT::getBetween($update_phone , "(", ")");
+            $clean_phone = $update_phone_l == "(" ? $phone_text_between . str_replace(array('(', ')'), array('', ''), $update_phone) : str_replace(array('(' . $phone_text_between . ')'), array(''), $update_phone);
+          endif;
+          $output .= '<a href="tel:' . $clean_phone . '" class="call phone_nr">' . $config["labels"]["phone"] . $config["phone"] . '</a>';
+        endif;
+        if($config["mobile"] !== ''):
+          $update_mobile = str_replace(array('+', ' '), array('00', ''), $config["mobile"]);
+          if(strpos($update_mobile, '(') !== false):
+            $update_mobile_l = substr($update_mobile, 0, 1);
+            $mobile_text_between = PARENT::getBetween($update_mobile , "(", ")");
+            $clean_mobile = $update_mobile_l == "(" ? $mobile_text_between . str_replace(array('(', ')'), array('', ''), $update_mobile) : str_replace(array('(' . $mobile_text_between . ')'), array(''), $update_mobile);
+          endif;
+          $output .= '<a href="tel:' . $clean_mobile . '" class="call mobile_nr">' . $config["labels"]["mobile"] . $config["mobile"] . '</a>';
+        endif;
         $output .= $config["email"] !== '' ? '<a href="mailto:' . $config["email"] . '" class="mail">' . $config["labels"]["email"] . $config["email"] . '</a>' : '';
       $output .= '</address>';
 

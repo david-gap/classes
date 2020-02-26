@@ -1,4 +1,4 @@
-**Version 1.0** (24.02.2020)
+**Version 1.0.1** (26.02.2020)
 
 Custom class "template" with teplate parts and header / footer builder
 
