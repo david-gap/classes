@@ -4,7 +4,7 @@
  *
  * Base dev functions - parent for all custom classes
  * Author:      David Voglgsnag
- * @version     1.2
+ * @version     1.3
  *
  */
 
@@ -312,6 +312,46 @@ class prefix_core_BaseFunctions {
         $config
       );
     endif;
+  }
+
+
+  /* ADD CUSTOM TAXONOMY
+  /------------------------*/
+  /**
+  * get WP login formular
+  * @param string $cpt: Post Type slug
+  * @param array $taxonomies: All informations to the taxonomies
+  * @param bool $user_args: add or rewrite user role access
+  * "taxanomies": {
+  *   "equipments": {
+  *     "label": "Equipments",
+  *     "hierarchical": true,
+  *     "query_var": true
+  *   }
+  * }
+  */
+  public function register_cpt_taxonomy(string $cpt = "post", array $taxonomies = array()) {
+    foreach ($taxonomies as $tax_key => $tax) {
+      // check if $tax ist not empty
+      if(!empty($tax)):
+        // insert tax args
+        $args = array(
+          'label' => __($tax["label"], 'WP Taxonomies'),
+          'hierarchical' => true,
+          'query_var' => true,
+          'show_in_rest' => true,
+          'rewrite' => array( 'slug' => $tax_key )
+        );
+        // custom settings
+        foreach ($tax as $key => $value) {
+          if($key == 'label' || $key == 'rewrite'):
+          else:
+            $args[$key] = $value;
+          endif;
+        }
+        register_taxonomy( $tax_key, $cpt, $args );
+      endif;
+    }
   }
 
 
