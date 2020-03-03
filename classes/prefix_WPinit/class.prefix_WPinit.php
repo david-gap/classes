@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.0.1
+ * @version     1.1
  *
 */
 
@@ -26,6 +26,7 @@ Table of Contents:
   2.6 DISABLE GUTENBERG
   2.7 HIDE CORE-UPDATES FOR NON-ADMINS
   2.8 THEME SUPPORT
+  2.9 BACKEND CONTROL
 3.0 OUTPUT
 =======================================================*/
 
@@ -49,6 +50,7 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
       * @param static bool $WPinit_js: activate theme js
       * @param static string $WPinit_js_path: theme js path (theme is root)
       * @param static bool $WPinit_jquery: activate jquery
+      * @param static array $WPinit_admin_menu: disable backend menus
     */
     static $WPinit_gutenberg        = true;
     static $WPinit_gutenberg_css    = true;
@@ -58,7 +60,8 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
     static $WPinit_css_path         = "/dist/style.min.css";
     static $WPinit_js               = true;
     static $WPinit_js_path          = "/dist/script.min.js";
-    static $WPinit_jquery = true;
+    static $WPinit_jquery           = true;
+    static $WPinit_admin_menu       = array();
 
 
     /* 1.2 ON LOAD RUN
@@ -74,6 +77,8 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
       load_theme_textdomain('DMili', get_template_directory() . '/languages');
       // disable gutenberg
       SELF::DisableGutenberg();
+      // disable admin menu
+      add_action( 'admin_menu', array( $this, 'Backend_remove_menus' ), 1 );
       // thumbnail dimensions
       add_filter( 'post_thumbnail_html', array( $this, 'wp_remove_thumbnail_dimensions' ), 10, 3);
       // frontend css/js files
@@ -119,6 +124,7 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
         SELF::$WPinit_js = array_key_exists('js', $myConfig) ? $myConfig['js'] : SELF::$WPinit_js;
         SELF::$WPinit_js_path = array_key_exists('jspath', $myConfig) ? $myConfig['jspath'] : SELF::$WPinit_js_path;
         SELF::$WPinit_jquery = array_key_exists('jquery', $myConfig) ? $myConfig['jquery'] : SELF::$WPinit_jquery;
+        SELF::$WPinit_admin_menu = array_key_exists('admin_menu', $myConfig) ? $myConfig['admin_menu'] : SELF::$WPinit_admin_menu;
       endif;
     }
 
@@ -242,6 +248,30 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
           add_theme_support($value);
         }
       endif;
+    }
+
+
+    /* 2.9 BACKEND CONTROL
+    /------------------------*/
+    /**
+    * Removes some menus by page.
+    */
+    function Backend_remove_menus(){
+      if(!empty(SELF::$WPinit_admin_menu)):
+        foreach (SELF::$WPinit_admin_menu as $key => $value) {
+          remove_menu_page( $value );
+        }
+      endif;
+      // index.php                  // Dashboard
+      // edit.php                   // Posts
+      // upload.php                 // Media
+      // edit.php?post_type=page    // Pages
+      // edit-comments.php          // Comments
+      // themes.php                 // Appearance
+      // plugins.php                // Plugins
+      // users.php                  // Users
+      // tools.php                  // Tools
+      // options-general.php        // Settings
     }
 
 
