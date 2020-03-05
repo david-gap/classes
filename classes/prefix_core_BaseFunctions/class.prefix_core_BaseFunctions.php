@@ -4,7 +4,7 @@
  *
  * Base dev functions - parent for all custom classes
  * Author:      David Voglgsnag
- * @version     1.5
+ * @version     1.5.1
  *
  */
 
@@ -14,41 +14,35 @@ class prefix_core_BaseFunctions {
     1.0 FOR DEVELOPMENT
   ==================================================================================*/
 
-  /* LOG FILE
+  /* FILE EXISTS
   /------------------------*/
   /**
-  * add text to log file
-  * @param string/array $content: content to write inside log file
-  * @param string $path: file path
-  * @param string $name: file name
+  * check if file exists - relative or absolute path
+  * @return bool true/false
   */
-  public static function LogFile($content = NULL, string $path = "", string $name = "log.txt"){
-    // file directory
-    $path = $path !== "" ? $path : $_SERVER['DOCUMENT_ROOT'] . "/log/";
-    // check if slash exists between path and name
-    $path = substr($path, -1) == "/" ? $path : $path . "/";
-    // create directory
-    SELF::CreateDirectory($path);
-    // file name
-    $filename = $path . $name;
-    // check if file/path exists
-    if(file_exists($filename)):
-      $mode = 'a';
+  public static function CheckFileExistence($url){
+    if(substr($url, 0, 4) === 'http'):
+      // absolute path
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL,$url);
+      curl_setopt($ch, CURLOPT_NOBODY, 1);
+      curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      if(curl_exec($ch)!==FALSE):
+          return true;
+      else:
+          return false;
+      endif;
     else:
-      $mode = 'w';
+      // relative path
+      if(file_exists($url) && filesize($url) > 0):
+          // return true;
+          return "existing";
+      else:
+          // return false;
+          return "not existing";
+      endif;
     endif;
-    // open file
-    $file = fopen($filename, $mode);
-    // add text to file
-    if(is_array($content)):
-      foreach ($content as $key => $value) {
-        fwrite($file, "\n" . date('Y-m-d H:i:s') . " - " . $value);
-      }
-    else:
-      fwrite($file, "\n" . date('Y-m-d H:i:s') . " - " . $content);
-    endif;
-    // close file
-    fclose($file);
   }
 
 
