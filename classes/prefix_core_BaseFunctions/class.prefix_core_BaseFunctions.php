@@ -4,7 +4,7 @@
  *
  * Base dev functions - parent for all custom classes
  * Author:      David Voglgsnag
- * @version     1.4
+ * @version     1.5
  *
  */
 
@@ -228,6 +228,30 @@ class prefix_core_BaseFunctions {
     else:
         return '';
     endif;
+  }
+
+
+  /* FIND KEY IN MULTIDIMENSIONAL ARRAY
+  /------------------------*/
+  /**
+    * @param string $searchterm: search for
+    * @param array $array: search inside
+    * @return bool true/false if found string in array
+  */
+  public static function MultidArraySearch(string $searchterm = "", array $array = array()) {
+    $found = false;
+    foreach ($array as $item) {
+    if ($item === $searchterm) {
+            $found = true;
+            break;
+        } elseif (is_array($item)) {
+            $found = SELF::MultidArraySearch($searchterm, $item);
+            if($found) {
+                break;
+            }
+        }
+    }
+    return $found;
   }
 
 
