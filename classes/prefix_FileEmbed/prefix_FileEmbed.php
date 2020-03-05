@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.0
+ * @version     1.1
  *
 */
 
@@ -92,10 +92,10 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
         // for each file
         foreach (SELF::$csv_Files as $file_key => $file) {
           // file path
-          $path       = $root . SELF::$main_directory . $file["file"];
+          $path       = substr($file["file"], 0, 4) === 'http' ? $file["file"] : $root . SELF::$main_directory . $file["file"];
           $path_parts = pathinfo($path);
           // check if file exists
-          if(file_exists($path) && filesize($path) > 0):
+          if(PARENT::CheckFileExistence($path)):
             // create global
             global $$file_key;
             // file configuration
