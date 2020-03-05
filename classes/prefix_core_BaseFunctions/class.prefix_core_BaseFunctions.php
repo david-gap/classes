@@ -4,7 +4,7 @@
  *
  * Base dev functions - parent for all custom classes
  * Author:      David Voglgsnag
- * @version     1.3
+ * @version     1.4
  *
  */
 
@@ -13,6 +13,44 @@ class prefix_core_BaseFunctions {
   /*==================================================================================
     1.0 FOR DEVELOPMENT
   ==================================================================================*/
+
+  /* LOG FILE
+  /------------------------*/
+  /**
+  * add text to log file
+  * @param string/array $content: content to write inside log file
+  * @param string $path: file path
+  * @param string $name: file name
+  */
+  public static function LogFile($content = NULL, string $path = "", string $name = "log.txt"){
+    // file directory
+    $path = $path !== "" ? $path : $_SERVER['DOCUMENT_ROOT'] . "/log/";
+    // check if slash exists between path and name
+    $path = substr($path, -1) == "/" ? $path : $path . "/";
+    // create directory
+    SELF::CreateDirectory($path);
+    // file name
+    $filename = $path . $name;
+    // check if file/path exists
+    if(file_exists($filename)):
+      $mode = 'a';
+    else:
+      $mode = 'w';
+    endif;
+    // open file
+    $file = fopen($filename, $mode);
+    // add text to file
+    if(is_array($content)):
+      foreach ($content as $key => $value) {
+        fwrite($file, "\n" . date('Y-m-d H:i:s') . " - " . $value);
+      }
+    else:
+      fwrite($file, "\n" . date('Y-m-d H:i:s') . " - " . $content);
+    endif;
+    // close file
+    fclose($file);
+  }
+
 
   /* ABSOLUTE FILE EXISTS
   /------------------------*/
@@ -103,10 +141,10 @@ class prefix_core_BaseFunctions {
   */
   public static function CheckDir($DirName) {
     if (file_exists($DirName)) {
-        $debug['CheckDir'] = 'Dir ' . $DirName . " exists";
+        $debug_errors['CheckDir'] = 'Dir ' . $DirName . " exists";
         return true;
     } else {
-        $debug['CheckDir'] = 'Dir ' . $DirName . " does not exist";
+        $debug_errors['CheckDir'] = 'Dir ' . $DirName . " does not exist";
         return false;
     }
   }
@@ -117,19 +155,20 @@ class prefix_core_BaseFunctions {
   /**
     * create folder
     * @param string $DirName: folder name
+    * @param int $mode: folder rights
     * @return true/false
   */
-  private function CreateDirectory($DirName) {
+  private function CreateDirectory($DirName, int $mode = 0777) {
     // check the folder
     $check = SELF::CheckDir($DirName);
     // create the folder
     if(!$check):
       if (mkdir($DirName)):
-          chmod($DirName, SELF::$mode);
-          $debug['CreateDir'] = 'Dir ' . $DirName . " does not exist";
+          chmod($DirName, $mode);
+          $debug_errors['CreateDir'] = 'Dir ' . $DirName . " created";
           return true;
       else:
-          $debug['CreateDir'] = 'Dir ' . $DirName . " does not exist";
+          $debug_errors['CreateDir'] = 'Dir ' . $DirName . " exists already";
           return false;
       endif;
     endif;
