@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.0.1
+ * @version     1.1.1
  *
 */
 
@@ -33,6 +33,7 @@ Table of Contents:
   3.9 COPYRIGHT
   3.10 SOCIAL MEDIA
   3.11 CONTACT BLOCK
+  3.12 ICON BLOCK
 =======================================================*/
 
 
@@ -568,8 +569,54 @@ class prefix_template extends prefix_core_BaseFunctions {
     }
 
 
-
-
+    /* 3.12 ICON BLOCK
+    /------------------------*/
+    /**
+      * @param array $icons: list of svg icons with link, css clss or additional attributes
+      * options are svg, link, target, class, attr
+        * @param array $settings: container settings
+        * options are class, attr
+      * @return string ul with icons
+    */
+    public static function IconBlock(array $icons = array(), array $settings = array()){
+      if(!empty($icons)):
+        // container settings
+        $container_css = array_key_exists('class', $settings) ? ' ' . $settings['class'] : '';
+        $container_attr = '';
+        if(array_key_exists('attr', $settings) && is_array($settings['attr'])):
+          foreach ($settings['attr'] as $key => $single_attr) {
+            $container_attr .= ' ' . $single_attr[0] . '="' . $single_attr[1] . '"';
+          }
+        endif;
+        // output
+        $output = '<ul class="iconlist' . $container_css . '"' . $container_attr . '>';
+        foreach ($icons as $key => $icon) {
+          // svg container - if link is given use a tag else span
+          if(array_key_exists('link', $icon)):
+            $target = array_key_exists('target', $icon) ? ' target="_' . $icon['target'] . '"' : '';
+            $tag = 'a href="' . $icon['link'] . '"' . $target;
+          else:
+            $tag = 'span';
+          endif;
+          // additional to the svg container
+          $icon_css = array_key_exists('class', $icon) ? ' class="' . $icon['class'] . '"' : '';
+          $icon_attr = '';
+          if(array_key_exists('attr', $icon) && is_array($icon['attr'])):
+            foreach ($icon['attr'] as $key => $attr) {
+              $icon_attr .= ' ' . $attr[0] . '="' . $attr[1] . '"';
+            }
+          endif;
+          // output
+          $output .= '<' . $tag . $icon_css . $icon_attr . '>';
+            $output .= $icon['svg'];
+          $output .= '</' . $tag . '>';
+        }
+        $output .= '</ul>';
+        return $output;
+      else:
+        $debug_errors['template'][] = "Icon Block is empty";
+      endif;
+    }
 
 
 }

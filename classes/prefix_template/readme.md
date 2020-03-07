@@ -1,4 +1,4 @@
-**Version 1.0.1** (26.02.2020)
+**Version 1.1.1** (26.02.2020)
 
 Custom class "template" with teplate parts and header / footer builder
 
@@ -123,4 +123,41 @@ WP_FooterMenu();
 Copyright();
 SocialMedia();
 ContactBlock();
+```
+
+#### ICON BLOCK
+```php
+$icons = array(
+  // for each svg
+  array(
+    "svg" => "SVG-CONTENT",
+    "link" => "https://your-link.com",
+    "target" => "blank",
+    "class" => "custom-css-class",
+    "attr" => array(
+      array(
+        0 => "data-example",
+        1 =>  "attribute content"
+      ),
+      array(
+        0 => "data-example-two",
+        1 =>  "attribute content"
+      )
+    )
+  )
+);
+$settings = array(
+  "class" => "custom-css-class",
+  "attr" => array(
+    array(
+      0 => "data-example",
+      1 =>  "attribute content"
+    ),
+    array(
+      0 => "data-example-two",
+      1 =>  "attribute content"
+    )
+  )
+);
+echo prefix_template::IconBlock($icons, $settings);
 ```
