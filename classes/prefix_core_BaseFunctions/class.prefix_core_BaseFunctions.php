@@ -4,7 +4,7 @@
  *
  * Base dev functions - parent for all custom classes
  * Author:      David Voglgsnag
- * @version     1.5.1
+ * @version     1.6.1
  *
  */
 
@@ -409,6 +409,36 @@ class prefix_core_BaseFunctions {
         register_taxonomy( $tax_key, $cpt, $args );
       endif;
     }
+  }
+
+
+  /* RETURN TAXONOMY TERMS IN A LIST
+  /------------------------*/
+  /**
+    * @param string $slug: taxonomy slug
+    * @param string $id: if you like to list selected post taxonomies
+    * @return string list
+  */
+  public static function ListTaxonomies(string $slug = "", int $id = 0){
+    // vars
+    $output = '';
+    $taxonomy_details = $id > 0 ? get_the_terms( $id, $slug ) : get_taxonomy( $slug );
+    $tax_arg = array(
+            'hide_empty' => false
+    );
+    $tax = $id > 0 ? $taxonomy_details : get_terms( $slug, $tax_arg );
+    // output
+    $output .= '<ul class="list-' . $slug . '">';
+      if ( ! empty( $tax ) && ! is_wp_error( $tax ) ):
+        foreach ( $tax as $t ) {
+            $output .= '<li class="' . $t->slug . '">';
+                $output .= $t->name;
+            $output .= '</li>';
+        }
+      endif;
+    $output .= '</ul>';
+
+    return $output;
   }
 
 
