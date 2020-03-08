@@ -1,4 +1,4 @@
-**Version 1.1.1** (26.02.2020)
+**Version 1.1.2** (08.03.2020)
 
 Custom class "template" with teplate parts and header / footer builder
 
@@ -135,28 +135,16 @@ $icons = array(
     "target" => "blank",
     "class" => "custom-css-class",
     "attr" => array(
-      array(
-        0 => "data-example",
-        1 =>  "attribute content"
-      ),
-      array(
-        0 => "data-example-two",
-        1 =>  "attribute content"
-      )
+      "data-example" => "attribute content",
+      "data-example-two" => "attribute content"
     )
   )
 );
 $settings = array(
   "class" => "custom-css-class",
   "attr" => array(
-    array(
-      0 => "data-example",
-      1 =>  "attribute content"
-    ),
-    array(
-      0 => "data-example-two",
-      1 =>  "attribute content"
-    )
+    "data-example" => "attribute content",
+    "data-example-two" => "attribute content"
   )
 );
 echo prefix_template::IconBlock($icons, $settings);

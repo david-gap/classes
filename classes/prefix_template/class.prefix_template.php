@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.1.1
+ * @version     1.1.2
  *
 */
 
@@ -585,7 +585,7 @@ class prefix_template extends prefix_core_BaseFunctions {
         $container_attr = '';
         if(array_key_exists('attr', $settings) && is_array($settings['attr'])):
           foreach ($settings['attr'] as $key => $single_attr) {
-            $container_attr .= ' ' . $single_attr[0] . '="' . $single_attr[1] . '"';
+            $container_attr .= ' ' . $key . '="' . $single_attr . '"';
           }
         endif;
         // output
@@ -600,16 +600,22 @@ class prefix_template extends prefix_core_BaseFunctions {
           endif;
           // additional to the svg container
           $icon_css = array_key_exists('class', $icon) ? ' class="' . $icon['class'] . '"' : '';
+          $icon_title = array_key_exists('title', $icon) ? ' title="' . $icon['title'] . '"' : '';
           $icon_attr = '';
           if(array_key_exists('attr', $icon) && is_array($icon['attr'])):
             foreach ($icon['attr'] as $key => $attr) {
-              $icon_attr .= ' ' . $attr[0] . '="' . $attr[1] . '"';
+              $icon_attr .= ' ' . $key . '="' . $attr . '"';
             }
           endif;
           // output
-          $output .= '<' . $tag . $icon_css . $icon_attr . '>';
-            $output .= $icon['svg'];
+          $output .= '<li>';
+            $output .= '<' . $tag . $icon_css . $icon_attr . $icon_title . ' tabindex="0">';
+              $output .= $icon['svg'];
+              if(array_key_exists('label', $icon)):
+                $output .= '<label>' . $icon['label'] . '</label>';
+              endif;
           $output .= '</' . $tag . '>';
+          $output .= '</li>';
         }
         $output .= '</ul>';
         return $output;
