@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.2
+ * @version     1.2.1
  *
 */
 
@@ -110,14 +110,14 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
               // get content from a json file
               $file_content = file_get_contents($path);
               $json_decode = json_decode($file_content, true);
-              if($id_column >= 0 && $id_column !== false):
+              if($id_column !== "" && $id_column !== false):
                 $dataArray = array();
                 $row = 0;
                 foreach ($json_decode as $row_key => $row_value) {
                   ++$row;
                   $SingleDataArray = array();
                   foreach ($row_value as $key => $value) {
-                    $SingleDataArray[] = $value;
+                    $SingleDataArray[$key] = $value;
                   }
                   if($id_column >= 0):
                     // fallback for first row if column names are inside
