@@ -1,4 +1,4 @@
-**Version 1.1** (05.03.2020)
+**Version 1.2.1** (09.03.2020)
 
 Custom class "prefix_FileEmbed" to set file content as a global
 
@@ -17,7 +17,7 @@ Custom class "prefix_FileEmbed" to set file content as a global
       "file_coding": "UTF-8",
       "encoding": "Windows-1252",
       "id_column": false,
-      "order_column": ",
+      "order_column": "",
       "order_direction": "ASC"
     }
   }
