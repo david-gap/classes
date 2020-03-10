@@ -4,7 +4,7 @@
  *
  * Base dev functions - parent for all custom classes
  * Author:      David Voglgsnag
- * @version     1.6.1
+ * @version     1.6.2
  *
  */
 
@@ -83,11 +83,12 @@ class prefix_core_BaseFunctions {
   /**
     * @param string $preis: given price
     * @param string $seperator: seperates the $ from the cents
+    * @param string $seperator_thousands: seperates the tousands steps
     * @return string price
   */
-  public static function formatPrice(int $preis = 0, string $seperator = "." ) {
+  function formatPrice(int $preis = 0, string $seperator = ".", string $seperator_thousands = " " ) {
       $preis += .00;
-      return number_format($preis,2,$seperator," ");
+      return number_format($preis,2,$seperator,$seperator_thousands);
   }
 
 
