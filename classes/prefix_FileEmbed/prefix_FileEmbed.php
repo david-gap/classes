@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.2.1
+ * @version     1.2.2
  *
 */
 
@@ -110,30 +110,36 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
               // get content from a json file
               $file_content = file_get_contents($path);
               $json_decode = json_decode($file_content, true);
-              if($id_column !== "" && $id_column !== false):
-                $dataArray = array();
-                $row = 0;
-                foreach ($json_decode as $row_key => $row_value) {
-                  ++$row;
-                  $SingleDataArray = array();
-                  foreach ($row_value as $key => $value) {
-                    $SingleDataArray[$key] = $value;
-                  }
-                  if($id_column >= 0):
-                    // fallback for first row if column names are inside
-                    if($title && $row == 1):
-                      $id = 0;
+              // check if file content is broken
+              if(is_array($json_decode)):
+                if($id_column !== "" && $id_column !== false):
+                  $dataArray = array();
+                  $row = 0;
+                  foreach ($json_decode as $row_key => $row_value) {
+                    ++$row;
+                    $SingleDataArray = array();
+                    foreach ($row_value as $key => $value) {
+                      $SingleDataArray[$key] = $value;
+                    }
+                    if($id_column >= 0):
+                      // fallback for first row if column names are inside
+                      if($title && $row == 1):
+                        $id = 0;
+                      else:
+                        $id = $SingleDataArray[$id_column];
+                      endif;
+                      $dataArray[$id] = $SingleDataArray;
                     else:
-                      $id = $SingleDataArray[$id_column];
+                      $dataArray[] = $SingleDataArray;
                     endif;
-                    $dataArray[$id] = $SingleDataArray;
-                  else:
-                    $dataArray[] = $SingleDataArray;
-                  endif;
-                }
-                $$file_key = $dataArray;
+                  }
+                  $$file_key = $dataArray;
+                else:
+                  $$file_key = $json_decode;
+                endif;
               else:
-                $$file_key = $json_decode;
+                // file content is broken
+                $debug_errors['FileEmbed'][] = "File content of file " . $file_key . " is broken";
               endif;
             elseif($path_parts['extension'] == 'csv'):
               // get content from a csv file
