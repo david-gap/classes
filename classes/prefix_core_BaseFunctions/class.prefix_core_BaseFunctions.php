@@ -4,9 +4,45 @@
  *
  * Base dev functions - parent for all custom classes
  * Author:      David Voglgsnag
- * @version     1.6.2
+ * @version     2.0
  *
  */
+
+ /*=======================================================
+ Table of Contents:
+ ---------------------------------------------------------
+ 1.0 FOR DEVELOPMENT
+   1.1 EXPLODE COMMA SEPERATED ARRAY
+   1.2 PRICE FORMAT
+   1.3 BROWSER CHECK
+   1.4 GENERATE SHORT ID
+   1.5 FILE EXISTS
+   1.6 CHECK IF FOLDER EXISTS
+   1.7 CREATE FOLDER
+   1.8 COPY FOLDER CONTENT AND SUB FOLDERS
+   1.9 GET CONTENT FROM STRING BETWEEN TWO CHARS/CHAR GROUPS
+   1.10 FIND KEY IN MULTIDIMENSIONAL ARRAY
+ 2.0 DATES
+   2.1 CHECK IF VARS ARE OUT OF DATE
+   2.2 DATE RANGE FORMAT
+ 3.0 FOR FORMULARS
+   3.1 GET POST
+   3.2 CHECK IF OPTION IS SELECTED
+   3.3 CHECK IF CHECKBOX IS CHECKED
+ 4.0 FOR WORDPRESS
+   4.1 GET CURRENT LANGUAGE
+   4.2 ADD USER ROLE
+   4.3 ADD CUSTOM TAXONOMY
+   4.4 RETURN TAXONOMY TERMS IN A LIST
+   4.5 LOGIN FORMULAR
+ 5.0 COORDINATES
+   5.1 CONVERT: WGS lat/long TO CH1903 y
+   5.2 CONVERT: WGS lat/long TO CH1903 x
+   5.3 CONVERT: CH1903 y/x TO WGS lat
+   5.4 CONVERT: CH1903 y/x TO WGS lng
+   5.5 CONVERT: DEC angle to SEX DMS
+ =======================================================*/
+
 
 class prefix_core_BaseFunctions {
 
@@ -14,243 +50,227 @@ class prefix_core_BaseFunctions {
     1.0 FOR DEVELOPMENT
   ==================================================================================*/
 
-  /* FILE EXISTS
-  /------------------------*/
-  /**
-  * check if file exists - relative or absolute path
-  * @return bool true/false
-  */
-  public static function CheckFileExistence($url){
-    if(substr($url, 0, 4) === 'http'):
-      // absolute path
-      $ch = curl_init();
-      curl_setopt($ch, CURLOPT_URL,$url);
-      curl_setopt($ch, CURLOPT_NOBODY, 1);
-      curl_setopt($ch, CURLOPT_FAILONERROR, 1);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-      if(curl_exec($ch)!==FALSE):
-          return true;
-      else:
-          return false;
-      endif;
-    else:
-      // relative path
-      if(file_exists($url) && filesize($url) > 0):
-          // return true;
-          return "existing";
-      else:
-          // return false;
-          return "not existing";
-      endif;
-    endif;
-  }
+    /* 1.1 EXPLODE COMMA SEPERATED ARRAY
+    /------------------------*/
+    public static function AttrToArray(string $attr){
+      // remove spaces from string
+      $clean = str_replace(", ", ",", $attr);
+      // create array
+      $array = explode(',', $clean);
 
-
-  /* ABSOLUTE FILE EXISTS
-  /------------------------*/
-  /**
-  * check if absolute url exists
-  * @return bool true/false
-  */
-  public static function checkRemoteFile($url){
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL,$url);
-    curl_setopt($ch, CURLOPT_NOBODY, 1);
-    curl_setopt($ch, CURLOPT_FAILONERROR, 1);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    if(curl_exec($ch)!==FALSE):
-        return true;
-    else:
-        return false;
-    endif;
-  }
-
-
-  /* EXPLODE COMMA SEPERATED ARRAY
-  /------------------------*/
-  public static function AttrToArray(string $attr){
-    // remove spaces from string
-    $clean = str_replace(", ", ",", $attr);
-    // create array
-    $array = explode(',', $clean);
-
-    return $array;
-  }
-
-
-  /* PRICE FORMAT
-  /------------------------*/
-  /**
-    * @param string $preis: given price
-    * @param string $seperator: seperates the $ from the cents
-    * @param string $seperator_thousands: seperates the tousands steps
-    * @return string price
-  */
-  function formatPrice(int $preis = 0, string $seperator = ".", string $seperator_thousands = " " ) {
-      $preis += .00;
-      return number_format($preis,2,$seperator,$seperator_thousands);
-  }
-
-
-  /* BROWSER CHECK
-  /------------------------*/
-  /**
-    * @return string current browser
-  */
-  public static function get_browser_name() {
-    $user_agent = $_SERVER['HTTP_USER_AGENT'];
-    if (strpos($user_agent, 'Chrome')) return 'Chrome';
-    elseif (strpos($user_agent, 'Safari')) return 'Safari';
-    elseif (strpos($user_agent, 'Firefox')) return 'Firefox';
-    elseif (strpos($user_agent, 'Opera') || strpos($user_agent, 'OPR/')) return 'Opera';
-    elseif (strpos($user_agent, 'Edge')) return 'Edge';
-    elseif (strpos($user_agent, 'MSIE') || strpos($user_agent, 'Trident/7')) return 'InternetExplorer';
-    return 'Other';
-  }
-
-
-  /* GENERATE SHORT ID
-  /------------------------*/
-  /**
-    * @param int $length: ID length
-    * @param string $type: ID chars int/letters both on default
-    * @return string random id
-  */
-  public static function ShortID(int $length = 10, string $type = ''){
-    if($type == 'int'):
-      return substr(str_shuffle("0123456789"), 0, $length);
-    elseif($type == 'letters'):
-      return substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, $length);
-    else:
-      return substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyz"), 0, $length);
-    endif;
-  }
-
-
-  /* CHECK IF FOLDER EXISTS
-  /------------------------*/
-  /**
-    * check if folder exists
-    * @param string $DirName: folder name
-    * @return true/false
-  */
-  public static function CheckDir($DirName) {
-    if (file_exists($DirName)) {
-        $debug_errors['CheckDir'] = 'Dir ' . $DirName . " exists";
-        return true;
-    } else {
-        $debug_errors['CheckDir'] = 'Dir ' . $DirName . " does not exist";
-        return false;
+      return $array;
     }
-  }
 
 
-  /* CREATE FOLDER
-  /------------------------*/
-  /**
-    * create folder
-    * @param string $DirName: folder name
-    * @param int $mode: folder rights
-    * @return true/false
-  */
-  private function CreateDirectory($DirName, int $mode = 0777) {
-    // check the folder
-    $check = SELF::CheckDir($DirName);
-    // create the folder
-    if(!$check):
-      if (mkdir($DirName)):
-          chmod($DirName, $mode);
-          $debug_errors['CreateDir'] = 'Dir ' . $DirName . " created";
-          return true;
-      else:
-          $debug_errors['CreateDir'] = 'Dir ' . $DirName . " exists already";
-          return false;
-      endif;
-    endif;
-  }
-
-
-  /* COPY FOLDER CONTENT AND SUB FOLDERS
-  /------------------------*/
-  /**
-    * copy intanet res to intranet folder
-    * @param string $src: source directory
-    * @param string $dst: destination directory
-    * @param int $mode: folder settings
-  */
-  function copyDirectory($src, $dst, $mode){
-    // open the source directory
-    $dir = opendir($src);
-    // Make the destination directory if not exist
-    @mkdir($dst);
-    chmod($dst, $mode);
-    // Loop through the files in source directory
-    while( $file = readdir($dir) ) {
-        if (( $file != '.' ) && ( $file != '..' )) {
-            if ( is_dir($src . '/' . $file) )
-            {
-                // Recursively calling custom copy function
-                // for sub directory
-                SELF::copyDirectory($src . '/' . $file, $dst . '/' . $file);
-            }
-            else {
-                copy($src . '/' . $file, $dst . '/' . $file);
-            }
-        }
+    /* 1.2 PRICE FORMAT
+    /------------------------*/
+    /**
+      * @param string $preis: given price
+      * @param string $seperator: seperates the $ from the cents
+      * @param string $seperator_thousands: seperates the tousands steps
+      * @return string price
+    */
+    function formatPrice(int $preis = 0, string $seperator = ".", string $seperator_thousands = " " ) {
+        $preis += .00;
+        return number_format($preis,2,$seperator,$seperator_thousands);
     }
-    closedir($dir);
-  }
 
 
-  /* GET CONTENT FROM STRING BETWEEN TWO CHARS/CHAR GROUPS
-  /------------------------*/
-  /**
-    * copy intanet res to intranet folder
-    * @param string $string: content
-    * @param string $start: start parameter
-    * @param string $end: end parameter
-    * @return string between start and end
-  */
-  public static function getBetween(string $string = "", string $start = "", string $end = ""){
-    if (strpos($string, $start)):
-        $startCharCount = strpos($string, $start) + strlen($start);
-        $firstSubStr = substr($string, $startCharCount, strlen($string));
-        $endCharCount = strpos($firstSubStr, $end);
-        if ($endCharCount == 0):
-            $endCharCount = strlen($firstSubStr);
+    /* 1.3 BROWSER CHECK
+    /------------------------*/
+    /**
+      * @return string current browser
+    */
+    public static function get_browser_name() {
+      $user_agent = $_SERVER['HTTP_USER_AGENT'];
+      if (strpos($user_agent, 'Chrome')) return 'Chrome';
+      elseif (strpos($user_agent, 'Safari')) return 'Safari';
+      elseif (strpos($user_agent, 'Firefox')) return 'Firefox';
+      elseif (strpos($user_agent, 'Opera') || strpos($user_agent, 'OPR/')) return 'Opera';
+      elseif (strpos($user_agent, 'Edge')) return 'Edge';
+      elseif (strpos($user_agent, 'MSIE') || strpos($user_agent, 'Trident/7')) return 'InternetExplorer';
+      return 'Other';
+    }
+
+
+    /* 1.4 GENERATE SHORT ID
+    /------------------------*/
+    /**
+      * @param int $length: ID length
+      * @param string $type: ID chars int/letters both on default
+      * @return string random id
+    */
+    public static function ShortID(int $length = 10, string $type = ''){
+      if($type == 'int'):
+        return substr(str_shuffle("0123456789"), 0, $length);
+      elseif($type == 'letters'):
+        return substr(str_shuffle("abcdefghijklmnopqrstuvwxyz"), 0, $length);
+      else:
+        return substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyz"), 0, $length);
+      endif;
+    }
+
+    /* 1.5 FILE EXISTS
+    /------------------------*/
+    /**
+    * check if file exists - relative or absolute path
+    * @return bool true/false
+    */
+    public static function CheckFileExistence($url){
+      if(substr($url, 0, 4) === 'http'):
+        // absolute path
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL,$url);
+        curl_setopt($ch, CURLOPT_NOBODY, 1);
+        curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        if(curl_exec($ch)!==FALSE):
+            return true;
+        else:
+            return false;
         endif;
-        return substr($firstSubStr, 0, $endCharCount);
-    else:
-        return '';
-    endif;
-  }
-
-
-  /* FIND KEY IN MULTIDIMENSIONAL ARRAY
-  /------------------------*/
-  /**
-    * @param string $searchterm: search for
-    * @param array $array: search inside
-    * @return bool true/false if found string in array
-  */
-  public static function MultidArraySearch(string $searchterm = "", array $array = array()) {
-    $found = false;
-    foreach ($array as $item) {
-    if ($item === $searchterm) {
-            $found = true;
-            break;
-        } elseif (is_array($item)) {
-            $found = SELF::MultidArraySearch($searchterm, $item);
-            if($found) {
-                break;
-            }
-        }
+      else:
+        // relative path
+        if(file_exists($url) && filesize($url) > 0):
+            // return true;
+            return "existing";
+        else:
+            // return false;
+            return "not existing";
+        endif;
+      endif;
     }
-    return $found;
-  }
 
 
-  /* CHECK IF VARS ARE OUT OF DATE
+      /* 1.6 CHECK IF FOLDER EXISTS
+      /------------------------*/
+      /**
+        * check if folder exists
+        * @param string $DirName: folder name
+        * @return true/false
+      */
+      public static function CheckDir($DirName) {
+        if (file_exists($DirName)) {
+            $debug_errors['CheckDir'] = 'Dir ' . $DirName . " exists";
+            return true;
+        } else {
+            $debug_errors['CheckDir'] = 'Dir ' . $DirName . " does not exist";
+            return false;
+        }
+      }
+
+
+    /* 1.7 CREATE FOLDER
+    /------------------------*/
+    /**
+      * create folder
+      * @param string $DirName: folder name
+      * @param int $mode: folder rights
+      * @return true/false
+    */
+    private function CreateDirectory($DirName, int $mode = 0777) {
+      // check the folder
+      $check = SELF::CheckDir($DirName);
+      // create the folder
+      if(!$check):
+        if (mkdir($DirName)):
+            chmod($DirName, $mode);
+            $debug_errors['CreateDir'] = 'Dir ' . $DirName . " created";
+            return true;
+        else:
+            $debug_errors['CreateDir'] = 'Dir ' . $DirName . " exists already";
+            return false;
+        endif;
+      endif;
+    }
+
+
+    /* 1.8 COPY FOLDER CONTENT AND SUB FOLDERS
+    /------------------------*/
+    /**
+      * copy intanet res to intranet folder
+      * @param string $src: source directory
+      * @param string $dst: destination directory
+      * @param int $mode: folder settings
+    */
+    function copyDirectory($src, $dst, $mode){
+      // open the source directory
+      $dir = opendir($src);
+      // Make the destination directory if not exist
+      @mkdir($dst);
+      chmod($dst, $mode);
+      // Loop through the files in source directory
+      while( $file = readdir($dir) ) {
+          if (( $file != '.' ) && ( $file != '..' )) {
+              if ( is_dir($src . '/' . $file) )
+              {
+                  // Recursively calling custom copy function
+                  // for sub directory
+                  SELF::copyDirectory($src . '/' . $file, $dst . '/' . $file);
+              }
+              else {
+                  copy($src . '/' . $file, $dst . '/' . $file);
+              }
+          }
+      }
+      closedir($dir);
+    }
+
+
+    /* 1.9 GET CONTENT FROM STRING BETWEEN TWO CHARS/CHAR GROUPS
+    /------------------------*/
+    /**
+      * copy intanet res to intranet folder
+      * @param string $string: content
+      * @param string $start: start parameter
+      * @param string $end: end parameter
+      * @return string between start and end
+    */
+    public static function getBetween(string $string = "", string $start = "", string $end = ""){
+      if (strpos($string, $start)):
+          $startCharCount = strpos($string, $start) + strlen($start);
+          $firstSubStr = substr($string, $startCharCount, strlen($string));
+          $endCharCount = strpos($firstSubStr, $end);
+          if ($endCharCount == 0):
+              $endCharCount = strlen($firstSubStr);
+          endif;
+          return substr($firstSubStr, 0, $endCharCount);
+      else:
+          return '';
+      endif;
+    }
+
+
+    /* 1.10 FIND KEY IN MULTIDIMENSIONAL ARRAY
+    /------------------------*/
+    /**
+      * @param string $searchterm: search for
+      * @param array $array: search inside
+      * @return bool true/false if found string in array
+    */
+    public static function MultidArraySearch(string $searchterm = "", array $array = array()) {
+      $found = false;
+      foreach ($array as $item) {
+      if ($item === $searchterm) {
+              $found = true;
+              break;
+          } elseif (is_array($item)) {
+              $found = SELF::MultidArraySearch($searchterm, $item);
+              if($found) {
+                  break;
+              }
+          }
+      }
+      return $found;
+    }
+
+
+
+  /*==================================================================================
+  2.0 DATES
+  ==================================================================================*/
+
+  /* 2.1 CHECK IF VARS ARE OUT OF DATE
   /------------------------*/
   /**
     * @param string $start: start date
@@ -310,7 +330,7 @@ class prefix_core_BaseFunctions {
   }
 
 
-  /* DATE RANGE FORMAT
+  /* 2.2 DATE RANGE FORMAT
   /------------------------*/
   /**
     * @param string $start: start date
@@ -345,10 +365,10 @@ class prefix_core_BaseFunctions {
 
 
   /*==================================================================================
-    2.0 FOR FORMULARS
+    3.0 FOR FORMULARS
   ==================================================================================*/
 
-  /* GET POST
+  /* 3.1 GET POST
   /------------------------*/
   /**
     * @param string $name: variable name
@@ -371,7 +391,7 @@ class prefix_core_BaseFunctions {
   }
 
 
-  /* CHECK IF OPTION IS SELECTED
+  /* 3.2 CHECK IF OPTION IS SELECTED
   /------------------------*/
   /**
     * @param string $value: input value to check
@@ -387,7 +407,7 @@ class prefix_core_BaseFunctions {
   }
 
 
-  /* CHECK IF CHECKBOX IS CHECKED
+  /* 3.3 CHECK IF CHECKBOX IS CHECKED
   /------------------------*/
   /**
     * @param string $value: input value to check
@@ -405,10 +425,10 @@ class prefix_core_BaseFunctions {
 
 
   /*==================================================================================
-    3.0 FOR WORDPRESS
+    4.0 FOR WORDPRESS
   ==================================================================================*/
 
-  /* GET CURRENT LANGUAGE
+  /* 4.1 GET CURRENT LANGUAGE
   /------------------------*/
   /**
   * get current language code
@@ -429,7 +449,7 @@ class prefix_core_BaseFunctions {
   }
 
 
-  /* ADD USER ROLE
+  /* 4.2 ADD USER ROLE
   /------------------------*/
   /**
   * get WP login formular
@@ -466,7 +486,7 @@ class prefix_core_BaseFunctions {
   }
 
 
-  /* ADD CUSTOM TAXONOMY
+  /* 4.3 ADD CUSTOM TAXONOMY
   /------------------------*/
   /**
   * get WP login formular
@@ -506,7 +526,7 @@ class prefix_core_BaseFunctions {
   }
 
 
-  /* RETURN TAXONOMY TERMS IN A LIST
+  /* 4.4 RETURN TAXONOMY TERMS IN A LIST
   /------------------------*/
   /**
     * @param string $slug: taxonomy slug
@@ -536,7 +556,7 @@ class prefix_core_BaseFunctions {
   }
 
 
-  /* LOGIN FORMULAR
+  /* 4.5 LOGIN FORMULAR
   /------------------------*/
   /**
   * get WP login formular
@@ -584,6 +604,143 @@ class prefix_core_BaseFunctions {
     $output .= '</div>';
 
     return $output;
+  }
+
+
+
+  /*==================================================================================
+    5.0 COORDINATES
+  ==================================================================================*/
+
+    /* 5.1 CONVERT: WGS lat/long TO CH1903 y
+    /------------------------*/
+    /**
+    * MAP coordinates to CH1903 / CH1903+
+    * @param bool $lat: coordinate latitude
+    * @param bool $long: coordinate longitude
+    * @param bool $plus: CH1903 false / CH1903+ true
+    * @return string CH latitude
+    */
+    public static function WGStoCHy($lat, $long, bool $plus = true) {
+      // Converts decimal degrees sexagesimal seconds
+      $lat = SELF::DECtoSEX($lat);
+      $long = SELF::DECtoSEX($long);
+      // Auxiliary values (% Bern)
+      $lat_aux = ($lat - 169028.66)/10000;
+      $long_aux = ($long - 26782.5)/10000;
+      // Process Y
+      $y = 600072.37
+         + 211455.93 * $long_aux
+         -  10938.51 * $long_aux * $lat_aux
+         -      0.36 * $long_aux * pow($lat_aux,2)
+         -     44.54 * pow($long_aux,3);
+      // output
+      $p = $plus === true ? 1 : '';
+      return $p . $y;
+    }
+
+
+    /* 5.2 CONVERT: WGS lat/long TO CH1903 x
+    /------------------------*/
+    /**
+    * MAP coordinates to CH1903 / CH1903+
+    * @param bool $lat: coordinate latitude
+    * @param bool $long: coordinate longitude
+    * @param bool $plus: CH1903 false / CH1903+ true
+    * @return string CH longitude
+    */
+    public static function WGStoCHx($lat, $long, bool $plus = true) {
+      // Converts decimal degrees sexagesimal seconds
+      $lat = SELF::DECtoSEX($lat);
+      $long = SELF::DECtoSEX($long);
+      // Auxiliary values (% Bern)
+      $lat_aux = ($lat - 169028.66)/10000;
+      $long_aux = ($long - 26782.5)/10000;
+      // Process X
+      $x = 200147.07
+         + 308807.95 * $lat_aux
+         +   3745.25 * pow($long_aux,2)
+         +     76.63 * pow($lat_aux,2)
+         -    194.56 * pow($long_aux,2) * $lat_aux
+         +    119.79 * pow($lat_aux,3);
+      // output
+      $p = $plus === true ? 2 : '';
+      return $p . $x;
+    }
+
+
+    /* 5.3 CONVERT: CH1903 y/x TO WGS lat
+    /------------------------*/
+    /**
+    * CH1903 / CH1903+ coordinates to WGS
+    * @param bool $lat: coordinate latitude
+    * @param bool $long: coordinate longitude
+    * @param bool $plus: CH1903 false / CH1903+ true
+    * @return string WGS latitude
+    */
+    public static function CHtoWGSlat($y, $x, bool $plus = true) {
+      // update vars if coordinates are CH1903+
+      $y = $plus === true ? substr($y, 1) : $y;
+      $x = $plus === true ? substr($x, 1) : $x;
+      // Converts military to civil and  to unit = 1000km
+      // Auxiliary values (% Bern)
+      $y_aux = ($y - 600000)/1000000;
+      $x_aux = ($x - 200000)/1000000;
+      // Process lat
+      $lat = 16.9023892
+           +  3.238272 * $x_aux
+           -  0.270978 * pow($y_aux,2)
+           -  0.002528 * pow($x_aux,2)
+           -  0.0447   * pow($y_aux,2) * $x_aux
+           -  0.0140   * pow($x_aux,3);
+
+      // Unit 10000" to 1 " and converts seconds to degrees (dec)
+      $lat = $lat * 100/36;
+      // output
+      return $lat;
+    }
+
+
+  /* 5.4 CONVERT: CH1903 y/x TO WGS lng
+  /------------------------*/
+  /**
+  * CH1903 / CH1903+ coordinates to WGS
+  * @param bool $lat: coordinate latitude
+  * @param bool $long: coordinate longitude
+  * @param bool $plus: CH1903 false / CH1903+ true
+  * @return string WGS longitude
+  */
+  public static function CHtoWGSlong($y, $x, bool $plus = true) {
+    // update vars if coordinates are CH1903+
+    $y = $plus === true ? substr($y, 1) : $y;
+    $x = $plus === true ? substr($x, 1) : $x;
+    // Converts military to civil and  to unit = 1000km
+    // Auxiliary values (% Bern)
+    $y_aux = ($y - 600000)/1000000;
+    $x_aux = ($x - 200000)/1000000;
+    // Process long
+    $long = 2.6779094
+          + 4.728982 * $y_aux
+          + 0.791484 * $y_aux * $x_aux
+          + 0.1306   * $y_aux * pow($x_aux,2)
+          - 0.0436   * pow($y_aux,3);
+
+    // Unit 10000" to 1 " and converts seconds to degrees (dec)
+    $long = $long * 100/36;
+    // output
+    return $long;
+  }
+
+
+  /* 5.5 CONVERT: DEC angle to SEX DMS
+  /------------------------*/
+  public static function DECtoSEX($angle) {
+    // Extract DMS
+    $deg = intval( $angle );
+    $min = intval( ($angle-$deg)*60 );
+    $sec =  ((($angle-$deg)*60)-$min)*60;
+    // Result in sexagesimal seconds
+    return $sec + $min*60 + $deg*3600;
   }
 
 
