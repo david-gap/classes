@@ -36,7 +36,7 @@ array(
 * return the formular with your arguments and if needed a prefix for form and inputs
 ```php
 // without prefix
-echo prefix_core_Formbuilder::FormBuilder($args;
+echo prefix_core_Formbuilder::FormBuilder($args);
 // with prefix
 echo prefix_core_Formbuilder::FormBuilder($args, "prefix");
 ```
