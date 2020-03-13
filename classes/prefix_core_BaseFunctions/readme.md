@@ -1,12 +1,12 @@
 **Version 2.1** (13.03.2020)
 
-Custom class "prefix_core_BaseFunctions" used as a library for usefull functions
+Custom class "prefix_core_BaseFunctions" used as a library for useful functions
 
 
 ## 1.0 FOR DEVELOPMENT
 
 ### 1.1 EXPLODE COMMA SEPERATED ARRAY
-Explode a comma seperated string to a array
+Explode a comma separated string to a array
 ```php
 core_BaseFunctions::AttrToArray("Attribute 1, Attribute 2, Attribute 3");
 /* RESULTING: Array */
@@ -14,7 +14,7 @@ return array("Attribute 1" "Attribute 2" "Attribute 3");
 ```
 
 ### 1.2 PRICE FORMAT
-Format a price string with custom seperators
+Format a price string with custom separators
 ```php
 core_BaseFunctions::formatPrice('1972,15', '.', '`');
 /* RESULTING: string */
