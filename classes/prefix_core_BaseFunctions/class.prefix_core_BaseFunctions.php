@@ -4,7 +4,7 @@
  *
  * Base dev functions - parent for all custom classes
  * Author:      David Voglgsnag
- * @version     2.0
+ * @version     2.1
  *
  */
 
@@ -132,11 +132,11 @@ class prefix_core_BaseFunctions {
       else:
         // relative path
         if(file_exists($url) && filesize($url) > 0):
-            // return true;
-            return "existing";
+            return true;
+            // return "existing";
         else:
-            // return false;
-            return "not existing";
+            return false;
+            // return "not existing";
         endif;
       endif;
     }
@@ -246,20 +246,30 @@ class prefix_core_BaseFunctions {
     /**
       * @param string $searchterm: search for
       * @param array $array: search inside
+      * @param string $target: search for value or key
       * @return bool true/false if found string in array
     */
-    public static function MultidArraySearch(string $searchterm = "", array $array = array()) {
+    public static function MultidArraySearch(string $searchterm = "", array $array = array(), string $target = 'key') {
       $found = false;
-      foreach ($array as $item) {
-      if ($item === $searchterm) {
-              $found = true;
-              break;
-          } elseif (is_array($item)) {
-              $found = SELF::MultidArraySearch($searchterm, $item);
-              if($found) {
-                  break;
-              }
-          }
+      foreach ($array as $key => $item) {
+        // define where to search
+        if($target == "value"):
+          // search for value
+          $searcharea = $item;
+        else:
+          // search for key
+          $searcharea = $key;
+        endif;
+        // start to search
+        if ($searcharea === $searchterm):
+          $found = true;
+          break;
+        elseif (is_array($item)):
+          $found = SELF::MultidArraySearch($searchterm, $item, $target);
+          if($found):
+            break;
+          endif;
+        endif;
       }
       return $found;
     }
