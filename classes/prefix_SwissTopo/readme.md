@@ -23,6 +23,9 @@ Add this Folder to the config folder and enbed js and scss file to the developme
 Create 2 arrays. One with the map configuration and one multidimensional array for the markers.
 ```php
 $settings = array(
+  "data-coordinates" => 'WGS/CH1903/CH1903+'
+  "data-resolution" => '',
+  "data-zoom" => '',
   "data-cluster-distace" => '',
   "data-cluster-radius" => '',
   "data-cluster-x" => '',
