@@ -1,4 +1,4 @@
-**Version 1.1.2** (08.03.2020)
+**Version 1.2.2** (13.03.2020)
 
 Custom class "template" with teplate parts and header / footer builder
 
@@ -15,6 +15,7 @@ Custom class "template" with teplate parts and header / footer builder
 * $template_header_dmenu: Activate header hamburger for desktop
 * $template_header_custom:  Custom header html
 * $template_header_sort: Sort and activate blocks inside header builder
+* $template_header_logo_link: Logo link with wordpress fallback
 * $template_header_logo_d: desktop logo configuration
 * $template_header_logo_m: mobile logo configuration
 * $template_footer_active: activate footer
@@ -61,6 +62,7 @@ Custom class "template" with teplate parts and header / footer builder
     "socialmedia": true,
     "custom": false
   },
+  "logo_link": "",
   "logo_desktop": {
     "img": "",
     "width": "",
@@ -90,47 +92,134 @@ Custom class "template" with teplate parts and header / footer builder
 }
 ```
 
+
 ## USAGE
+
 ### HEADER BUILDER
 Inside header tag
 ```php
 echo prefix_template::HeaderContent();
 ```
+
 ### FOOTER BUILDER
 Inside footer tag
 ```php
 echo prefix_template::FooterContent();
 ```
+
 ### STICKY
 Add to the body tag
 ```php
 echo prefix_template::CheckSticky(prefix_template::$template_header_sticky);
 ```
+
 ### CONTAINER
 First variable to set container true or false
 Set second variable to true if you would like to add class attribute to the output
 ```php
 echo prefix_template::AddContainer(prefix_template::$template_container, true);
 ```
-### TEMPLATE PARTS
+
+### SITE PLACEHOLDER
+If the Website is under construction return the placeholder
 ```php
-SitePlaceholder();
-Logo();
-WP_MainMenu();
-AddressBlock();
-Divider();
-WP_FooterMenu();
-Copyright();
-SocialMedia();
-ContactBlock();
+echo prefix_template::SitePlaceholder();
 ```
 
-#### ICON BLOCK
+### LOGO CONTAINER
+Logo container, with alternative mobile logo
+```php
+$deskop_logo = array(
+  "img" => "your/img/logo.jpg",
+  "width" => "100",
+  "height" => "40"
+);
+$mobile_logo = array(
+  "img" => "your/img/logo.jpg",
+  "width" => "50",
+  "height" => "20"
+);
+echo prefix_template::Logo("https://website-link.com", $deskop_logo, $mobile_logo);
+```
+
+### WP MAINMANU WITH HAMBURGER
+Get the WP Menu mainmenu with the hamburger button
+```php
+echo prefix_template::WP_MainMenu();
+```
+
+### ADDRESSBLOCK
+Addressblock with/without labels, call links with desktop disabler
+```php
+$address = array(
+  'company' => 'Company name',
+  'street' => 'Address',
+  'street2' => 'Additional address line',
+  'postalCode' => '00000',
+  'city' => 'City name',
+  'phone' => 'Phone number',
+  'mobile' => 'Mobile number',
+  'email' => 'your@mail.com',
+  'labels' => array(
+    'company' => '',
+    'street' => '',
+    'street2' => '',
+    'postalCode' => '',
+    'city' => '',
+    'phone' => 'Phone label',
+    'mobile' => 'Mobile label',
+    'email' => 'E-Mail label'
+  )
+);
+echo prefix_template::AddressBlock($address);
+```
+
+### DIVIDER
+Return a hr element
+```php
+echo prefix_template::Divider();
+```
+
+### FOOTER MENU
+Get WP Menu footermenu
+```php
+echo prefix_template::WP_FooterMenu();
+```
+
+### COPYRIGHT
+Span element for the copyright information
+```php
+echo prefix_template::Copyright("my copyright text");
+```
+
+### SOCIAL MEDIA BLOCK
+Social media inline icons block (supports: facebook, instagram)
+```php
+$sm = array(
+  "facebook" => "https://facebook.com/your-slug",
+  "instagram" => "https://instagram.com/your-slug"
+);
+echo prefix_template::SocialMedia($sm);
+```
+
+### CONTACT BLOCK
+Gives contact options as inline icon links (supports: phone, mail, whatsapp)
+```php
+$contacts = array(
+  "phone" => "000000000",
+  "mail" => "your@mail.com",
+  "whatsapp" => "000000000"
+);
+echo prefix_template::ContactBlock($contacts);
+```
+
+### ICON BLOCK
+A list of given inline icons
 ```php
 $icons = array(
   // for each svg
   array(
-    "svg" => "SVG-CONTENT",
+    "svg" => 'SVG-CONTENT',
     "link" => "https://your-link.com",
     "target" => "blank",
     "class" => "custom-css-class",

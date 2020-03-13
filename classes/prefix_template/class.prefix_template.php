@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.1.2
+ * @version     1.2.2
  *
 */
 
@@ -59,6 +59,7 @@ class prefix_template extends prefix_core_BaseFunctions {
     * @param static bool $template_header_dmenu: Activate header hamburger for desktop
     * @param static string $template_header_custom:  Custom header html
     * @param static array $template_header_sort: Sort and activate blocks inside header builder
+    * @param static string $template_header_logo_link: Logo link with wordpress fallback
     * @param static array $template_header_logo_d: desktop logo configuration
     * @param static array $template_header_logo_m: mobile logo configuration
     * @param static bool $template_footer_active: activate footer
@@ -66,12 +67,12 @@ class prefix_template extends prefix_core_BaseFunctions {
     * @param static string $template_footer_custom: custom html
     * @param static array $template_footer_sort: Sort and activate blocks inside footer builder
   */
-  static $template_container       = true;
-  static $template_coloring        = "light";
-  static $template_ph_active       = true;
-  static $template_ph_address      = true;
-  static $template_ph_custom       = "";
-  static $template_address         = array(
+  static $template_container        = true;
+  static $template_coloring         = "light";
+  static $template_ph_active        = true;
+  static $template_ph_address       = true;
+  static $template_ph_custom        = "";
+  static $template_address          = array(
     'company' => '',
     'street' => '',
     'street2' => '',
@@ -91,39 +92,42 @@ class prefix_template extends prefix_core_BaseFunctions {
       'email' => ''
     )
   );
-  static $template_socialmedia     = array(
+  static $template_socialmedia      = array(
     "facebook" => "",
     "instagram" => ""
   );
-  static $template_contactblock    = array(
+  static $template_contactblock     = array(
     "phone" => "",
     "mail" => "",
     "whatsapp" => ""
   );
-  static $template_header_divider  = true;
-  static $template_header_sticky   = true;
-  static $template_header_dmenu    = true;
-  static $template_header_custom   = "";
-  static $template_header_sort     = array(
+  static $template_header_divider   = true;
+  static $template_header_sticky    = true;
+  static $template_header_dmenu     = true;
+  static $template_header_custom    = "";
+  static $template_header_sort      = array(
     "logo" => true,
     "menu" => true,
     "socialmedia" => false,
     "custom" => false
   );
-  static $template_header_logo_d   = array(
+  static $template_header_logo_link = "";
+  static $template_header_logo_d    = array(
     "img" => "",
     "width" => "",
-    "height" => ""
+    "height" => "",
+    "alt" => ""
   );
-  static $template_header_logo_m   = array(
+  static $template_header_logo_m    = array(
     "img" => "",
     "width" => "",
-    "height" => ""
+    "height" => "",
+    "alt" => ""
   );
-  static $template_footer_active   = true;
-  static $template_footer_cr       = "";
-  static $template_footer_custom   = "";
-  static $template_footer_sort     = array(
+  static $template_footer_active    = true;
+  static $template_footer_cr        = "";
+  static $template_footer_custom    = "";
+  static $template_footer_sort      = array(
     "menu" => true,
     "socialmedia" => true,
     "copyright" => true,
@@ -183,6 +187,7 @@ class prefix_template extends prefix_core_BaseFunctions {
           SELF::$template_header_dmenu = array_key_exists('desktop_menu', $header) ? $header['desktop_menu'] : SELF::$template_header_dmenu;
           SELF::$template_header_custom = array_key_exists('custom', $header) ? $header['custom'] : SELF::$template_header_custom;
           SELF::$template_header_sort = array_key_exists('sort', $header) ? $header['sort'] : SELF::$template_header_sort;
+          SELF::$template_header_logo_link = array_key_exists('logo_link', $header) ? $header['logo_link'] : SELF::$template_header_logo_link;
           SELF::$template_header_logo_d = array_key_exists('logo_desktop', $header) ? $header['logo_desktop'] : SELF::$template_header_logo_d;
           SELF::$template_header_logo_m = array_key_exists('logo_mobile', $header) ? $header['logo_mobile'] : SELF::$template_header_logo_m;
         endif;
@@ -238,7 +243,7 @@ class prefix_template extends prefix_core_BaseFunctions {
             echo $value === true ? SELF::WP_MainMenu(SELF::$template_header_dmenu) : '';
             break;
           case 'logo':
-            echo $value === true ? SELF::Logo(SELF::$template_header_logo_d, SELF::$template_header_logo_m) : '';
+            echo $value === true ? SELF::Logo("", SELF::$template_header_logo_d, SELF::$template_header_logo_m) : '';
             break;
           case 'socialmedia':
             echo $value === true ? SELF::SocialMedia(SELF::$template_socialmedia) : '';
@@ -324,10 +329,11 @@ class prefix_template extends prefix_core_BaseFunctions {
 
     /* 3.4 LOGO
     /------------------------*/
-    public static function Logo(array $desktop = array(), array $mobile = array()){
+    public static function Logo(string $link = "", array $desktop = array(), array $mobile = array()){
       // vars
       $output = '';
       $page_name = get_bloginfo();
+      $link = function_exists("get_bloginfo") && $link == "" ? get_bloginfo('url') : $link;
       $add_desktop = $mobile['img'] !== "" ? 'class="desktop"' : '';
       $add_container = $desktop['img'] == "" && $mobile['img'] == "" ? ' text_logo' : '';
       // output
@@ -336,11 +342,13 @@ class prefix_template extends prefix_core_BaseFunctions {
         $desktop_add = '';
         $desktop_add .= $desktop['width'] !== "" ? ' width="' . $desktop['width'] . '"' : '';
         $desktop_add .= $desktop['height'] !== "" ? ' height="' . $desktop['height'] . '"' : '';
-        $output .= '<img src="' . $desktop['img'] . '" ' . $add_desktop . ' alt="' . $page_name . '"' . $desktop_add . '>';
+        $desktop_add .= $desktop['alt'] !== "" ? ' alt="' . $desktop['alt'] . '"' : '';
+        $output .= '<img src="' . $desktop['img'] . '" ' . $add_desktop . $desktop_add . '>';
         $mobile_add = '';
         $mobile_add .= $mobile['width'] !== "" ? ' width="' . $mobile['width'] . '"' : '';
         $mobile_add .= $mobile['height'] !== "" ? ' height="' . $mobile['height'] . '"' : '';
-        $output .= $mobile['img'] !== "" ? '<img src="' . $mobile['img'] . '" class="mobile" alt="' . $page_name . '"' . $mobile_add . '>' : '';
+        $mobile_add .= $mobile['alt'] !== "" ? ' alt="' . $mobile['alt'] . '"' : '';
+        $output .= $mobile['img'] !== "" ? '<img src="' . $mobile['img'] . '" class="mobile"' . $mobile_add . '>' : '';
       else:
         $output .= $page_name;
       endif;
