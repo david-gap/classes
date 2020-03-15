@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.0.1
+ * @version     1.1
  *
 */
 
@@ -37,24 +37,28 @@ class prefix_WPgalleries extends prefix_core_BaseFunctions {
     /------------------------*/
     /**
       * default vars (if configuration file is missing or broken)
+      * @param static array $WPgalleries_slug: post type slug
+      * @param static bool $WPgalleries_detailpage: enable detail page for cpt
+      * @param static bool $WPgalleries_assets: enable js/css register
+      * @param static array $WPgalleries_others: support for other CPTs
+      * @param static bool $WPgalleries_cpt: Activate galleries CPT
       * @param static string $WPgalleries_cpt_label: CPT Label
       * @param static string $WPgalleries_cpt_rewrite: CPT rewrite
       * @param static string $WPgalleries_cpt_icon: CPT backend icon
       * @param static string $WPgalleries_cpt_support: CPT support
       * @param static array $WPgslleries_cpt_tax: CPT taxonomies
-      * @param static int $WPgalleries_block_max: max entries on block list
-      * @param static bool $WPgalleries_detailpage: enable detail page for cpt
-      * @param static bool $WPgalleries_assets: enable js/css register
     */
+    static $WPgalleries_slug         = 'galleries';
+    static $WPgalleries_others       = array();
+    static $WPgalleries_detailpage   = false;
+    static $WPgalleries_assets       = true;
+    static $WPgalleries_noimg_files  = array('video/mp4', 'video/quicktime', 'video/videopress', 'audio/mpeg');
+    static $WPgalleries_cpt          = false;
     static $WPgalleries_cpt_label    = 'galleries';
     static $WPgalleries_cpt_rewrite  = 'galleries';
     static $WPgalleries_cpt_icon     = "dashicons-format-gallery";
     static $WPgalleries_cpt_support  = array( 'title' );
     static $WPgalleries_cpt_tax      = array();
-    static $WPgalleries_block_max    = -1;
-    static $WPgalleries_detailpage   = false;
-    static $WPgalleries_assets       = true;
-    static $WPgalleries_noimg_files   = array('video/mp4', 'video/quicktime', 'video/videopress', 'audio/mpeg');
 
 
     /* 1.2 ON LOAD RUN
@@ -63,10 +67,12 @@ class prefix_WPgalleries extends prefix_core_BaseFunctions {
       // update default vars with configuration file
       SELF::updateVars();
       // register cpt and redirect pages
-      add_action( 'init', array( $this, 'WPgalleries_register_cpt' ) );
-      // redirect detail page
-      if(SELF::$WPgalleries_detailpage == false):
-        add_action( 'template_redirect', array( $this, 'WPgalleries_redirect_cpt' ) );
+      if(SELF::$WPgalleries_cpt === true):
+        add_action( 'init', array( $this, 'WPgalleries_register_cpt' ) );
+        // redirect detail page
+        if(SELF::$WPgalleries_detailpage == false):
+          add_action( 'template_redirect', array( $this, 'WPgalleries_redirect_cpt' ) );
+        endif;
       endif;
       // add class assets
       if(SELF::$WPgalleries_assets !== false):
@@ -126,7 +132,7 @@ class prefix_WPgalleries extends prefix_core_BaseFunctions {
         $args['show_in_nav_menus'] = true;
         $args['rewrite'] = array('slug' => SELF::$WPgalleries_cpt_rewrite);
       endif;
-      register_post_type( 'galleries', $args );
+      register_post_type( SELF::$WPgalleries_slug, $args );
       // add given taxonomies
       if(!empty(SELF::$WPgalleries_cpt_tax)):
         PARENT::register_cpt_taxonomy("galleries", SELF::$WPgalleries_cpt_tax);
@@ -137,14 +143,19 @@ class prefix_WPgalleries extends prefix_core_BaseFunctions {
     /* 1.5 CREATE META BOX
     /------------------------*/
     function WPgalleries_Metabox() {
+      // combine VARS
+      $WPgalleries_allow = array_merge(array(SELF::$WPgalleries_slug), SELF::$WPgalleries_others);
+      // register meta box for all selected post types
+      foreach( $WPgalleries_allow as $post_type ){
         add_meta_box(
             SELF::$WPgalleries_cpt_rewrite,
             SELF::$WPgalleries_cpt_label,
             array($this, 'WPgalleries_selection'),
-            'galleries',
+            $post_type,
             'normal',
             'high'
         );
+      }
     }
 
 
@@ -164,14 +175,15 @@ class prefix_WPgalleries extends prefix_core_BaseFunctions {
         // class configuration
         $myConfig = $configuration['WPgalleries'];
         // update vars
+        SELF::$WPgalleries_cpt = array_key_exists('cpt', $myConfig) ? $myConfig['cpt'] : SELF::$WPgalleries_cpt;
         SELF::$WPgalleries_cpt_label = array_key_exists('label', $myConfig) ? $myConfig['label'] : SELF::$WPgalleries_cpt_label;
         SELF::$WPgalleries_cpt_rewrite = array_key_exists('rewrite', $myConfig) ? $myConfig['rewrite'] : SELF::$WPgalleries_cpt_rewrite;
         SELF::$WPgalleries_cpt_icon = array_key_exists('icon', $myConfig) ? $myConfig['icon'] : SELF::$WPgalleries_cpt_icon;
         SELF::$WPgalleries_cpt_support = array_key_exists('support', $myConfig) ? $myConfig['support'] : SELF::$WPgalleries_cpt_support;
         SELF::$WPgalleries_cpt_tax = array_key_exists('taxanomies', $myConfig) ? $myConfig['taxanomies'] : SELF::$WPgalleries_cpt_tax;
-        SELF::$WPgalleries_block_max = array_key_exists('block_max', $myConfig) ? $myConfig['block_max'] : SELF::$WPgalleries_block_max;
         SELF::$WPgalleries_detailpage = array_key_exists('detailpage', $myConfig) ? $myConfig['detailpage'] : SELF::$WPgalleries_detailpage;
         SELF::$WPgalleries_assets = array_key_exists('assets', $myConfig) ? $myConfig['assets'] : SELF::$WPgalleries_assets;
+        SELF::$WPgalleries_others = array_key_exists('others', $myConfig) ? $myConfig['others'] : SELF::$WPgalleries_others;
       endif;
     }
 
@@ -202,24 +214,28 @@ class prefix_WPgalleries extends prefix_core_BaseFunctions {
     /* 2.4 SAVE METABOXES
     /------------------------*/
     public function WPgalleries_meta_Save($post_id) {
-      if( isset( $_POST['galleries'] ) ):
-        //Not save if the user hasn't submitted changes
-        if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ):
-          return;
-        endif;
-        // Verifying whether input is coming from the proper form
-        if ( ! wp_verify_nonce ( $_POST['WPgalleries_images'] ) ):
-          return;
-        endif;
-        // Making sure the user has permission
-        if( 'post' == $_POST['galleries'] ):
-          if( ! current_user_can( 'edit_post', $post_id ) ):
+      // get alloed post types
+      $WPgalleries_allow = array_merge(array(SELF::$WPgalleries_slug), SELF::$WPgalleries_others);
+      foreach( $WPgalleries_allow as $post_type ){
+        if(isset( $_POST[$post_type] )):
+          //Not save if the user hasn't submitted changes
+          if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ):
             return;
           endif;
+          // Verifying whether input is coming from the proper form
+          if ( ! wp_verify_nonce ( $_POST['WPgalleries_images'] ) ):
+            return;
+          endif;
+          // Making sure the user has permission
+          if( 'post' == $_POST[$post_type] ):
+            if( ! current_user_can( 'edit_post', $post_id ) ):
+              return;
+            endif;
+          endif;
         endif;
-      endif;
-      // save dominant color
-      update_post_meta($post_id, 'WPgalleries_images', $_POST['WPgalleries_images']);
+        // save dominant color
+        update_post_meta($post_id, 'WPgalleries_images', $_POST['WPgalleries_images']);
+      }
     }
 
 

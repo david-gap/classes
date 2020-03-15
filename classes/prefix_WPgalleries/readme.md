@@ -1,8 +1,10 @@
-**Version 1.0** (14.03.2020)
+**Version 1.1** (15.03.2020)
 
 Custom class "WPgalleries"
 
 ## CONFIGURATION OPTIONS
+* $WPgalleries_slug: post type slug
+* $WPgalleries: Activate galleries CPT
 * $WPgalleries_cpt_label: CPT Label
 * $WPgalleries_cpt_rewrite: CPT rewrite
 * $WPgalleries_cpt_icon: CPT backend icon
@@ -25,9 +27,11 @@ Custom class "WPgalleries"
       "query_var": true
     }
   },
-  "block_max": -1,
   "detailpage": false,
-  "assets": true
+  "assets": true,
+  "others": {
+    "0": "other cpt slug"
+  }
 }
 ```
 
