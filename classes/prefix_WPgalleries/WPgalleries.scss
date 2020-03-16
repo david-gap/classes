@@ -2,7 +2,7 @@
  * WPgalleries CSS File
  *
  * @author         David Voglgsang
- * @version        1.0
+ * @version        1.1
  *
  */
 
@@ -175,7 +175,7 @@
   margin-left: calc(-50vw + 50%);
   overflow: hidden;
   .galleries-inner {
-    height: calc(100% + 30px);
+    height: calc(100vh + 30px);
     display: flex;
     align-items: flex-start;
     flex-direction: row;
@@ -201,7 +201,7 @@
   NAVIGATION ARROWS
 ==================================================================================*/
 .galleries-arrow {
-  background-color: rgba(0, 0, 0, .4);
+  background-color: rgba(0, 0, 0, .6);
   cursor: pointer;
   display: block;
   position: absolute;
@@ -239,5 +239,6 @@
   > svg {
     width: 100%;
     height: 100%;
+    fill: white;
   }
 }

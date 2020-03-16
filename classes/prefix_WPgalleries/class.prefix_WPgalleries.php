@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.1
+ * @version     1.2
  *
 */
 
@@ -204,10 +204,14 @@ class prefix_WPgalleries extends prefix_core_BaseFunctions {
     /------------------------*/
     function WPgalleries_backend_enqueue_scripts_and_styles(){
       $class_path = get_stylesheet_directory_uri() . '/config/classes/prefix_WPgalleries/';
+      // css
+      wp_enqueue_script( 'backend/WPgalleries-styles' );
+      wp_enqueue_style('backend/WPgalleries-styles', $class_path . 'backend.css', false, null);
+      // js
       wp_enqueue_script('backend/WPgalleries-script', $class_path . 'WPgalleries-backend.js', false, null);
       // Define path for ajax requests
       $backend_ajax_action_file = $class_path . 'ajax.php';
-      wp_localize_script( 'backend/WPgalleries-script', 'WPimg_Ajax', $backend_ajax_action_file );
+      wp_localize_script( 'backend/WPgalleries-script', 'WPgalleries_Ajax', $backend_ajax_action_file );
     }
 
 
@@ -336,16 +340,21 @@ class prefix_WPgalleries extends prefix_core_BaseFunctions {
         // vars
         $output = '';
         global $post;
+        // call wp media
         wp_enqueue_media();
+        // svg
+        $remove = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 24.9 24.9" xml:space="preserve"><rect x="-3.7" y="10.9" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -5.1549 12.4451)" fill="#000" width="32.2" height="3"/><rect x="10.9" y="-3.7" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -5.1549 12.4451)" fill="#000" width="3" height="32.2"/></svg>';
+        // selected images
         $selection = get_post_meta($post->ID, 'WPgalleries_images', true);
         $selected_images = '';
         if($selection):
           $selected_images .= '<ul class="galleriesImages_list">';
           $gallery = explode(',', $selection);
           foreach ($gallery as $image) {
-            $selected_images .= '<li><div class="galleriesImages_container"><span class="remove_image">';
-            $selected_images .= '<img id="' . esc_attr($image) . '" src="' . wp_get_attachment_thumb_url($image) . '">';
-            $selected_images .= '</span></div></li>';
+            $selected_images .= '<li data-id="' . $image . '"><div class="galleriesImages_container">';
+              $selected_images .= '<span class="remove_image">' . $remove . '</span>';
+              $selected_images .= '<img id="' . esc_attr($image) . '" src="' . wp_get_attachment_thumb_url($image) . '">';
+            $selected_images .= '</div></li>';
           }
           $selected_images .= '</ul>';
         endif;
@@ -354,7 +363,7 @@ class prefix_WPgalleries extends prefix_core_BaseFunctions {
         echo '<div class="wrap" id="WPgalleries">';
           echo '<input id="galleriesImages" type="hidden" name="WPgalleries_images" value="' . esc_attr($selection) . '" />';
           echo '<button class="wp-media ajax-action" data-action="WPgalleries">' . __('Select images','WPgalleries') . '</button>';
-          echo '<span id="galleriesImages_src">' . $selected_images . '</span>';
+          echo $selected_images;
         echo '</div>';
     }
 
