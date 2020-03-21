@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.2.2
+ * @version     1.2.3
  *
 */
 
@@ -121,7 +121,7 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
                     foreach ($row_value as $key => $value) {
                       $SingleDataArray[$key] = $value;
                     }
-                    if($id_column >= 0):
+                    if($id_column >= 0 && $id_column !== false):
                       // fallback for first row if column names are inside
                       if($title && $row == 1):
                         $id = 0;
@@ -154,7 +154,7 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
                         foreach ($data as $key => $value) {
                           $SingleDataArray[] = mb_convert_encoding($value, $file_coding, $encoding);
                         }
-                        if($id_column >= 0):
+                        if($id_column >= 0 && $id_column !== false):
                           // fallback for first row if column names are inside
                           if($title && $row == 1):
                             $id = 0;
