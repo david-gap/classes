@@ -174,6 +174,11 @@
   max-width: none;
   margin-left: calc(-50vw + 50%);
   overflow: hidden;
+  @include mobile {
+    width: 100%;
+    height: 250px;
+    margin-left: 0;
+  }
   .galleries-inner {
     height: calc(100vh + 30px);
     display: flex;
@@ -182,7 +187,11 @@
     flex-wrap: nowrap;
     align-items: stretch;
     overflow-x: scroll;
+    overflow-y: hidden;
     scroll-snap-type: x mandatory;
+    @include mobile {
+      height: calc(250px + 30px);
+    }
     > div {
       scroll-snap-align: start;
       width: 100%;

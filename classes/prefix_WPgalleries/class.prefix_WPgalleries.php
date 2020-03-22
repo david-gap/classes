@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.2
+ * @version     1.2.1
  *
 */
 
@@ -238,7 +238,9 @@ class prefix_WPgalleries extends prefix_core_BaseFunctions {
           endif;
         endif;
         // save dominant color
-        update_post_meta($post_id, 'WPgalleries_images', $_POST['WPgalleries_images']);
+        if(isset($_POST['WPgalleries_images'])):
+          update_post_meta($post_id, 'WPgalleries_images', $_POST['WPgalleries_images']);
+        endif;
       }
     }
 
