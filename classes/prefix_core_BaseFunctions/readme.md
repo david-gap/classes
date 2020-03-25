@@ -1,4 +1,4 @@
-**Version 2.1** (13.03.2020)
+**Version 2.2** (25.03.2020)
 
 Custom class "prefix_core_BaseFunctions" used as a library for useful functions
 
@@ -87,6 +87,14 @@ $array = array(
 core_BaseFunctions::MultidArraySearch('findme', $array, 'value');
 /* RESULTING: bool */
 return true
+```
+
+### 1.11 CLEAN PHONE NUMBER
+Clean given string from spaces, + or () so it can be used as phone number link
+```php
+core_BaseFunctions::cleanPhoneNr('+41(0)123456789');
+/* RESULTING: string */
+return "0041123456789"
 ```
 
 

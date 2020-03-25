@@ -4,7 +4,7 @@
  *
  * Base dev functions - parent for all custom classes
  * Author:      David Voglgsnag
- * @version     2.1
+ * @version     2.2
  *
  */
 
@@ -22,6 +22,7 @@
    1.8 COPY FOLDER CONTENT AND SUB FOLDERS
    1.9 GET CONTENT FROM STRING BETWEEN TWO CHARS/CHAR GROUPS
    1.10 FIND KEY IN MULTIDIMENSIONAL ARRAY
+   1.11 CLEAN PHONE NUMBER
  2.0 DATES
    2.1 CHECK IF VARS ARE OUT OF DATE
    2.2 DATE RANGE FORMAT
@@ -272,6 +273,30 @@ class prefix_core_BaseFunctions {
         endif;
       }
       return $found;
+    }
+
+
+    /* 1.11 CLEAN PHONE NUMBER
+    /------------------------*/
+    /**
+      * clean given string from spaces, + or () so it can be used as phone number link
+      * @param string $number: given phone number
+      * @return string clean number
+    */
+    public static function cleanPhoneNr(string $number = ''){
+      // clean country code
+      $ccc_number = str_replace(array('+', ' '), array('00', ''), $number);
+      // check if number contains ()
+      if(strpos($ccc_number, '(') !== false):
+        // check if ( is on first position
+        $ccc_number_l = substr($ccc_number, 0, 1);
+        $phone_text_between = PARENT::getBetween($ccc_number , "(", ")");
+        $clean_number = $ccc_number_l == "(" ? $phone_text_between . str_replace(array('(', ')'), array('', ''), $ccc_number) : str_replace(array('(' . $phone_text_between . ')'), array(''), $ccc_number);
+      else:
+        $clean_number = $ccc_number;
+      endif;
+      // output
+      return $clean_number;
     }
 
 
