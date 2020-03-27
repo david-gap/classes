@@ -1,4 +1,4 @@
-**Version 2.2** (25.03.2020)
+**Version 2.3** (26.03.2020)
 
 Custom class "prefix_core_BaseFunctions" used as a library for useful functions
 
@@ -95,6 +95,13 @@ Clean given string from spaces, + or () so it can be used as phone number link
 core_BaseFunctions::cleanPhoneNr('+41(0)123456789');
 /* RESULTING: string */
 return "0041123456789"
+```
+
+### 1.12 DELETE FOLDER
+Delete folder with files and subfolders inside
+```php
+core_BaseFunctions::deleteFolder('root/folder');
+return true
 ```
 
 

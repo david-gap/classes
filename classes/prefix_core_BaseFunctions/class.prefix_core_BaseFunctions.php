@@ -4,7 +4,7 @@
  *
  * Base dev functions - parent for all custom classes
  * Author:      David Voglgsnag
- * @version     2.2
+ * @version     2.3
  *
  */
 
@@ -23,6 +23,7 @@
    1.9 GET CONTENT FROM STRING BETWEEN TWO CHARS/CHAR GROUPS
    1.10 FIND KEY IN MULTIDIMENSIONAL ARRAY
    1.11 CLEAN PHONE NUMBER
+   1.12 DELETE FOLDER
  2.0 DATES
    2.1 CHECK IF VARS ARE OUT OF DATE
    2.2 DATE RANGE FORMAT
@@ -298,6 +299,41 @@ class prefix_core_BaseFunctions {
       // output
       return $clean_number;
     }
+
+
+    /* 1.12 DELETE FOLDER
+    /------------------------*/
+    /**
+      * Delete folder with files and subfolders inside
+      * @param string $DirName: path to file or directory
+      * @return bool true/false
+    */
+    private function deleteFolder(string $DirName = ''){
+      // check the folder
+      $check = SELF::CheckDir($DirName);
+      // check if file or path exists
+      if($check):
+        $files = glob($DirName . '/*');
+        foreach($files as $file){
+          // check file type
+          if(is_file($file)):
+            // delete files
+            unlink($file);
+          else:
+            // delete files inside folder
+            SELF::deleteFolder($file);
+            // delete folder
+            rmdir($file);
+          endif;
+        }
+        $message = true;
+      else:
+        $message = false;
+      endif;
+      // output
+      return $message;
+    }
+
 
 
 
