@@ -10,6 +10,7 @@
   position: relative;
   border: 1px solid;
   line-height: 0;
+  max-width: 100px;
 }
 .galleriesImages_list .galleriesImages_container .remove_image {
   position: absolute;
