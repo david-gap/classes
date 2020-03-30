@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.2.2
+ * @version     1.2.3
  *
 */
 
@@ -498,6 +498,9 @@ class prefix_template extends prefix_core_BaseFunctions {
     /* 3.10 SOCIAL MEDIA
     /------------------------*/
     public static function SocialMedia(array $sm = array()){
+      // value fallback
+      $sm = empty($sm) ? SELF::$template_socialmedia : $sm;
+      // check if value given
       if($sm):
         // vars
         $output = '';
