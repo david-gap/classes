@@ -8,7 +8,7 @@
  * • include all php classes
  *
  * @author      David Voglgsang
- * @version     1.0.2
+ * @version     1.0.3
  *
 */
 
@@ -125,13 +125,13 @@ Table of Contents:
   /------------------------*/
   if (function_exists('add_action')):
     // set global
-    add_action( 'init', 'prefix_JSON_as_Global' );
+    add_action( 'init', 'prefix_JSON_as_Global', 1 );
     // register
     add_action( 'init', function(){
       spl_autoload_register('prefix_registerFunction');
     }, 1 );
     // register
-    add_action( 'init', 'prefix_RunClassesInit' );
+    add_action( 'init', 'prefix_RunClassesInit', 1 );
   else:
     // set global
     prefix_JSON_as_Global();
