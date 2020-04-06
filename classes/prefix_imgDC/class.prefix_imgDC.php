@@ -6,7 +6,7 @@
  * IMG dominant color - WP compatible
  * https://github.com/david-gap/classes
  * Author:      David Voglgsang
- * @version     1.0
+ * @version     1.0.1
  *
  */
 
@@ -201,15 +201,18 @@ class prefix_imgDC extends prefix_core_BaseFunctions {
     /* 2.7 SAVE DOMINANT
     /------------------------*/
     public static function saveDominantColor(int $id = 0, bool $return = false){
-      $file_type = get_post_mime_type($id);
-      if(!in_array($file_type, SELF::$imgDC_nocolor_files)):
-        $full_image_url = wp_get_attachment_image_src($id, 'full');
-        $thumb_image_url = wp_get_attachment_image_src($id, 'thumbnail');
-        $img_url = $thumb_image_url[0] ? $thumb_image_url[0] : $full_image_url[0];
+      // uploads directory
+      $path = wp_get_upload_dir();
+      // get attachment meta data
+      $metadata = wp_get_attachment_metadata($id);
+      $img_type = get_post_mime_type($id);
+      $img_path = $path["baseurl"] . '/' . $metadata["file"];
+      // check file type
+      if(!in_array($img_type, SELF::$imgDC_nocolor_files)):
         // check if file exists
-        $check_file = PARENT::checkRemoteFile($img_url);
+        $check_file = PARENT::CheckFileExistence($img_path);
         if ($check_file == true):
-          $color = SELF::IMGcolor($img_url);
+          $color = SELF::IMGcolor($img_path);
         else:
           $color = 'file_missing';
         endif;
@@ -326,7 +329,7 @@ class prefix_imgDC extends prefix_core_BaseFunctions {
           // save dominant color
           $new_color = SELF::saveDominantColor(get_the_ID(), true);
           // get img
-          $full_image_url = wp_get_attachment_image_src(get_the_ID(), 'full');
+          $full_image_url = wp_get_attachment_image_src(get_the_ID());
           // output
           $output .= '<tr>';
             $output .= '<td style="background-color: #' . $new_color . '">';
@@ -455,12 +458,7 @@ class prefix_imgDC extends prefix_core_BaseFunctions {
           $img_color = $get_img_color ? $get_img_color : "false";
           // fallback color
           if($img_color == "false"):
-            if($fallback_bg == '' || $img_type == 'image/svg+xml'):
-              $image_url = $img_url;
-              $img_color = SELF::IMGcolor($image_url);
-            else:
-              $img_color = SELF::$imgDC_defaultcolor;
-            endif;
+            $img_color = SELF::$imgDC_defaultcolor;
           endif;
 
         // output

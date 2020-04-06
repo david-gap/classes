@@ -2,7 +2,7 @@
  * javascript/jQuery functions for imgDC Class
  *
  * @author      David Voglgsang
- * @version     1.0
+ * @version     1.0.1
  *
  */
 
@@ -70,9 +70,15 @@ jQuery(function ($) {
           img_h         = $(this).attr('height'),
           img_current_w = $(this).width(),
           percent       = 100 / img_w * img_current_w,
-          get_current_h = img_h / 100 * percent;
+          get_current_h = img_h / 100 * percent,
+          img_current_h = $(this).css('height'),
+          parent_height = $(this).parent().css('height');
       // update height
-      $(this).css("max-height", get_current_h);
+      if(img_current_h == parent_height){
+        // fallback for imgages that fill a container
+      } else {
+        $(this).css("max-height", get_current_h);
+      }
       // place src if img is visible
       if ($(this).isOnScreen()) {
         if(img_srcset) {
@@ -80,8 +86,8 @@ jQuery(function ($) {
         } else {
           $(this).attr("src", img_src);
         }
-        $(this).css("max-height", "");
-        $(this).removeClass("imgDC");
+         $(this).css("max-height", "");
+         $(this).removeClass("imgDC");
       }
     });
   }
