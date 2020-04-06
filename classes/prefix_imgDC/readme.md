@@ -34,7 +34,7 @@ Custom class "imgDC" to get image dominant color and ad a WP preloader
 
 ### GET DOMINANT COLOR BY URL
 ```php
-echo SELF::IMGcolor($image_url);
+echo prefix_imgDC::IMGcolor($image_url);
 ```
 
 ### GET WORDPRESS SINGLE IMAGE
