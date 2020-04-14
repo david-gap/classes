@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.2
+ * @version     1.2.1
  *
 */
 
@@ -185,7 +185,7 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
         wp_localize_script( 'theme/scripts', 'theme_directory', get_template_directory_uri());
       endif;
       // disable Gutenberg block styles
-      if (SELF::$WPinit_gutenberg_css !== false) :
+      if (SELF::$WPinit_gutenberg_css !== true) :
         wp_dequeue_style( 'wp-block-library' );
       endif;
       // styles
