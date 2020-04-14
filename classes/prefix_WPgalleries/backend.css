@@ -12,6 +12,11 @@
   line-height: 0;
   max-width: 100px;
 }
+.galleriesImages_list .galleriesImages_container img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+}
 .galleriesImages_list .galleriesImages_container .remove_image {
   position: absolute;
   top: -10px;

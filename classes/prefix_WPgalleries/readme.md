@@ -1,4 +1,4 @@
-**Version 1.2.2** (30.03.2020)
+**Version 1.2.3** (14.04.2020)
 
 Custom class "WPgalleries"
 

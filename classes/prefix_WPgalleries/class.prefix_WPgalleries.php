@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.2.2
+ * @version     1.2.3
  *
 */
 
@@ -302,7 +302,8 @@ class prefix_WPgalleries extends prefix_core_BaseFunctions {
       $config = shortcode_atts( array(
         'id' => '0',
         'layout' => 'grid',
-        'css' => ''
+        'css' => '',
+        'sort' => ''
       ), $atts );
       // check if shortcode has images selection or a single gallery
       if (strpos($config['id'], ',') !== false):
@@ -310,6 +311,10 @@ class prefix_WPgalleries extends prefix_core_BaseFunctions {
       else:
         $get_selection = get_post_meta($config['id'], 'WPgalleries_images', true);
         $selection = PARENT::AttrToArray($get_selection);
+      endif;
+      // random sort
+      if($config['sort'] == "random"):
+        shuffle($selection);
       endif;
 
       // count entries
@@ -350,7 +355,7 @@ class prefix_WPgalleries extends prefix_core_BaseFunctions {
         $selection = get_post_meta($post->ID, 'WPgalleries_images', true);
         $selected_images = '';
         if($selection):
-          $selected_images .= '<ul class="galleriesImages_list">';
+          $selected_images .= '<ul id="galleriesImages_list">';
           $gallery = explode(',', $selection);
           foreach ($gallery as $image) {
             $selected_images .= '<li data-id="' . $image . '"><div class="galleriesImages_container">';

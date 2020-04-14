@@ -5,12 +5,12 @@ jQuery(document).ready(function($){
 
   /* SORT SELECTED IMAGES
   /------------------------*/
-  $( ".galleriesImages_list" ).sortable({
+  $( "#galleriesImages_list" ).sortable({
     update: function( event, ui ) {
       // create array
       var img_ids = [];
       // push ids into array
-      $( ".galleriesImages_list li" ).each(function() {
+      $( "#galleriesImages_list li" ).each(function() {
         var img_id = $(this).attr("data-id");
         img_ids.push(img_id);
       });
@@ -70,7 +70,7 @@ jQuery(document).ready(function($){
               metadataString = imageIDArray.join(",");
               if (metadataString) {
                       jQuery("#galleriesImages").val(metadataString);
-                      jQuery("#galleriesImages_list").html(imageHTML);
+                      jQuery(".galleriesImages_list").html(imageHTML);
               }
       });
       // Finally, open the modal
