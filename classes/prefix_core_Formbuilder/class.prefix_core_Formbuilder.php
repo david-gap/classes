@@ -5,7 +5,7 @@
  * Form Builder
  * https://github.com/david-gap/classes
  * Author: David Voglgsang
- * @version     1.0.2
+ * @version     1.1.2
  */
 
 class prefix_core_Formbuilder extends prefix_core_BaseFunctions {
@@ -37,6 +37,7 @@ class prefix_core_Formbuilder extends prefix_core_BaseFunctions {
     "disabled" => "",           // disable field
     "value" => "",              // default value
     "id" => "",                 // field id
+    "attributes" => "",         // field additional attributes
     "class" => "",              // field css class
     "label" => "",              // field label
     "placeholder" => "",        // placeholder
@@ -55,6 +56,11 @@ class prefix_core_Formbuilder extends prefix_core_BaseFunctions {
     $classes .= array_key_exists('css', $input) ? ' ' . $input['css'] : '';
     // container conditions
     $c_addition = '';
+    if(array_key_exists('attributes', $input)):
+      foreach ($input['attributes'] as $datakey => $data) {
+        $c_addition .= ' ' . $datakey . '="' . $data . '"';
+      }
+    endif;
     $c_addition .= array_key_exists('id', $input) ? 'id="' . $input['id'] . '" ' : '';
     // input conditions
     $i_addition = '';
@@ -89,10 +95,10 @@ class prefix_core_Formbuilder extends prefix_core_BaseFunctions {
                 break;
               case "checkbox":
                 if (is_array($value)):
-                  foreach ($value as $checkbox) {
+                  foreach ($value as $key => $checkbox) {
                     $checked = PARENT::setChecked($checkbox, PARENT::getFormPost($prefix . '-' . $name));
                     $output .= '<label>';
-                      $output .= '<input type="checkbox" name="' . $prefix . '-' . $name . '[]" value="' . $checkbox . '" ' . $checked . '>';
+                      $output .= '<input type="checkbox" name="' . $prefix . '-' . $name . '[]" value="' . $key . '" ' . $checked . '>';
                       $output .= '<span>' . $checkbox . '</span>';
                     $output .= '</label>';
                   }
@@ -106,10 +112,10 @@ class prefix_core_Formbuilder extends prefix_core_BaseFunctions {
                 break;
               case "radio":
                 if (is_array($value)):
-                  foreach ($value as $radio) {
+                  foreach ($value as $key => $radio) {
                     $checked = PARENT::setChecked($radio, PARENT::getFormPost($prefix . '-' . $name));
                     $output .= '<label>';
-                      $output .= '<input type="radio" name="' . $prefix . '-' . $name . '[]" value="' . $radio . '" ' . $checked . '>';
+                      $output .= '<input type="radio" name="' . $prefix . '-' . $name . '[]" value="' . $key . '" ' . $checked . '>';
                       $output .= '<span>' . $radio . '</span>';
                     $output .= '</label>';
                   }

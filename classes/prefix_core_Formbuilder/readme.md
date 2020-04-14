@@ -1,4 +1,4 @@
-**Version 1.0.2** (19.02.2020)
+**Version 1.1.2** (14.04.2020)
 
 Custom class "Formbuilder": Build a formular simply by creating a array and inserting it into a new class season.
 
@@ -26,6 +26,7 @@ array(
   "disabled" => "",           // disable field
   "value" => "",              // default value
   "id" => "",                 // field id
+  "attributes" => "",         // field additional attributes
   "class" => "",              // field css class
   "label" => "",              // field label
   "placeholder" => "",        // placeholder
