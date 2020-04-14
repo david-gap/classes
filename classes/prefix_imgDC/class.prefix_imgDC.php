@@ -6,7 +6,7 @@
  * IMG dominant color - WP compatible
  * https://github.com/david-gap/classes
  * Author:      David Voglgsang
- * @version     1.0.1
+ * @version     1.0.2
  *
  */
 
@@ -72,7 +72,7 @@ class prefix_imgDC extends prefix_core_BaseFunctions {
         // add custom fields
         add_action('add_meta_boxes', array( $this, 'meta_Attachments' ) );
         // update custom fields
-        add_action('add_attachment', array( $this, 'meta_Attachments_Save' ),  10, 2 );
+        add_action('add_attachment', array( $this, 'meta_Attachments_Save' ),  100, 2 );
         add_action('edit_attachment', array( $this, 'meta_Attachments_Save' ),  10, 2 );
         // backend page
         add_action( 'admin_menu', array( $this, 'imgDC_backendPage' ) );
@@ -201,20 +201,16 @@ class prefix_imgDC extends prefix_core_BaseFunctions {
     /* 2.7 SAVE DOMINANT
     /------------------------*/
     public static function saveDominantColor(int $id = 0, bool $return = false){
-      // uploads directory
-      $path = wp_get_upload_dir();
       // get attachment meta data
-      $metadata = wp_get_attachment_metadata($id);
+      $img_full_url = wp_get_attachment_image_src($id, 'full');
       $img_type = get_post_mime_type($id);
-      $img_path = $path["baseurl"] . '/' . $metadata["file"];
       // check file type
       if(!in_array($img_type, SELF::$imgDC_nocolor_files)):
         // check if file exists
-        $check_file = PARENT::CheckFileExistence($img_path);
+        $check_file = PARENT::CheckFileExistence($img_full_url[0]);
         if ($check_file == true):
-          $color = SELF::IMGcolor($img_path);
+          $color = SELF::IMGcolor($img_full_url[0]);
         else:
-          $color = 'file_missing';
         endif;
       else:
         $color = SELF::$imgDC_defaultcolor;
