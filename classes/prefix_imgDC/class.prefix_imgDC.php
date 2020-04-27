@@ -6,7 +6,7 @@
  * IMG dominant color - WP compatible
  * https://github.com/david-gap/classes
  * Author:      David Voglgsang
- * @version     1.0.2
+ * @version     1.1.2
  *
  */
 
@@ -68,6 +68,7 @@ class prefix_imgDC extends prefix_core_BaseFunctions {
         // lazy loading content img
         if(SELF::$imgDC_content !== false):
           add_filter('the_content', array( $this, 'ContentLazyLoading' ), 12 );
+          add_filter('do_shortcode_tag', array( $this, 'ContentLazyLoading' ), 12 );
         endif;
         // add custom fields
         add_action('add_meta_boxes', array( $this, 'meta_Attachments' ) );

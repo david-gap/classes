@@ -2,7 +2,7 @@
  * javascript/jQuery functions for imgDC Class
  *
  * @author      David Voglgsang
- * @version     1.0.1
+ * @version     1.1.2
  *
  */
 
@@ -115,6 +115,13 @@ jQuery(function ($) {
     // addEventListener("mousedown", checkImgVisible, false);
     // addEventListener("mouseup", checkImgVisible, false);
     // addEventListener("mousemove", checkImgVisible, false);
+
+    // check visible img/arrow on swiper hover
+    $( "img, .arrow" ).mouseover(function() {
+      setTimeout(function() {
+        myLazyAction();
+      }, 500);
+    });
 
   });
 
