@@ -1,0 +1,125 @@
+$breakpoint:        767px;
+$space_short:       7px;
+$space_half:        10px;
+$space:             20px;
+$space_double:      40px;
+
+
+/* FORMBUILDER
+/------------------------*/
+.form-builder-container {
+  &.two-columns {
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: $space_double;
+      > h3 {
+        width: 100%;
+      }
+      > span {
+        position: relative;
+        width: 100%;
+        margin: $space_half 0;
+        &.fullwidth {
+          width: 100%!important;
+        }
+        @media (min-width: $breakpoint) {
+          width: calc(50% - 10px);
+        }
+      }
+    }
+  }
+  form {
+    > span {
+      &.inquiry-form-radio {
+        input {
+          margin-right: $space_short;
+        }
+        label {
+          margin-right: $space;
+        }
+      }
+      &.inquiry-form-select {
+        &:after {
+          position: absolute;
+          display: block;
+          content: "";
+          bottom: 12px;
+          right: 10px;
+          width: 20px;
+          height: 12px;
+          background-image: url("images/formicon-selectarrow.svg");
+          pointer-events: none;
+        }
+        select {
+          padding-right: $space_double;
+          cursor: pointer;
+        }
+      }
+      &.inquiry-form-checkbox {
+        > label {
+          display: block;
+          font-weight: 500;
+          + label {
+            margin-top: $space_short;
+          }
+          input {
+            display: none;
+          }
+          span {
+            display: inline-block;
+            position: relative;
+            padding-left: 30px;
+            cursor: pointer;
+            &:before {
+              display: block;
+              position: absolute;
+              left: 0;
+              top: 0;
+              content: "";
+              width: 20px;
+              height: 20px;
+              border: 1px solid;
+            }
+          }
+          input:checked + span {
+            &:before {
+              background-image: url("images/formicon-checkbox.svg");
+              background-position: center;
+              background-size: 14px;
+            }
+          }
+        }
+      }
+      > label:first-child {
+        display: block;
+        font-weight: 500;
+        margin-bottom: 2px;
+      }
+    }
+  }
+  input[type="text"],
+  input[type="email"],
+  select,
+  textarea {
+    width: 100%;
+    padding: $space_short $space_half;
+    border-radius: 0;
+    border: 0 solid;
+    min-height: 20px;
+    font-size: 110%;
+    appearance: none;
+    line-height: 1.5;
+  }
+  input[type="submit"] {
+    border-radius: 0;
+    padding: $space_short $space_half;
+    border: 1px solid $color__main;
+    font-size: 110%;
+    appearance: none;
+    letter-spacing: 1px;
+    cursor: pointer;
+    margin-top: $space_half;
+  }
+}

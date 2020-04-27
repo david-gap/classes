@@ -5,7 +5,7 @@
  * Form Builder
  * https://github.com/david-gap/classes
  * Author: David Voglgsang
- * @version     1.1.2
+ * @version     1.2.2
  */
 
 class prefix_core_Formbuilder extends prefix_core_BaseFunctions {
@@ -51,6 +51,8 @@ class prefix_core_Formbuilder extends prefix_core_BaseFunctions {
     $type = array_key_exists('type', $input) ? $input['type'] : false;
     $name = array_key_exists('name', $input) ? $input['name'] : false;
     $disabled = array_key_exists('disabled', $input) ? $input['disabled'] : false;
+    $autocomplete = array_key_exists('autocomplete', $input) ? $input['autocomplete'] : false;
+    $readonly = array_key_exists('readonly', $input) ? $input['readonly'] : false;
     $value = array_key_exists('value', $input) ? $input['value'] : false;
     $classes = '';
     $classes .= array_key_exists('css', $input) ? ' ' . $input['css'] : '';
@@ -64,9 +66,12 @@ class prefix_core_Formbuilder extends prefix_core_BaseFunctions {
     $c_addition .= array_key_exists('id', $input) ? 'id="' . $input['id'] . '" ' : '';
     // input conditions
     $i_addition = '';
-    $i_addition .= $name ? 'name="'. $prefix . '-' . $name . '" ' : '';
+    $prefix = $prefix !== '' ? $prefix . '-' : '';
+    $i_addition .= $name ? 'name="'. $prefix . $name . '" ' : '';
     $i_addition .= array_key_exists('placeholder', $input) && $type !== 'select' ? 'placeholder="' . $input['placeholder'] . '" ' : '';
     $i_addition .= $disabled ? 'disabled ' : '';
+    $i_addition .= $autocomplete ? 'autocomplete="' . $input['autocomplete'] . '" ' : '';
+    $i_addition .= $readonly ? 'readonly="' . $input['readonly'] . '" ' : '';
     // output
     switch ($type) {
       // fallback for hidden fields
@@ -75,7 +80,7 @@ class prefix_core_Formbuilder extends prefix_core_BaseFunctions {
         break;
       default:
           $output .= array_key_exists('form_input_before', $input) ? $input['form_input_before'] : '';
-          $output .= '<span class="'. $prefix . '-' . $type . $classes . '" ' . $c_addition . '>';
+          $output .= '<span class="'. $prefix . $type . $classes . '" ' . $c_addition . '>';
             $output .= array_key_exists('label', $input) ? '<label for="for-' . $name . '">' . $input['label'] . '</label>' : '';
             // output by input type
             switch ($type) {
@@ -85,27 +90,27 @@ class prefix_core_Formbuilder extends prefix_core_BaseFunctions {
                     $output .= '<option selected="selected">' . $input['placeholder'] . '</option>';
                   endif;
                   foreach ($value as $option) {
-                    $select = PARENT::setSelected($option, PARENT::getFormPost($prefix . '-' . $name));
+                    $select = PARENT::setSelected($option, PARENT::getFormPost($prefix . $name));
                     $output .= '<option value="' . $option . '" ' . $select . '>' . $option . '</option>';
                   }
                 $output .= '</select>';
                 break;
               case "textarea":
-                $output .= '<textarea ' . $i_addition . ' id="for-' . $name . '">' . PARENT::getFormPost($prefix . '-' . $name, $value) . '</textarea>';
+                $output .= '<textarea ' . $i_addition . ' id="for-' . $name . '">' . PARENT::getFormPost($prefix . $name, $value) . '</textarea>';
                 break;
               case "checkbox":
                 if (is_array($value)):
                   foreach ($value as $key => $checkbox) {
-                    $checked = PARENT::setChecked($checkbox, PARENT::getFormPost($prefix . '-' . $name));
+                    $checked = PARENT::setChecked($checkbox, PARENT::getFormPost($prefix . $name));
                     $output .= '<label>';
-                      $output .= '<input type="checkbox" name="' . $prefix . '-' . $name . '[]" value="' . $key . '" ' . $checked . '>';
+                      $output .= '<input type="checkbox" name="' . $prefix . $name . '[]" value="' . $key . '" ' . $checked . '>';
                       $output .= '<span>' . $checkbox . '</span>';
                     $output .= '</label>';
                   }
                 else:
-                  $checked = PARENT::setChecked($value, PARENT::getFormPost($prefix . '-' . $name));
+                  $checked = PARENT::setChecked($value, PARENT::getFormPost($prefix . $name));
                   $output .= '<label>';
-                    $output .= '<input type="checkbox" name="' . $prefix . '-' . $name . '" value="' . $value . '" ' . $checked . '>';
+                    $output .= '<input type="checkbox" name="' . $prefix . $name . '" value="' . $value . '" ' . $checked . '>';
                     $output .= '<span>' . $value . '</span>';
                   $output .= '</label>';
                 endif;
@@ -113,9 +118,9 @@ class prefix_core_Formbuilder extends prefix_core_BaseFunctions {
               case "radio":
                 if (is_array($value)):
                   foreach ($value as $key => $radio) {
-                    $checked = PARENT::setChecked($radio, PARENT::getFormPost($prefix . '-' . $name));
+                    $checked = PARENT::setChecked($radio, PARENT::getFormPost($prefix . $name));
                     $output .= '<label>';
-                      $output .= '<input type="radio" name="' . $prefix . '-' . $name . '[]" value="' . $key . '" ' . $checked . '>';
+                      $output .= '<input type="radio" name="' . $prefix . $name . '[]" value="' . $key . '" ' . $checked . '>';
                       $output .= '<span>' . $radio . '</span>';
                     $output .= '</label>';
                   }
@@ -124,7 +129,7 @@ class prefix_core_Formbuilder extends prefix_core_BaseFunctions {
                 endif;
                 break;
               default:
-                $output .= '<input type="' . $type . '" id="for-' . $name . '" value="' . PARENT::getFormPost($prefix . '-' . $name, $value) . '" ' . $i_addition . '>';
+                $output .= '<input type="' . $type . '" id="for-' . $name . '" value="' . PARENT::getFormPost($prefix . $name, $value) . '" ' . $i_addition . '>';
             }
           $output .= '</span>';
           $output .= array_key_exists('form_input_after', $input) ? $input['form_input_after'] : '';

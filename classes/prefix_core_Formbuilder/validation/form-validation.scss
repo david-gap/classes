@@ -1,0 +1,41 @@
+$color__red:   #a53737;
+$color__green: #74b95b;
+
+
+/* VALIDATION
+/------------------------*/
+.required {
+  label {
+    color: $color__red;
+  }
+  input, textarea, select {
+    border-color: $color__red!important;
+  }
+  &.form-builder-checkbox {
+    span {
+      &:before {
+        border-color: $color__red;
+      }
+    }
+  }
+}
+
+
+/* MESSAGES
+/------------------------*/
+.message {
+  display: none;
+  padding: $space_half $space;
+  font-size: 130%;
+  border: 1px solid;
+  &.message_success {
+    display: block;
+    color: $color__green;
+    border-color: $color__green;
+  }
+  &.message_error {
+    display: block;
+    color: $color__red;
+    border-color: $color__red;
+  }
+}
