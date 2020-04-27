@@ -1,4 +1,4 @@
-**Version 1.2.3** (14.04.2020)
+**Version 1.3.3** (27.04.2020)
 
 Custom class "WPgalleries"
 
@@ -55,4 +55,10 @@ Shows layout type fullscreen
 For a custom css class for the container add css attribute
 ```
 [galleries css="my_css"]
+```
+
+Define Swiper columns desktop step attribute and mobile mstep.
+Defaults are 4/2
+```
+[galleries step="4" mstep="2"]
 ```

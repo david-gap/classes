@@ -5,21 +5,23 @@ jQuery(document).ready(function($){
 
   /* SORT SELECTED IMAGES
   /------------------------*/
-  $( "#galleriesImages_list" ).sortable({
-    update: function( event, ui ) {
-      // create array
-      var img_ids = [];
-      // push ids into array
-      $( "#galleriesImages_list li" ).each(function() {
-        var img_id = $(this).attr("data-id");
-        img_ids.push(img_id);
-      });
-      // array to string
-      var newSort = img_ids.join();
-      // insert new value
-      $("#galleriesImages").val(newSort);
-    }
-  });
+  if($('.galleriesImages_list').length!==0){
+    $( ".galleriesImages_list" ).sortable({
+      update: function( event, ui ) {
+        // create array
+        var img_ids = [];
+        // push ids into array
+        $( ".galleriesImages_list li" ).each(function() {
+          var img_id = $(this).attr("data-id");
+          img_ids.push(img_id);
+        });
+        // array to string
+        var newSort = img_ids.join();
+        // insert new value
+        $("#galleriesImages").val(newSort);
+      }
+    });
+  }
 
 
   /* WP MEDIA SELECTION
