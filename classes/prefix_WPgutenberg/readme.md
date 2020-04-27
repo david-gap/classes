@@ -1,9 +1,10 @@
-**Version 1.0** (01.04.2020)
+**Version 1.1** (27.04.2020)
 
-Custom class "WPguttenberg" to select allowed guttenberg blocks
+Custom class "WPgutenberg" to select allowed guttenberg blocks and add style options
 
 ## CONFIGURATION OPTIONS
 * $WPgutenberg_AllowedBlocks: List allowed gutenberg blocks
+* $WPgutenberg_Stylesfile: path template styling options
 
 ## CONFIGURATION FILE
 ```
@@ -13,7 +14,8 @@ Custom class "WPguttenberg" to select allowed guttenberg blocks
     "1": "core/image",
     "2": "core/heading",
     "3": "core/list"
-  }
+  },
+  "Stylesfile": "config/classes/prefix_WPgutenberg/gutenberg-editor.js"
 }
 ```
 
@@ -86,3 +88,18 @@ core-embed/ted
 core-embed/tumblr
 core-embed/videopress
 core-embed/wordpress-tv
+
+### ADD CUSTOM STYLING OPTIONS TO SELECT ON BACKEND
+Remember: Wordpress adding is-style- before the css name
+
+Example for paragraph (multiple options)
+```js
+wp.blocks.registerBlockStyle( 'core/paragraph', [{
+    name: 'class-name-one',
+    label: 'Option one'
+  },
+  {
+    name: 'class-name-two',
+    label: 'Option two'
+}] );
+```
