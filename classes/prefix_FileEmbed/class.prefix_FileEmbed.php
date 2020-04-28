@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.2.3
+ * @version     1.2.4
  *
 */
 
@@ -109,6 +109,9 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
             if($path_parts['extension'] == 'json'):
               // get content from a json file
               $file_content = file_get_contents($path);
+              // utf 8 bom fix
+              $file_content = ltrim($file_content, chr(239).chr(187).chr(191));
+              // decode file
               $json_decode = json_decode($file_content, true);
               // check if file content is broken
               if(is_array($json_decode)):
