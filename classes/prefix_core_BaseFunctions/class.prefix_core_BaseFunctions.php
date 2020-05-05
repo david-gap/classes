@@ -4,7 +4,7 @@
  *
  * Base dev functions - parent for all custom classes
  * Author:      David Voglgsnag
- * @version     2.3
+ * @version     2.4
  *
  */
 
@@ -37,6 +37,7 @@
    4.3 ADD CUSTOM TAXONOMY
    4.4 RETURN TAXONOMY TERMS IN A LIST
    4.5 LOGIN FORMULAR
+   4.6 UPLOAD WP IMG
  5.0 COORDINATES
    5.1 CONVERT: WGS lat/long TO CH1903 y
    5.2 CONVERT: WGS lat/long TO CH1903 x
@@ -416,19 +417,19 @@ class prefix_core_BaseFunctions {
       $enddate = strtotime($end);
       $output = '';
       // start date
-      if(!Empty($end) && date("m", $startdate) == date("m", $enddate) && date("Y", $startdate) == date("Y", $enddate)):
+      if(!Empty($end) && date("m", $startdate) == date("m", $enddate) && date("Y", $startdate) == date("Y", $enddate) && $start !== $end):
         // if end date is given and is in the same month and year
         $output .= !Empty($start) ? date("d.", $startdate) : '';
-      elseif(!Empty($end) && date("m", $startdate) !== date("m", $enddate) && date("Y", $startdate) == date("Y", $enddate)):
+      elseif(!Empty($end) && date("m", $startdate) !== date("m", $enddate) && date("Y", $startdate) == date("Y", $enddate) && $start !== $end):
         // if end date is given and is not the same month but in the same year
         $output .= !Empty($start) ? date("d.m.", strtotime($start)) : '';
       else:
         $output .= !Empty($start) ? date("d.m.Y", strtotime($start)) : '';
       endif;
       // seperate
-      $output .= !Empty($start) && !Empty($end) ? ' ' . $seperator . ' ' : '';
+      $output .= !Empty($start) && !Empty($end) && $start !== $end ? ' ' . $seperator . ' ' : '';
       // end date
-      $output .= !Empty($end) ? date("d.m.Y", strtotime($end)) : '';
+      $output .= !Empty($end) && $start !== $end ? date("d.m.Y", strtotime($end)) : '';
 
       return $output;
   }
@@ -675,6 +676,48 @@ class prefix_core_BaseFunctions {
     $output .= '</div>';
 
     return $output;
+  }
+
+
+  /* 4.6 UPLOAD WP IMG
+  /------------------------*/
+  /**
+    * Upload image to media directory
+    * @param string $upload_file: path to file or directory
+    * @return int uploaded image ID
+  */
+  public function WPuploadFile(string $upload_file = "") {
+    if (filter_var($upload_file, FILTER_VALIDATE_URL) !== FALSE):
+
+      $fileinfo = pathinfo($upload_file);
+      $filename = $fileinfo['filename'] . '.' . $fileinfo['extension'];
+
+      $upload_dir = wp_upload_dir();
+      $image_data = file_get_contents($upload_file);
+
+      if (wp_mkdir_p($upload_dir['path'])) {
+          $file = $upload_dir['path'] . '/' . $filename;
+      } else {
+          $file = $upload_dir['basedir'] . '/' . $filename;
+      }
+      file_put_contents($file, $image_data);
+      $wp_filetype = wp_check_filetype($filename, null);
+      $attachment = array(
+          'guid' => $upload_dir['url'] . '/' . $filename,
+          'post_mime_type' => $wp_filetype['type'],
+          'post_title' => sanitize_file_name($filename),
+          'post_content' => '',
+          'post_type' => 'listing_type',
+          'post_status' => 'inherit',
+      );
+      $attach_id = wp_insert_attachment($attachment, $file);
+      require_once(ABSPATH . 'wp-admin/includes/image.php');
+      $attach_data = wp_generate_attachment_metadata($attach_id, $file);
+      wp_update_attachment_metadata($attach_id, $attach_data);
+      return $attach_id;
+
+      // return $file;
+    endif;
   }
 
 
