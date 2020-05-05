@@ -1,10 +1,10 @@
-**Version 1.3.5** (05.05.2020)
+**Version 1.3.6** (05.05.2020)
 
 Custom class "prefix_FileEmbed" to set file content as a global
 
 ## CONFIGURATION OPTIONS
 * $main_directory: file directory
-* $csv_Files: files to insert
+* $files: files to insert
 
 ## CONFIGURATION FILE
 ```

@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.3.5
+ * @version     1.3.6
  *
 */
 
@@ -33,7 +33,7 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
     /**
       * default vars
       * @param static string $main_directory: file directory
-      * @param static array $csv_Files: files to insert
+      * @param static array $files: files to insert
       * @param static bool $ColumnName: file contains labels
       * @param static string $csvEncodingFile: file coding
       * @param static string $csvEncodingOutput: file encode
@@ -42,7 +42,7 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
       * @param static string $orderDirection: sort direction
     */
     static $main_directory     = '/';
-    static $csv_Files          = array(
+    static $files          = array(
       'global_name' => array(
         'file' => 'add_path/file_name.csv',
         'title' => true,
@@ -86,11 +86,11 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
     /* 1.4 JSON GLOBAL
     /------------------------*/
     function Add_Files_as_Global(){
-      if(!empty(SELF::$csv_Files)):
+      if(!empty(SELF::$files)):
         // vars
         $root = $_SERVER['DOCUMENT_ROOT'];
         // for each file
-        foreach (SELF::$csv_Files as $file_key => $file) {
+        foreach (SELF::$files as $file_key => $file) {
           // file path
           $path       = substr($file["file"], 0, 4) === 'http' ? $file["file"] : $root . SELF::$main_directory . $file["file"];
           $path_parts = pathinfo($path);
@@ -224,7 +224,7 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
       $myConfig = $configuration['FileEmbed'];
       // update vars
       SELF::$main_directory = array_key_exists('directory', $myConfig) ? $myConfig['directory'] : SELF::$DEMO;
-      SELF::$csv_Files = array_key_exists('files', $myConfig) ? $myConfig['files'] : SELF::$DEMO;
+      SELF::$files = array_key_exists('files', $myConfig) ? $myConfig['files'] : SELF::$DEMO;
     endif;
   }
 
