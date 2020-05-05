@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.2.5
+ * @version     1.3.5
  *
 */
 
@@ -140,6 +140,17 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
                 else:
                   $$file_key = $json_decode;
                 endif;
+              else:
+                // file content is broken
+                $$file_key = array();
+                $debug_errors['FileEmbed'][] = "File content of file " . $file_key . " is broken";
+              endif;
+            elseif($path_parts['extension'] == 'xml'):
+              // get content from a xml file
+              $doc = new \DOMDocument();
+              if(@$doc->load($path)):
+                  // var_dump("$path is a valid XML document");
+                  $$file_key = simplexml_load_file($path);
               else:
                 // file content is broken
                 $$file_key = array();
