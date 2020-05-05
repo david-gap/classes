@@ -40,6 +40,7 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
       * @param static string $orderColumn: sort global by
       * @param static string $fixIdColumn: list has id
       * @param static string $orderDirection: sort direction
+      * @param static string $CSVseperator: csv file is seperated (, or ;)
     */
     static $main_directory     = '/';
     static $files          = array(
@@ -50,7 +51,8 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
         'encoding' => 'Windows-1252',
         'id_column' => false,
         'order_column' => '',
-        'order_direction' => 'ASC'
+        'order_direction' => 'ASC',
+        'seperator' => ','
       )
     );
     // defaults
@@ -60,6 +62,7 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
     static $orderColumn       = '';
     static $fixIdColumn       = false;  // CSV only
     static $orderDirection    = 'ASC';
+    static $CSVseperator      = ',';
 
 
     /* 1.2 ON LOAD RUN
@@ -105,6 +108,7 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
             $id_column       = array_key_exists('id_column', $file) ? $file["id_column"] : SELF::$fixIdColumn;
             $order_column    = array_key_exists('order_column', $file) ? $file["order_column"] : SELF::$orderColumn;
             $order_direction = array_key_exists('order_direction', $file) ? $file["order_direction"] : SELF::$orderDirection;
+            $seperator       = array_key_exists('seperator', $file) ? $file["seperator"] : SELF::$CSVseperator;
             // check file type
             if($path_parts['extension'] == 'json'):
               // get content from a json file
@@ -161,7 +165,7 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
               $dataArray = array();
               $row = 0;
               if (($handle = fopen($path, 'r')) !== false) {
-                  while (($data = fgetcsv($handle, 1000, ';')) !== false) {
+                  while (($data = fgetcsv($handle, 1000, $seperator)) !== false) {
 
                       ++$row;
                       if (!empty($data) && count($data) > 1) {

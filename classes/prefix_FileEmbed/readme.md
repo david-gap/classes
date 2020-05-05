@@ -18,7 +18,8 @@ Custom class "prefix_FileEmbed" to set file content as a global
       "encoding": "Windows-1252",
       "id_column": false,
       "order_column": "",
-      "order_direction": "ASC"
+      "order_direction": "ASC",
+      "seperator": ","
     }
   }
 }
