@@ -6,7 +6,7 @@
  * IMG dominant color - WP compatible
  * https://github.com/david-gap/classes
  * Author:      David Voglgsang
- * @version     1.1.2
+ * @version     1.1.3
  *
  */
 
@@ -499,9 +499,9 @@ class prefix_imgDC extends prefix_core_BaseFunctions {
           elseif($check_src !== false):
             preg_match('/src="(.*?)"/s', $value, $match_src);
             $imgurl = $match_src[1];
-            $mainurl = str_replace(array('https:/', 'http:/'), array('', ''), get_bloginfo('url'));
+            $mainurl = str_replace(array('https:/', 'http:/'), array('', ''), get_bloginfo('wpurl'));
             $remove_vars = strpos($imgurl, '?') !== false ? substr($imgurl, 0, strpos($imgurl, "?")) : $imgurl;
-            $remove_cdn = get_bloginfo('url') . strstr($remove_vars, '/wp-content');
+            $remove_cdn = get_bloginfo('wpurl') . strstr($remove_vars, '/wp-content');
             $id = attachment_url_to_postid($remove_cdn);
           elseif($check_srcset !== false):
             $additional .= str_replace('srcset', 'data-srcset', $value);

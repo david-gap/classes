@@ -1,4 +1,4 @@
-**Version 1.1.2** (27.04.2020)
+**Version 1.1.3** (05.05.2020)
 
 Custom class "imgDC" to get image dominant color and ad a WP preloader
 
