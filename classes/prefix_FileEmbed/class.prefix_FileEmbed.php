@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.2.4
+ * @version     1.2.5
  *
 */
 
@@ -142,6 +142,7 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
                 endif;
               else:
                 // file content is broken
+                $$file_key = array();
                 $debug_errors['FileEmbed'][] = "File content of file " . $file_key . " is broken";
               endif;
             elseif($path_parts['extension'] == 'csv'):
@@ -174,6 +175,7 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
               $$file_key = $dataArray;
             else:
               // if file type is not supported
+              $$file_key = array();
               $debug_errors['FileEmbed'][] = "File type of file " . $file_key . " is not supported";
             endif;
             // remove first row if column names are inside
