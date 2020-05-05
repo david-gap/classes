@@ -107,7 +107,7 @@ $breakpoint: 767px;
     min-width: 304px;
     margin: 40px;
     max-height: 100%;
-    @media (min-width: $breakpoint) {
+    @media (max-width: $breakpoint) {
       margin: 0;
       height: 100vh;
     }
@@ -116,7 +116,7 @@ $breakpoint: 767px;
         img {
           max-width: 100%;
           max-height: calc(100vh - 90px);
-          @media (min-width: $breakpoint) {
+          @media (max-width: $breakpoint) {
             max-height: 100vh;
           }
         }
@@ -128,7 +128,7 @@ $breakpoint: 767px;
         position: relative;
         line-height: 0;
         min-width: 400px;
-        @media (min-width: $breakpoint) {
+        @media (max-width: $breakpoint) {
           display: flex;
           justify-content: center;
           align-items: center;
@@ -154,7 +154,7 @@ $breakpoint: 767px;
       background-repeat: no-repeat;
       background-position: center;
       background-size: 30px;
-      @media (min-width: $breakpoint) {
+      @media (max-width: $breakpoint) {
         background-color: rgba(0,0,0,.4);
         top: 20px;
         right: 20px;
@@ -176,7 +176,7 @@ $breakpoint: 767px;
     .popup-arrow,
     .swiper-arrow {
       opacity: 1;
-      @media (min-width: $breakpoint) {
+      @media (max-width: $breakpoint) {
         opacity: 0;
       }
     }
@@ -197,21 +197,21 @@ $breakpoint: 767px;
   height: 70px;
   transition: .3s;
   z-index: 1;
-  @media (min-width: $breakpoint) {
+  @media (max-width: $breakpoint) {
     top: calc(50% - 30px);
     width: 40px;
     height: 60px;
   }
   &.back {
     left: 20px;
-    @media (min-width: $breakpoint) {
+    @media (max-width: $breakpoint) {
       left: 5vw;
     }
   }
   &.next {
     right: 20px;
     transform: rotate(180deg);
-    @media (min-width: $breakpoint) {
+    @media (max-width: $breakpoint) {
       right: 5vw;
     }
   }

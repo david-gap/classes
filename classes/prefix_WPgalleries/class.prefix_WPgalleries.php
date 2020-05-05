@@ -323,7 +323,7 @@ class prefix_WPgalleries extends prefix_core_BaseFunctions {
       $sum = count($selection);
       // output
       if($sum > 0):
-        $output .= '<div class="galleries-block layout-' . $config['layout'] . ' ' . $config['css'] . '" data-id="' . $container_id . '" data-layout="' . $config['layout'] . '" data-steps="' . $config['step'] . '" data-stepsmobile="' . $config['mstep'] . '">';
+        $output .= '<div class="galleries-block layout-' . $config['layout'] . ' ' . $config['css'] . '" data-id="' . $container_id . '" data-layout="' . $config['layout'] . '" data-steps="' . $config['step'] . '" data-stepsmobile="' . $config['mstep'] . '" data-sum="' . $sum . '">';
             if($config['layout'] == "swiper" || $config['layout'] == "fullscreen"):
               $icon = '<svg xmlns="http://www.w3.org/2000/svg" width="60.043" height="113.137" viewBox="0 0 60.043 113.137"><path d="M30.457,114.121a3.473,3.473,0,0,1-4.912-4.912l50.635-50.64L25.545,7.929a3.475,3.475,0,0,1,4.917-4.912l53.089,53.1a3.476,3.476,0,0,1,0,4.917Z" transform="translate(84.57 115.138) rotate(180)"/></svg>';
               $output .= '<span class="galleries-arrow back hidden">' . $icon .'</span>';

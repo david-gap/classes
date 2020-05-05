@@ -82,6 +82,22 @@
     }
   }
 }
+html.InternetExplorer {
+  .layout-grid {
+    .galleries-inner {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      > div {
+        width: calc(33.33% - 14px);
+        margin-bottom: 20px;
+        @include mobile {
+          width: calc(50% - 20px);
+        }
+      }
+    }
+  }
+}
 
 
 
