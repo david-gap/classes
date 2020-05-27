@@ -1,4 +1,4 @@
-**Version 2.4** (05.05.2020)
+**Version 2.5** (27.05.2020)
 
 Custom class "prefix_core_BaseFunctions" used as a library for useful functions
 
@@ -101,6 +101,13 @@ return "0041123456789"
 Delete folder with files and subfolders inside
 ```php
 core_BaseFunctions::deleteFolder('root/folder');
+return true
+```
+
+### 1.13 SORT ARRAY
+Sort multidimensional array by a key
+```php
+core_BaseFunctions::MultidArraySort($array, "keyname", "DESC", false);
 return true
 ```
 

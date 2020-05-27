@@ -4,7 +4,7 @@
  *
  * Base dev functions - parent for all custom classes
  * Author:      David Voglgsnag
- * @version     2.4
+ * @version     2.5
  *
  */
 
@@ -24,6 +24,7 @@
    1.10 FIND KEY IN MULTIDIMENSIONAL ARRAY
    1.11 CLEAN PHONE NUMBER
    1.12 DELETE FOLDER
+   1.13 SORT ARRAY
  2.0 DATES
    2.1 CHECK IF VARS ARE OUT OF DATE
    2.2 DATE RANGE FORMAT
@@ -335,6 +336,49 @@ class prefix_core_BaseFunctions {
       return $message;
     }
 
+
+    /* 1.13 SORT ARRAY
+    /------------------------*/
+    /**
+      * @param array $array: array to sort
+      * @param string $on: select column to sort by
+      * @param string $order: order direction
+      * @param bool $date: if sort value is a date
+      * @return array sorted array
+    */
+    function MultidArraySort(array $array = array(), string $on = "0", string $order = "ASC", bool $date = false){
+      $new_array = array();
+      $sortable_array = array();
+      // fallback for special chars
+      $CHARsearch   = array("Ä","ä","Ö","ö","Ü","ü","ß","-");
+      $CHARreplace  = array("Ae","ae","Oe","oe","Ue","ue","ss"," ");
+      if (count($array) > 0) {
+          foreach ($array as $k => $v) {
+              if (is_array($v)) {
+                  foreach ($v as $k2 => $v2) {
+                      if ($k2 == $on) {
+                          $sortable_array[$k] = $date !== false ? strtotime($v2) : str_replace($CHARsearch, $CHARreplace, $v2);
+                      }
+                  }
+              } else {
+                  $sortable_array[$k] = $date !== false ? strtotime($v) : $v;
+              }
+          }
+          switch ($order) {
+              case "ASC":
+                  natcasesort($sortable_array);
+              break;
+              case "DESC":
+                  natcasesort($sortable_array);
+                  $sortable_array = array_reverse($sortable_array, true);
+              break;
+          }
+          foreach ($sortable_array as $k => $v) {
+              $new_array[$k] = $array[$k];
+          }
+      }
+      return $new_array;
+    }
 
 
 
