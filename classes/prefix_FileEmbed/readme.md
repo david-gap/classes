@@ -1,4 +1,4 @@
-**Version 1.3.6** (05.05.2020)
+**Version 1.4.6** (27.05.2020)
 
 Custom class "prefix_FileEmbed" to set file content as a global
 
@@ -19,6 +19,7 @@ Custom class "prefix_FileEmbed" to set file content as a global
       "id_column": false,
       "order_column": "",
       "order_direction": "ASC",
+      'order_bydate': false,
       "seperator": ","
     }
   }

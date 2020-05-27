@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.3.6
+ * @version     1.4.6
  *
 */
 
@@ -41,6 +41,7 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
       * @param static string $fixIdColumn: list has id
       * @param static string $orderDirection: sort direction
       * @param static string $CSVseperator: csv file is seperated (, or ;)
+      * @param static bool $orderByDate: sort column is date
     */
     static $main_directory     = '/';
     static $files          = array(
@@ -52,6 +53,7 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
         'id_column' => false,
         'order_column' => '',
         'order_direction' => 'ASC',
+        'order_bydate' => false,
         'seperator' => ','
       )
     );
@@ -63,6 +65,7 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
     static $fixIdColumn       = false;  // CSV only
     static $orderDirection    = 'ASC';
     static $CSVseperator      = ',';
+    static $orderByDate       = false;
 
 
     /* 1.2 ON LOAD RUN
@@ -108,6 +111,7 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
             $id_column       = array_key_exists('id_column', $file) ? $file["id_column"] : SELF::$fixIdColumn;
             $order_column    = array_key_exists('order_column', $file) ? $file["order_column"] : SELF::$orderColumn;
             $order_direction = array_key_exists('order_direction', $file) ? $file["order_direction"] : SELF::$orderDirection;
+            $order_bydate    = array_key_exists('order_bydate', $file) ? $file["order_bydate"] : SELF::$orderByDate;
             $seperator       = array_key_exists('seperator', $file) ? $file["seperator"] : SELF::$CSVseperator;
             // check file type
             if($path_parts['extension'] == 'json'):
@@ -199,7 +203,7 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
             endif;
             // sort array
             if($order_column !== ''):
-              $$file_key = PARENT::MultidArraySort($$file_key, $order_column, $order_direction);
+              $$file_key = PARENT::MultidArraySort($$file_key, $order_column, $order_direction, $order_bydate);
             endif;
 
           else:
