@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.2.1
+ * @version     2.0
  *
 */
 
@@ -23,15 +23,14 @@ Table of Contents:
   2.3 RESET INLINE IMAGE DIMENSIONS (FOR CSS-SCALING OF IMAGES)
   2.4 ENQUEUE SCRIPTS/STYLES
   2.5 EMBED GOOGLE FONTS
-  2.6 DISABLE GUTENBERG
-  2.7 HIDE CORE-UPDATES FOR NON-ADMINS
-  2.8 THEME SUPPORT
-  2.9 BACKEND CONTROL
+  2.6 HIDE CORE-UPDATES FOR NON-ADMINS
+  2.7 THEME SUPPORT
+  2.8 BACKEND CONTROL
 3.0 OUTPUT
 =======================================================*/
 
 
-class prefix_WPinit extends prefix_core_BaseFunctions {
+class prefix_WPinit {
 
   /*==================================================================================
     1.0 INIT & VARS
@@ -41,27 +40,27 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
     /------------------------*/
     /**
       * default vars
-      * @param static bool $WPinit_gutenberg: disable gutenberg
-      * @param static bool $WPinit_gutenberg_css: disable gutenberg styling
-      * @param static array $WPinit_support: select theme support
-      * @param static array $WPinit_google_fonts: google fonts
-      * @param static bool $WPinit_css: activate theme styling
-      * @param static string $WPinit_css_path: theme styling path (theme is root)
-      * @param static bool $WPinit_js: activate theme js
-      * @param static string $WPinit_js_path: theme js path (theme is root)
-      * @param static bool $WPinit_jquery: activate jquery
-      * @param static array $WPinit_admin_menu: disable backend menus
+      * @param private array $WPinit_support: select theme support
+      * @param private array $WPinit_google_fonts: google fonts
+      * @param private bool $WPinit_css: activate theme styling
+      * @param private int $WPinit_css_version: theme styling version
+      * @param private string $WPinit_css_path: theme styling path (theme is root)
+      * @param private bool $WPinit_js: activate theme js
+      * @param private int $WPinit_js_version: theme js version
+      * @param private string $WPinit_js_path: theme js path (theme is root)
+      * @param private bool $WPinit_jquery: activate jquery
+      * @param private array $WPinit_admin_menu: disable backend menus
     */
-    static $WPinit_gutenberg        = true;
-    static $WPinit_gutenberg_css    = true;
-    static $WPinit_support          = array("title-tag", "menus", "html5", "post-thumbnails");
-    static $WPinit_google_fonts     = array("Roboto");
-    static $WPinit_css              = true;
-    static $WPinit_css_path         = "/dist/style.min.css";
-    static $WPinit_js               = true;
-    static $WPinit_js_path          = "/dist/script.min.js";
-    static $WPinit_jquery           = true;
-    static $WPinit_admin_menu       = array();
+    private $WPinit_support          = array("title-tag", "menus", "html5", "post-thumbnails");
+    private $WPinit_google_fonts     = array();
+    private $WPinit_css              = true;
+    private $WPinit_css_version      = 1.0;
+    private $WPinit_css_path         = "/dist/style.min.css";
+    private $WPinit_js               = true;
+    private $WPinit_js_version       = 1.0;
+    private $WPinit_js_path          = "/dist/script.min.js";
+    private $WPinit_jquery           = true;
+    private $WPinit_admin_menu       = array();
 
 
     /* 1.2 ON LOAD RUN
@@ -75,8 +74,6 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
       add_action( 'admin_head', array( $this, 'wp_onlyadmin_update' ), 1 );
       // template translation files
       load_theme_textdomain('DMili', get_template_directory() . '/languages');
-      // disable gutenberg
-      SELF::DisableGutenberg();
       // disable admin menu
       add_action( 'admin_menu', array( $this, 'Backend_remove_menus' ), 1 );
       // thumbnail dimensions
@@ -115,23 +112,23 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
         // class configuration
         $myConfig = $configuration['wp'];
         // update vars
-        SELF::$WPinit_gutenberg = array_key_exists('gutenberg', $myConfig) ? $myConfig['gutenberg'] : SELF::$WPinit_gutenberg;
-        SELF::$WPinit_gutenberg_css = array_key_exists('gutenberg_css', $myConfig) ? $myConfig['gutenberg_css'] : SELF::$WPinit_gutenberg_css;
-        SELF::$WPinit_support = array_key_exists('support', $myConfig) ? $myConfig['support'] : SELF::$WPinit_support;
-        SELF::$WPinit_google_fonts = array_key_exists('google_fonts', $myConfig) ? $myConfig['google_fonts'] : SELF::$WPinit_google_fonts;
-        SELF::$WPinit_css = array_key_exists('css', $myConfig) ? $myConfig['css'] : SELF::$WPinit_css;
-        SELF::$WPinit_css_path = array_key_exists('csspath', $myConfig) ? $myConfig['csspath'] : SELF::$WPinit_css_path;
-        SELF::$WPinit_js = array_key_exists('js', $myConfig) ? $myConfig['js'] : SELF::$WPinit_js;
-        SELF::$WPinit_js_path = array_key_exists('jspath', $myConfig) ? $myConfig['jspath'] : SELF::$WPinit_js_path;
-        SELF::$WPinit_jquery = array_key_exists('jquery', $myConfig) ? $myConfig['jquery'] : SELF::$WPinit_jquery;
-        SELF::$WPinit_admin_menu = array_key_exists('admin_menu', $myConfig) ? $myConfig['admin_menu'] : SELF::$WPinit_admin_menu;
+        $this->WPinit_support = array_key_exists('support', $myConfig) ? $myConfig['support'] : $this->WPinit_support;
+        $this->WPinit_google_fonts = array_key_exists('google_fonts', $myConfig) ? $myConfig['google_fonts'] : $this->WPinit_google_fonts;
+        $this->WPinit_css = array_key_exists('css', $myConfig) ? $myConfig['css'] : $this->WPinit_css;
+        $this->WPinit_css_path = array_key_exists('css_path', $myConfig) ? $myConfig['css_path'] : $this->WPinit_css_path;
+        $this->WPinit_css_version = array_key_exists('css_version', $myConfig) ? $myConfig['css_version'] : $this->WPinit_css_path;
+        $this->WPinit_js = array_key_exists('js', $myConfig) ? $myConfig['js'] : $this->WPinit_js;
+        $this->WPinit_js_version = array_key_exists('js_version', $myConfig) ? $myConfig['js_version'] : $this->WPinit_js_path;
+        $this->WPinit_js_path = array_key_exists('js_path', $myConfig) ? $myConfig['js_path'] : $this->WPinit_js_path;
+        $this->WPinit_jquery = array_key_exists('jquery', $myConfig) ? $myConfig['jquery'] : $this->WPinit_jquery;
+        $this->WPinit_admin_menu = array_key_exists('admin_menu', $myConfig) ? $myConfig['admin_menu'] : $this->WPinit_admin_menu;
       endif;
     }
 
     /* 2.2 HEADER CLEANUP
     /------------------------*/
     // remove unused stuff from wp_head()
-    public function WPinit_headcleanup () {
+    function WPinit_headcleanup () {
       // remove the generator meta tag
       remove_action('wp_head', 'wp_generator', 10);
       // remove wlwmanifest link
@@ -172,25 +169,21 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
     // >> https://developer.wordpress.org/reference/functions/wp_enqueue_script/
     function WPinit_enqueue() {
       // jQuery (from wp core)
-      if (SELF::$WPinit_jquery !== false):
+      if ($this->WPinit_jquery !== false):
         wp_deregister_script( 'jquery' );
         wp_register_script('jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js', false, '3.3.1');
         wp_enqueue_script( 'jquery' );
       endif;
       // scripts
-      if (SELF::$WPinit_js !== false):
-        wp_register_script('theme/scripts', get_stylesheet_directory_uri() . SELF::$WPinit_js_path, false, array( 'jquery' ), true);
+      if ($this->WPinit_js !== false):
+        wp_register_script('theme/scripts', get_stylesheet_directory_uri() . $this->WPinit_js_path, false, $this->WPinit_js_version, true);
         wp_enqueue_script('theme/scripts');
         # get theme directory for javascript files
-        wp_localize_script( 'theme/scripts', 'theme_directory', get_template_directory_uri());
-      endif;
-      // disable Gutenberg block styles
-      if (SELF::$WPinit_gutenberg_css !== true) :
-        wp_dequeue_style( 'wp-block-library' );
+        wp_localize_script( 'theme/scripts', 'theme_directory', get_stylesheet_directory_uri());
       endif;
       // styles
-      if (SELF::$WPinit_css !== false):
-        wp_enqueue_style('theme/styles', get_stylesheet_directory_uri() . SELF::$WPinit_css_path, false, null);
+      if ($this->WPinit_css !== false):
+        wp_enqueue_style('theme/styles', get_stylesheet_directory_uri() . $this->WPinit_css_path, false, $this->WPinit_css_version);
       endif;
     }
 
@@ -198,19 +191,19 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
     /* 2.5 EMBED GOOGLE FONTS
     /------------------------*/
     function GoogleFonts(){
-      if(SELF::$WPinit_google_fonts):
+      if($this->WPinit_google_fonts):
         // embed start
         $output = '<link href="https://fonts.googleapis.com/css?family=';
-        if(is_array(SELF::$WPinit_google_fonts)):
+        if(is_array($this->WPinit_google_fonts)):
           // array output
           $row = 1;
-          foreach (SELF::$WPinit_google_fonts as $value) {
+          foreach ($this->WPinit_google_fonts as $value) {
             $output .= $row > 1 ? '|' : '';
             $output .= $value;
           }
         else:
           // fallback for a string
-          $output .= SELF::$WPinit_google_fonts;
+          $output .= $this->WPinit_google_fonts;
         endif;
         // embed end
         $output .= '&display=swap" rel="stylesheet">';
@@ -220,47 +213,32 @@ class prefix_WPinit extends prefix_core_BaseFunctions {
     }
 
 
-    /* 2.6 DISABLE GUTENBERG
-    /------------------------*/
-    function DisableGutenberg(){
-      // check if gutenberg is disabled
-      if(SELF::$WPinit_gutenberg !== true):
-        // disable for posts
-        add_filter('use_block_editor_for_post', '__return_false', 10);
-        // disable for post types
-        add_filter('use_block_editor_for_post_type', '__return_false', 10);
-        // remove gutenberg styling
-        // wp_dequeue_style( 'wp-block-library' );
-      endif;
-    }
-
-
-    /* 2.7 HIDE CORE-UPDATES FOR NON-ADMINS
+    /* 2.6 HIDE CORE-UPDATES FOR NON-ADMINS
     /------------------------*/
     function wp_onlyadmin_update() {
       if (!current_user_can('update_core')) { remove_action( 'admin_notices', 'update_nag', 3 ); }
     }
 
 
-    /* 2.8 THEME SUPPORT
+    /* 2.7 THEME SUPPORT
     /------------------------*/
     function theme_support()  {
-      if(SELF::$WPinit_support):
-        foreach (SELF::$WPinit_support as $key => $value) {
+      if($this->WPinit_support):
+        foreach ($this->WPinit_support as $key => $value) {
           add_theme_support($value);
         }
       endif;
     }
 
 
-    /* 2.9 BACKEND CONTROL
+    /* 2.8 BACKEND CONTROL
     /------------------------*/
     /**
     * Removes some menus by page.
     */
     function Backend_remove_menus(){
-      if(!empty(SELF::$WPinit_admin_menu)):
-        foreach (SELF::$WPinit_admin_menu as $key => $value) {
+      if(!empty($this->WPinit_admin_menu)):
+        foreach ($this->WPinit_admin_menu as $key => $value) {
           remove_menu_page( $value );
         }
       endif;
