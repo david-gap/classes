@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.0
+ * @version     2.0.1
  */
 
 /*=======================================================
@@ -35,15 +35,15 @@ class prefix_WPgutenberg {
     /------------------------*/
     /**
       * default vars
-      * @param protected bool $WPgutenberg_active: disable gutenberg
-      * @param protected bool $WPgutenberg_css: disable gutenberg styling
-      * @param protected array $WPgutenberg_AllowedBlocks: List allowed gutenberg blocks
-      * @param protected string $WPgutenberg_Stylesfile: path template styling options
+      * @param private bool $WPgutenberg_active: disable gutenberg
+      * @param private bool $WPgutenberg_css: disable gutenberg styling
+      * @param private array $WPgutenberg_AllowedBlocks: List allowed gutenberg blocks
+      * @param private string $WPgutenberg_Stylesfile: path template styling options
     */
-    protected $WPgutenberg_active        = true;
-    protected $WPgutenberg_css           = true;
-    protected $WPgutenberg_AllowedBlocks = array();
-    protected $WPgutenberg_Stylesfile    = 'config/classes/prefix_WPgutenberg/gutenberg-editor.js';
+    private $WPgutenberg_active        = true;
+    private $WPgutenberg_css           = true;
+    private $WPgutenberg_AllowedBlocks = array();
+    private $WPgutenberg_Stylesfile    = 'config/classes/prefix_WPgutenberg/gutenberg-editor.js';
 
 
     /* 1.2 ON LOAD RUN
@@ -57,7 +57,7 @@ class prefix_WPgutenberg {
       endif;
       // add gutenberg style options
       if(!empty($this->WPgutenberg_Stylesfile)):
-        add_action( 'enqueue_block_editor_assets', array($this, 'AddBackendStyleOptions') );
+        add_action( 'enqueue_block_editor_assets', array($this, 'AddBackendStyleOptions'), 100 );
       endif;
       // disable gutenberg
       if($this->WPgutenberg_active !== true):
@@ -106,7 +106,7 @@ class prefix_WPgutenberg {
 
   /* 2.2 DISABLE GUTENBERG
   /------------------------*/
-  protected function DisableGutenberg(){
+  private function DisableGutenberg(){
     // disable for posts
     add_filter('use_block_editor_for_post', '__return_false', 10);
     // disable for post types
@@ -133,14 +133,14 @@ class prefix_WPgutenberg {
   /* 2.5 ADD STYLES OPTIONS
   /------------------------*/
   function AddBackendStyleOptions(){
-      wp_register_script(
+    $path = get_stylesheet_directory_uri() . '/' . $this->WPgutenberg_Stylesfile;
+    if(prefix_core_BaseFunctions::CheckFileExistence($path)):
+      wp_enqueue_script(
         'backend-gutenberg-css-classes',
-        get_stylesheet_directory() . '/' . $this->WPgutenberg_Stylesfile,
-        array( 'wp-blocks' ),
-        null,
-        true
+        $path,
+        array( 'wp-blocks' )
       );
-      wp_enqueue_script( 'backend-gutenberg-css-classes' );
+    endif;
   }
 
 
