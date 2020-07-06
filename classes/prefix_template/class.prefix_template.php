@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.2.3
+ * @version     2.0
  *
 */
 
@@ -37,7 +37,7 @@ Table of Contents:
 =======================================================*/
 
 
-class prefix_template extends prefix_core_BaseFunctions {
+class prefix_template {
 
   /*==================================================================================
     1.0 INIT & VARS
@@ -165,9 +165,9 @@ class prefix_template extends prefix_core_BaseFunctions {
       // get configuration
       global $configuration;
       // if configuration file exists && class-settings
-      if($configuration && array_key_exists('general', $configuration)):
+      if($configuration && array_key_exists('template', $configuration)):
         // class configuration
-        $myConfig = $configuration['general'];
+        $myConfig = $configuration['template'];
         // update vars
         SELF::$template_container = array_key_exists('container', $myConfig) ? $myConfig['container'] : SELF::$template_container;
         SELF::$template_coloring = array_key_exists('coloring', $myConfig) ? $myConfig['coloring'] : SELF::$template_coloring;
@@ -180,8 +180,8 @@ class prefix_template extends prefix_core_BaseFunctions {
           SELF::$template_ph_address = array_key_exists('address', $placeholder) ? $placeholder['address'] : SELF::$template_ph_address;
           SELF::$template_ph_custom = array_key_exists('custom', $placeholder) ? $placeholder['custom'] : SELF::$template_ph_custom;
         endif;
-        if($configuration && array_key_exists('header', $configuration)):
-          $header = $configuration['header'];
+        if($configuration && array_key_exists('header', $myConfig)):
+          $header = $myConfig['header'];
           SELF::$template_header_divider = array_key_exists('divider', $header) ? $header['divider'] : SELF::$template_header_divider;
           SELF::$template_header_sticky = array_key_exists('sticky', $header) ? $header['sticky'] : SELF::$template_header_sticky;
           SELF::$template_header_dmenu = array_key_exists('desktop_menu', $header) ? $header['desktop_menu'] : SELF::$template_header_dmenu;
@@ -191,8 +191,8 @@ class prefix_template extends prefix_core_BaseFunctions {
           SELF::$template_header_logo_d = array_key_exists('logo_desktop', $header) ? $header['logo_desktop'] : SELF::$template_header_logo_d;
           SELF::$template_header_logo_m = array_key_exists('logo_mobile', $header) ? $header['logo_mobile'] : SELF::$template_header_logo_m;
         endif;
-        if($configuration && array_key_exists('footer', $configuration)):
-          $footer = $configuration['footer'];
+        if($configuration && array_key_exists('footer', $myConfig)):
+          $footer = $myConfig['footer'];
           SELF::$template_footer_active = array_key_exists('active', $footer) ? $footer['active'] : SELF::$template_ph_custom;
           SELF::$template_footer_cr = array_key_exists('copyright', $footer) ? $footer['copyright'] : SELF::$template_ph_custom;
           SELF::$template_footer_custom = array_key_exists('custom', $footer) ? $footer['custom'] : SELF::$template_ph_custom;
@@ -434,7 +434,7 @@ class prefix_template extends prefix_core_BaseFunctions {
           $update_phone = str_replace(array('+', ' '), array('00', ''), $config["phone"]);
           if(strpos($update_phone, '(') !== false):
             $update_phone_l = substr($update_phone, 0, 1);
-            $phone_text_between = PARENT::getBetween($update_phone , "(", ")");
+            $phone_text_between = prefix_core_BaseFunctions::getBetween($update_phone , "(", ")");
             $clean_phone = $update_phone_l == "(" ? $phone_text_between . str_replace(array('(', ')'), array('', ''), $update_phone) : str_replace(array('(' . $phone_text_between . ')'), array(''), $update_phone);
           endif;
           $output .= '<a href="tel:' . $clean_phone . '" class="call phone_nr">' . $config["labels"]["phone"] . $config["phone"] . '</a>';
@@ -443,7 +443,7 @@ class prefix_template extends prefix_core_BaseFunctions {
           $update_mobile = str_replace(array('+', ' '), array('00', ''), $config["mobile"]);
           if(strpos($update_mobile, '(') !== false):
             $update_mobile_l = substr($update_mobile, 0, 1);
-            $mobile_text_between = PARENT::getBetween($update_mobile , "(", ")");
+            $mobile_text_between = prefix_core_BaseFunctions::getBetween($update_mobile , "(", ")");
             $clean_mobile = $update_mobile_l == "(" ? $mobile_text_between . str_replace(array('(', ')'), array('', ''), $update_mobile) : str_replace(array('(' . $mobile_text_between . ')'), array(''), $update_mobile);
           endif;
           $output .= '<a href="tel:' . $clean_mobile . '" class="call mobile_nr">' . $config["labels"]["mobile"] . $config["mobile"] . '</a>';

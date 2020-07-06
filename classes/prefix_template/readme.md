@@ -1,6 +1,6 @@
-**Version 1.2.3** (30.03.2020)
+**Version 2.0** (06.07.2020)
 
-Custom class "template" with teplate parts and header / footer builder
+Custom class "template" with template parts and header / footer builder
 
 ## CONFIGURATION OPTIONS
 * $template_container: activate container
@@ -25,7 +25,7 @@ Custom class "template" with teplate parts and header / footer builder
 
 ## CONFIGURATION FILE
 ```
-"general": {
+"template": {
   "container": true,
   "coloring": "light",
   "placeholder": {
@@ -53,41 +53,41 @@ Custom class "template" with teplate parts and header / footer builder
   "socialmedia": {
     "facebook": "",
     "instagram": ""
-  }
-},
-"header": {
-  "sort": {
-    "logo": true,
-    "menu": true,
-    "socialmedia": true,
-    "custom": false
   },
-  "logo_link": "",
-  "logo_desktop": {
-    "img": "",
-    "width": "",
-    "height": ""
+  "header": {
+    "sort": {
+      "logo": true,
+      "menu": true,
+      "socialmedia": true,
+      "custom": false
+    },
+    "logo_link": "",
+    "logo_desktop": {
+      "img": "",
+      "width": "",
+      "height": ""
+    },
+    "logo_mobile": {
+      "img": "",
+      "width": "",
+      "height": ""
+    },
+    "divider": true,
+    "sticky": true,
+    "desktop_menu": false,
+    "custom": ""
   },
-  "logo_mobile": {
-    "img": "",
-    "width": "",
-    "height": ""
-  },
-  "divider": true,
-  "sticky": true,
-  "desktop_menu": false,
-  "custom": ""
-},
-"footer": {
-  "active": true,
-  "copyright": "Copyright © Text",
-  "custom": "<div>custom</div>",
-  "sort": {
-    "menu": true,
-    "socialmedia": true,
-    "copyright": true,
-    "address": true,
-    "custom": false
+  "footer": {
+    "active": true,
+    "copyright": "Copyright © Text",
+    "custom": "<div>custom</div>",
+    "sort": {
+      "menu": true,
+      "socialmedia": true,
+      "copyright": true,
+      "address": true,
+      "custom": false
+    }
   }
 }
 ```
