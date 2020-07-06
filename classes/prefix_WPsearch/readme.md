@@ -1,4 +1,4 @@
-**Version 1.0** (05.03.2020)
+**Version 2.0** (06.07.2020)
 
 Custom class "prefix_WPsearch" to improve search query.
 
@@ -10,10 +10,10 @@ Custom class "prefix_WPsearch" to improve search query.
 ```
 "WPsearch": {
   "acf": {
-    "0" => "ACF FIELD NAME"
+    "0": "ACF FIELD NAME"
   },
   "taxonomies": {
-    "0" => "TAXONOMY SLUG"
+    "0": "TAXONOMY SLUG"
   }
 }
 ```

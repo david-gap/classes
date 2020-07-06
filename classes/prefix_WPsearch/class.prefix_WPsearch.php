@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.0
+ * @version     2.0
  *
 */
 
@@ -23,7 +23,7 @@ Table of Contents:
 =======================================================*/
 
 
-class prefix_WPsearch extends prefix_core_BaseFunctions {
+class prefix_WPsearch {
 
   /*==================================================================================
     1.0 INIT & VARS
@@ -33,11 +33,11 @@ class prefix_WPsearch extends prefix_core_BaseFunctions {
     /------------------------*/
     /**
       * default vars
-      * @param static array $WPsearch_acf: list of advanced custom fields you want to search content in
-      * @param static array $WPsearch_tax: list of taxonomies you want to search content in
+      * @param private array $WPsearch_acf: list of advanced custom fields you want to search content in
+      * @param private array $WPsearch_tax: list of taxonomies you want to search content in
     */
-    static $WPsearch_acf = array();
-    static $WPsearch_tax = array();
+    private $WPsearch_acf = array();
+    private $WPsearch_tax = array();
 
 
     /* 1.2 ON LOAD RUN
@@ -46,11 +46,11 @@ class prefix_WPsearch extends prefix_core_BaseFunctions {
       // update default vars with configuration file
       SELF::updateVars();
       // add acf fields to search query
-      if(!empty(is_array(SELF::$WPsearch_acf))):
+      if(!empty(is_array($this->WPsearch_acf))):
         add_filter( 'posts_search', array( $this, 'WPsearch_CustomSearch'), 500, 2 );
       endif;
       // add taxonomies search query
-      if(!empty(is_array(SELF::$WPsearch_tax))):
+      if(!empty(is_array($this->WPsearch_tax))):
         add_action('parse_query', array( $this, 'WPsearch_Taxonomies'), 1 );
       endif;
     }
@@ -82,8 +82,8 @@ class prefix_WPsearch extends prefix_core_BaseFunctions {
       // class configuration
       $myConfig = $configuration['WPsearch'];
       // update vars
-      SELF::$WPsearch_acf = array_key_exists('acf', $myConfig) ? $myConfig['acf'] : SELF::$WPsearch_acf;
-      SELF::$WPsearch_tax = array_key_exists('taxonomies', $myConfig) ? $myConfig['taxonomies'] : SELF::$WPsearch_tax;
+      $this->WPsearch_acf = array_key_exists('acf', $myConfig) ? $myConfig['acf'] : $this->WPsearch_acf;
+      $this->WPsearch_tax = array_key_exists('taxonomies', $myConfig) ? $myConfig['taxonomies'] : $this->WPsearch_tax;
     endif;
   }
 
@@ -93,7 +93,7 @@ class prefix_WPsearch extends prefix_core_BaseFunctions {
   public function WPsearch_Taxonomies(&$query)
   {
     if ($query->is_search)
-    foreach (SELF::$WPsearch_tax as $key => $value) {
+    foreach ($this->WPsearch_tax as $key => $value) {
       $query->set('taxonomy', $value);
     }
   }
@@ -115,7 +115,7 @@ class prefix_WPsearch extends prefix_core_BaseFunctions {
     // reset search in order to rebuilt it as we whish
     $where = '';
     // get searcheable acf fields
-    $acf_fields = SELF::$WPsearch_acf;
+    $acf_fields = $this->WPsearch_acf;
     // for each tag
     foreach( $exploded as $tag ) :
       $where .= "
