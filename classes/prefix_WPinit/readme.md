@@ -1,4 +1,4 @@
-**Version 2.0** (06.07.2020)
+**Version 2.1** (06.07.2020)
 
 Custom class "WPinit" basic functions
 
@@ -13,6 +13,7 @@ Custom class "WPinit" basic functions
 * $WPinit_js_path: theme js path (theme is root)
 * $WPinit_jquery: activate jquery
 * $WPinit_admin_menu: disable backend menus
+* $WPinit_menus: list of all wanted WP menus
 
 ## CONFIGURATION FILE
 ```
@@ -34,6 +35,10 @@ Custom class "WPinit" basic functions
   "jquery" : true,
   "admin_menu": {
     "0": "users.php"
+  },
+  "menus": {
+    "mainmenu": "Main Menu",
+    "footermenu": "Footer Menu"
   }
 }
 ```

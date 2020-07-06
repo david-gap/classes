@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.0
+ * @version     2.1
  *
 */
 
@@ -26,6 +26,7 @@ Table of Contents:
   2.6 HIDE CORE-UPDATES FOR NON-ADMINS
   2.7 THEME SUPPORT
   2.8 BACKEND CONTROL
+  2.9 REGISTER MENUS
 3.0 OUTPUT
 =======================================================*/
 
@@ -50,6 +51,7 @@ class prefix_WPinit {
       * @param private string $WPinit_js_path: theme js path (theme is root)
       * @param private bool $WPinit_jquery: activate jquery
       * @param private array $WPinit_admin_menu: disable backend menus
+      * @param private array $WPinit_menus: list of all wanted WP menus
     */
     private $WPinit_support          = array("title-tag", "menus", "html5", "post-thumbnails");
     private $WPinit_google_fonts     = array();
@@ -61,6 +63,10 @@ class prefix_WPinit {
     private $WPinit_js_path          = "/dist/script.min.js";
     private $WPinit_jquery           = true;
     private $WPinit_admin_menu       = array();
+    private $WPinit_menus            = array(
+      'mainmenu' => 'Main Menu',
+      'footermenu' => 'Footer Menu'
+    );
 
 
     /* 1.2 ON LOAD RUN
@@ -84,6 +90,8 @@ class prefix_WPinit {
       SELF::theme_support();
       // add google fonts
       add_action( 'wp_footer', array( $this, 'GoogleFonts' ) );
+      // add menu
+      add_action( 'init', array( $this, 'WPinit_theme_menus' ) );
     }
 
     /* 1.3 BACKEND ARRAY
@@ -122,6 +130,7 @@ class prefix_WPinit {
         $this->WPinit_js_path = array_key_exists('js_path', $myConfig) ? $myConfig['js_path'] : $this->WPinit_js_path;
         $this->WPinit_jquery = array_key_exists('jquery', $myConfig) ? $myConfig['jquery'] : $this->WPinit_jquery;
         $this->WPinit_admin_menu = array_key_exists('admin_menu', $myConfig) ? $myConfig['admin_menu'] : $this->WPinit_admin_menu;
+        $this->$WPinit_menus = array_key_exists('menus', $myConfig) ? $myConfig['menus'] : $this->$WPinit_menus;
       endif;
     }
 
@@ -252,6 +261,16 @@ class prefix_WPinit {
       // users.php                  // Users
       // tools.php                  // Tools
       // options-general.php        // Settings
+    }
+
+
+    /* 2.9 REGISTER MENUS
+    /------------------------*/
+    // => https://codex.wordpress.org/Function_Reference/register_nav_menus
+    function WPinit_theme_menus() {
+      if(is_array($this->$WPinit_menus)):
+        register_nav_menus($this->$WPinit_menus);
+      endif;
     }
 
 
