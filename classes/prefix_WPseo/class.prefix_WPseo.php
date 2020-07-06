@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.0.1
+ * @version     2.0
  *
 */
 
@@ -25,7 +25,7 @@ Table of Contents:
 =======================================================*/
 
 
-class prefix_WPseo extends prefix_core_BaseFunctions {
+class prefix_WPseo {
 
   /*==================================================================================
     1.0 INIT & VARS
@@ -35,26 +35,26 @@ class prefix_WPseo extends prefix_core_BaseFunctions {
     /------------------------*/
     /**
       * default vars (if configuration file is missing or broken)
-      * @param static string $WPseo_logo: Logo
-      * @param static string $WPseo_tracking: Google tracking code (analytics or tag manager)
-      * @param static string $WPseo_favicon: fav icon link
-      * @param static string $WPseo_icon: default screen icon
-      * @param static string $WPseo_icon_72: apple screen icon 72
-      * @param static string $WPseo_icon_114: apple screen icon 114
-      * @param static bool $WPseo_datastructure: turn datastructure on/off
-      * @param static array $WPseo_datastructure_add: additional structure attributes
+      * @param private string $WPseo_logo: Logo
+      * @param private string $WPseo_tracking: Google tracking code (analytics or tag manager)
+      * @param private string $WPseo_favicon: fav icon link
+      * @param private string $WPseo_icon: default screen icon
+      * @param private string $WPseo_icon_72: apple screen icon 72
+      * @param private string $WPseo_icon_114: apple screen icon 114
+      * @param private bool $WPseo_datastructure: turn datastructure on/off
+      * @param private array $WPseo_datastructure_add: additional structure attributes
     */
-    static $WPseo_logo               = '';
-    static $WPseo_tracking           = '';
-    static $WPseo_favicon            = '';
-    static $WPseo_icon               = '';
-    static $WPseo_icon_72            = '';
-    static $WPseo_icon_114           = '';
-    static $WPseo_datastructure      = true;
-    static $WPseo_datastructure_add  = array(
+    private $WPseo_logo               = '';
+    private static $WPseo_tracking    = '';
+    private $WPseo_favicon            = '';
+    private $WPseo_icon               = '';
+    private $WPseo_icon_72            = '';
+    private $WPseo_icon_114           = '';
+    private $WPseo_datastructure      = true;
+    private $WPseo_datastructure_add  = array(
       "type" => "Website"
     );
-    static $WPseo_address = array(
+    private $WPseo_address = array(
       "company" => "Company",
       "street" => "Street",
       "street2" => "Street 2",
@@ -63,7 +63,7 @@ class prefix_WPseo extends prefix_core_BaseFunctions {
       "city" => "City",
       "phone" => "0041",
       "mobile" => "0041 2",
-      "email" => "info@dmili.com"
+      "email" => "info@mail.com"
     );
 
 
@@ -178,15 +178,15 @@ class prefix_WPseo extends prefix_core_BaseFunctions {
         // class configuration
         $myConfig = $configuration['seo'];
         // update vars
-        SELF::$WPseo_logo = array_key_exists('logo', $myConfig) ? $myConfig['logo'] : SELF::$WPseo_logo;
+        $this->WPseo_logo = array_key_exists('logo', $myConfig) ? $myConfig['logo'] : $this->WPseo_logo;
         SELF::$WPseo_tracking = array_key_exists('google-tracking', $myConfig) ? $myConfig['google-tracking'] : SELF::$WPseo_tracking;
-        SELF::$WPseo_favicon = array_key_exists('favicon', $myConfig) ? $myConfig['favicon'] : SELF::$WPseo_favicon;
-        SELF::$WPseo_icon = array_key_exists('apple-touch-icon', $myConfig) ? $myConfig['apple-touch-icon'] : SELF::$WPseo_icon;
-        SELF::$WPseo_icon_72 = array_key_exists('apple-touch-icon-72', $myConfig) ? $myConfig['apple-touch-icon-72'] : SELF::$WPseo_icon_72;
-        SELF::$WPseo_icon_114 = array_key_exists('apple-touch-icon-114', $myConfig) ? $myConfig['apple-touch-icon-114'] : SELF::$WPseo_icon_114;
-        SELF::$WPseo_datastructure = array_key_exists('data-structure', $myConfig) ? $myConfig['data-structure'] : SELF::$WPseo_datastructure;
-        SELF::$WPseo_datastructure_add = array_key_exists('data-structure-add', $myConfig) ? $myConfig['data-structure-add'] : SELF::$WPseo_datastructure_add;
-        SELF::$WPseo_address = array_key_exists('address', $myConfig) ? $myConfig['address'] : SELF::$WPseo_address;
+        $this->WPseo_favicon = array_key_exists('favicon', $myConfig) ? $myConfig['favicon'] : $this->WPseo_favicon;
+        $this->WPseo_icon = array_key_exists('apple-touch-icon', $myConfig) ? $myConfig['apple-touch-icon'] : $this->WPseo_icon;
+        $this->WPseo_icon_72 = array_key_exists('apple-touch-icon-72', $myConfig) ? $myConfig['apple-touch-icon-72'] : $this->WPseo_icon_72;
+        $this->WPseo_icon_114 = array_key_exists('apple-touch-icon-114', $myConfig) ? $myConfig['apple-touch-icon-114'] : $this->WPseo_icon_114;
+        $this->WPseo_datastructure = array_key_exists('data-structure', $myConfig) ? $myConfig['data-structure'] : $this->WPseo_datastructure;
+        $this->WPseo_datastructure_add = array_key_exists('data-structure-add', $myConfig) ? $myConfig['data-structure-add'] : $this->WPseo_datastructure_add;
+        $this->WPseo_address = array_key_exists('address', $myConfig) ? $myConfig['address'] : $this->WPseo_address;
       endif;
     }
 
@@ -194,18 +194,18 @@ class prefix_WPseo extends prefix_core_BaseFunctions {
     /* 2.2 FAVICON
     /------------------------*/
     public static function FavIcon(){
-      if(SELF::$WPseo_favicon !== ""):
-        echo '<link rel="icon" href="' . SELF::$WPseo_favicon . '" />';
+      if($this->WPseo_favicon !== ""):
+        echo '<link rel="icon" href="' . $this->WPseo_favicon . '" />';
       endif;
       // apple touch icons
-      if(SELF::$WPseo_icon !== ""):
-        echo '<link rel="apple-touch-icon" href="' . SELF::$WPseo_icon . '" />';
+      if($this->WPseo_icon !== ""):
+        echo '<link rel="apple-touch-icon" href="' . $this->WPseo_icon . '" />';
       endif;
-      if(SELF::$WPseo_icon_72 !== ""):
-        echo '<link rel="apple-touch-icon" sizes="72x72" href="' . SELF::$WPseo_icon_72 . '" />';
+      if($this->WPseo_icon_72 !== ""):
+        echo '<link rel="apple-touch-icon" sizes="72x72" href="' . $this->WPseo_icon_72 . '" />';
       endif;
-      if(SELF::$WPseo_icon_114 !== ""):
-        echo '<link rel="apple-touch-icon" sizes="114x114" href="' . SELF::$WPseo_icon_114 . '" />';
+      if($this->WPseo_icon_114 !== ""):
+        echo '<link rel="apple-touch-icon" sizes="114x114" href="' . $this->WPseo_icon_114 . '" />';
       endif;
     }
 
@@ -296,31 +296,31 @@ class prefix_WPseo extends prefix_core_BaseFunctions {
       // vars
       $output = '';
 
-      if(SELF::$WPseo_datastructure == true):
-        $address = SELF::$WPseo_address;
-        $additional = SELF::$WPseo_datastructure_add;
-        $logo = SELF::$WPseo_logo;
+      if($this->WPseo_datastructure == true):
+        $address = $this->WPseo_address;
+        $additional = $this->WPseo_datastructure_add;
+        $logo = $this->WPseo_logo;
 
         $output .= '<script type="application/ld+json">';
           $output .= '{';
-            $output .= '"@context" : "http://schema.org",';
-            $output .= !empty($logo) ? '"image" : "' . $logo . '",' : '';
-            $output .= key_exists('company' , $address) ? '"name" : "' . $address["company"] . '",' : '';
-            $output .= key_exists('phone' , $address) ? '"telephone" : "' . $address["phone"] . '",' : '';
-            $output .= key_exists('email' , $address) ? '"email" : "' . $address["email"] . '",' : '';
-            $output .= '"address" : {';
-              $output .= '"@type" : "PostalAddress",';
-              $output .= key_exists('street' , $address) ? '"streetAddress" : "' . $address["street"] . '",' : '';
-              $output .= key_exists('city' , $address) ? '"addressLocality" : "' . $address["city"] . '",' : '';
-              $output .= key_exists('country' , $address) ? '"addressCountry" : "' . $address["country"] . '",' : '';
-              $output .= key_exists('postalCode' , $address) ? '"postalCode" : "' . $address["postalCode"] . '"' : '';
+            $output .= '"@context": "http://schema.org",';
+            $output .= !empty($logo) ? '"image": "' . $logo . '",' : '';
+            $output .= key_exists('company' , $address) ? '"name": "' . $address["company"] . '",' : '';
+            $output .= key_exists('phone' , $address) ? '"telephone": "' . $address["phone"] . '",' : '';
+            $output .= key_exists('email' , $address) ? '"email": "' . $address["email"] . '",' : '';
+            $output .= '"address": {';
+              $output .= '"@type": "PostalAddress",';
+              $output .= key_exists('street' , $address) ? '"streetAddress": "' . $address["street"] . '",' : '';
+              $output .= key_exists('city' , $address) ? '"addressLocality": "' . $address["city"] . '",' : '';
+              $output .= key_exists('country' , $address) ? '"addressCountry": "' . $address["country"] . '",' : '';
+              $output .= key_exists('postalCode' , $address) ? '"postalCode": "' . $address["postalCode"] . '"' : '';
             $output .= '},';
-            $output .= '"url" : "' . get_bloginfo('url') . '"';
+            $output .= '"url": "' . get_bloginfo('url') . '"';
             if($additional):
               $adds = 1;
               foreach ($additional as $key => $value) {
                 $output .= $adds > 1 ? ',' : '';
-                $output .= '"' . $key . '" : "' . $value . '",';
+                $output .= '"' . $key . '": "' . $value . '",';
                 $adds++;
               }
             endif;
