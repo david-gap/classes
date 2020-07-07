@@ -1,4 +1,4 @@
-**Version 1.1.3** (05.05.2020)
+**Version 2.0** (07.07.2020)
 
 Custom class "imgDC" to get image dominant color and ad a WP preloader
 
@@ -11,22 +11,17 @@ Custom class "imgDC" to get image dominant color and ad a WP preloader
 
 ## CONFIGURATION FILE
 ```
-"wp": {
-  "gutenberg": true,
-  "gutenberg_css": true,
-  "support": {
-    "0": "title-tag",
-    "1": "menus",
-    "2": "html5"
+"imgDC": {
+  "wp": true,
+  "content": true,
+  "assets": true,
+  "nocolor_files": {
+    "0": "'video/mp4",
+    "1": "video/quicktime",
+    "2": "video/videopress",
+    "3": "audio/mpeg"
   },
-  "google_fonts": {
-    "0": "Roboto"
-  },
-  "css" : true,
-  "csspath" : "/dist/style.min.css",
-  "js" : true,
-  "jspath" : "/dist/script.min.js",
-  "jquery" : true
+  "defaultcolor": "ffffff"
 }
 ```
 

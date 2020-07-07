@@ -6,7 +6,7 @@
  * IMG dominant color - WP compatible
  * https://github.com/david-gap/classes
  * Author:      David Voglgsang
- * @version     1.1.3
+ * @version     2.0
  *
  */
 
@@ -26,6 +26,7 @@ Table of Contents:
   2.6 SAVE METABOXES
   2.7 SAVE DOMINANT
   2.8 GET DOMINANT IMG COLOR
+  2.9 GET IMG ID IF FILE IST NOT ORGINAL
 3.0 OUTPUT
   3.1 BACKEND SUB-PAGE
   3.2 GENERATE DOMINANT COLORS
@@ -35,7 +36,7 @@ Table of Contents:
   3.6 CONTENT LAZY LOADING
 =======================================================*/
 
-class prefix_imgDC extends prefix_core_BaseFunctions {
+class prefix_imgDC {
 
   /*==================================================================================
     1.0 INIT & VARS
@@ -45,17 +46,17 @@ class prefix_imgDC extends prefix_core_BaseFunctions {
     /------------------------*/
     /**
       * default vars
-      * @param static boolable $imgDC_wp: activate WP settings
-      * @param static boolable $imgDC_content: simple way to disable the lazy loading inside the_content
-      * @param static boolable $imgDC_assets: include classes assets. Disable it if you use your own files
-      * @param static array $imgDC_nocolor_files: exclude file types from dominant color generator
-      * @param static string $imgDC_defaultcolor: default color
+      * @param private boolable $imgDC_wp: activate WP settings
+      * @param private boolable $imgDC_content: simple way to disable the lazy loading inside the_content
+      * @param private boolable $imgDC_assets: include classes assets. Disable it if you use your own files
+      * @param private array $imgDC_nocolor_files: exclude file types from dominant color generator
+      * @param private string $imgDC_defaultcolor: default color
     */
-    static $imgDC_wp              = false;
-    static $imgDC_content         = true;
-    static $imgDC_assets          = true;
-    static $imgDC_nocolor_files   = array('video/mp4', 'video/quicktime', 'video/videopress', 'audio/mpeg');
-    static $imgDC_defaultcolor    = 'ffffff';
+    private $imgDC_wp                     = false;
+    private $imgDC_content                = true;
+    private $imgDC_assets                 = true;
+    private static $imgDC_nocolor_files   = array('video/mp4', 'video/quicktime', 'video/videopress', 'audio/mpeg');
+    private static $imgDC_defaultcolor    = 'ffffff';
 
 
     /* 1.2 ON LOAD RUN
@@ -64,9 +65,9 @@ class prefix_imgDC extends prefix_core_BaseFunctions {
       // update default vars with configuration file
       SELF::updateVars();
       // if wordpress is active
-      if(SELF::$imgDC_wp !== false):
+      if($this->imgDC_wp !== false):
         // lazy loading content img
-        if(SELF::$imgDC_content !== false):
+        if($this->imgDC_content !== false):
           add_filter('the_content', array( $this, 'ContentLazyLoading' ), 12 );
           add_filter('do_shortcode_tag', array( $this, 'ContentLazyLoading' ), 12 );
         endif;
@@ -79,7 +80,7 @@ class prefix_imgDC extends prefix_core_BaseFunctions {
         add_action( 'admin_menu', array( $this, 'imgDC_backendPage' ) );
         // add class assets
         add_action('admin_enqueue_scripts', array( $this, 'imgDC_backend_enqueue_scripts_and_styles' ) );
-        if(SELF::$imgDC_assets !== false):
+        if($this->$imgDC_assets !== false):
           add_action('wp_enqueue_scripts', array( $this, 'imgDC_frontend_enqueue_scripts_and_styles' ) );
         endif;
       endif;
@@ -112,9 +113,9 @@ class prefix_imgDC extends prefix_core_BaseFunctions {
         // class configuration
         $myConfig = $configuration['imgDC'];
         // update vars
-        SELF::$imgDC_wp = array_key_exists('wp', $myConfig) ? $myConfig['wp'] : SELF::$imgDC_wp;
-        SELF::$imgDC_content = array_key_exists('content', $myConfig) ? $myConfig['content'] : SELF::$imgDC_content;
-        SELF::$imgDC_assets = array_key_exists('assets', $myConfig) ? $myConfig['assets'] : SELF::$imgDC_assets;
+        $this->imgDC_wp = array_key_exists('wp', $myConfig) ? $myConfig['wp'] : $this->imgDC_wp;
+        $this->imgDC_content = array_key_exists('content', $myConfig) ? $myConfig['content'] : $this->imgDC_content;
+        $this->$imgDC_assets = array_key_exists('assets', $myConfig) ? $myConfig['assets'] : $this->$imgDC_assets;
         SELF::$imgDC_nocolor_files = array_key_exists('nocolor_files', $myConfig) ? $myConfig['nocolor_files'] : SELF::$imgDC_nocolor_files;
         SELF::$imgDC_defaultcolor = array_key_exists('defaultcolor', $myConfig) ? $myConfig['defaultcolor'] : SELF::$imgDC_defaultcolor;
       endif;
@@ -124,10 +125,10 @@ class prefix_imgDC extends prefix_core_BaseFunctions {
     /* 2.2 ENQUEUE FRONTEND SCRIPTS/STYLES
     /------------------------*/
     function imgDC_frontend_enqueue_scripts_and_styles() {
-      $class_path = get_stylesheet_directory_uri() . '/config/classes/prefix_imgDC/';
+      $class_path = get_template_directory_uri() . '/classes/prefix_imgDC/';
       $backend_ajax_action_file = $class_path . 'imgDC-ajax.php';
       // scripts
-      wp_register_script('frontend/imgDC-script', $class_path . 'imgDC.js', false, array( 'jquery' ), true);
+      wp_register_script('frontend/imgDC-script', $class_path . 'imgDC.js', false, "1.0", true);
       wp_enqueue_script('frontend/imgDC-script');
       wp_localize_script('frontend/imgDC-script', 'imgDC_Ajax', $backend_ajax_action_file);
     }
@@ -136,7 +137,7 @@ class prefix_imgDC extends prefix_core_BaseFunctions {
     /* 2.3 ENQUEUE BACKEND SCRIPTS/STYLES
     /------------------------*/
     function imgDC_backend_enqueue_scripts_and_styles(){
-      $class_path = get_stylesheet_directory_uri() . '/config/classes/prefix_imgDC/';
+      $class_path = get_template_directory_uri() . '/classes/prefix_imgDC/';
       $backend_ajax_action_file = $class_path . 'imgDC-ajax.php';
       // scripts
       wp_enqueue_script('backend/imgDC-script', $class_path . 'imgDC-backend.js', false, null);
@@ -208,7 +209,7 @@ class prefix_imgDC extends prefix_core_BaseFunctions {
       // check file type
       if(!in_array($img_type, SELF::$imgDC_nocolor_files)):
         // check if file exists
-        $check_file = PARENT::CheckFileExistence($img_full_url[0]);
+        $check_file = prefix_core_BaseFunctions::CheckFileExistence($img_full_url[0]);
         if ($check_file == true):
           $color = SELF::IMGcolor($img_full_url[0]);
         else:
@@ -268,6 +269,46 @@ class prefix_imgDC extends prefix_core_BaseFunctions {
         // fallback - file is not a img
         return $default;
       endif;
+    }
+
+
+    /* 2.9 GET IMG ID IF FILE IST NOT ORGINAL
+    /------------------------*/
+    /**
+      * @param int $img: img url
+      * @return int image id
+    */
+    static function getAttachmentID_notOrginal( $url ) {
+      $attachment_id = 0;
+      $dir = wp_upload_dir();
+      if ( false !== strpos( $url, $dir['baseurl'] . '/' ) ) { // Is URL in uploads directory?
+        $file = basename( $url );
+        $query_args = array(
+          'post_type'   => 'attachment',
+          'post_status' => 'inherit',
+          'fields'      => 'ids',
+          'meta_query'  => array(
+            array(
+              'value'   => $file,
+              'compare' => 'LIKE',
+              'key'     => '_wp_attachment_metadata',
+            ),
+          )
+        );
+        $query = new WP_Query( $query_args );
+        if ( $query->have_posts() ) {
+          foreach ( $query->posts as $post_id ) {
+            $meta = wp_get_attachment_metadata( $post_id );
+            $original_file       = basename( $meta['file'] );
+            $cropped_image_files = wp_list_pluck( $meta['sizes'], 'file' );
+            if ( $original_file === $file || in_array( $file, $cropped_image_files ) ) {
+              $attachment_id = $post_id;
+              break;
+            }
+          }
+        }
+      }
+      return $attachment_id;
     }
 
 
@@ -503,6 +544,10 @@ class prefix_imgDC extends prefix_core_BaseFunctions {
             $remove_vars = strpos($imgurl, '?') !== false ? substr($imgurl, 0, strpos($imgurl, "?")) : $imgurl;
             $remove_cdn = get_bloginfo('wpurl') . strstr($remove_vars, '/wp-content');
             $id = attachment_url_to_postid($remove_cdn);
+            // fallback if img is cropped or is not orginal url
+            if($id == 0):
+              $id = SELF::getAttachmentID_notOrginal($remove_cdn);
+            endif;
           elseif($check_srcset !== false):
             $additional .= str_replace('srcset', 'data-srcset', $value);
           else:
@@ -510,9 +555,11 @@ class prefix_imgDC extends prefix_core_BaseFunctions {
           endif;
         }
       endif;
-
+      // return img
       if($id > 0):
         return SELF::getIMG($id, $additional, $css);
+      else:
+        return '<img ' . $attr . '>';
       endif;
     }
 
