@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.1
+ * @version     2.2
  *
 */
 
@@ -27,6 +27,7 @@ Table of Contents:
   2.7 THEME SUPPORT
   2.8 BACKEND CONTROL
   2.9 REGISTER MENUS
+  2.10 CLEAN THE CONTENT
 3.0 OUTPUT
 =======================================================*/
 
@@ -92,6 +93,8 @@ class prefix_WPinit {
       add_action( 'wp_footer', array( $this, 'GoogleFonts' ) );
       // add menu
       add_action( 'init', array( $this, 'WPinit_theme_menus' ) );
+      // clean the content
+      add_filter( 'the_content', array( $this, 'WPinit_CleanContent' ) );
     }
 
     /* 1.3 BACKEND ARRAY
@@ -271,6 +274,13 @@ class prefix_WPinit {
       if(is_array($this->$WPinit_menus)):
         register_nav_menus($this->$WPinit_menus);
       endif;
+    }
+
+
+    /* 2.10 CLEAN THE CONTENT
+    /------------------------*/
+    function WPinit_CleanContent( $content ) {
+      return preg_replace( '/[\r\n]+/', "\n", $content );
     }
 
 
