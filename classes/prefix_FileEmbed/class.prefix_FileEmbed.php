@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     1.4.6
+ * @version     2.0
  *
 */
 
@@ -21,7 +21,7 @@ Table of Contents:
 =======================================================*/
 
 
-class prefix_FileEmbed extends prefix_core_BaseFunctions {
+class prefix_FileEmbed {
 // class prefix_FileEmbed extends prefix_core_BaseFunctions {
 
   /*==================================================================================
@@ -32,40 +32,29 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
     /------------------------*/
     /**
       * default vars
-      * @param static string $main_directory: file directory
-      * @param static array $files: files to insert
-      * @param static bool $ColumnName: file contains labels
-      * @param static string $csvEncodingFile: file coding
-      * @param static string $csvEncodingOutput: file encode
-      * @param static string $orderColumn: sort global by
-      * @param static string $fixIdColumn: list has id
-      * @param static string $orderDirection: sort direction
-      * @param static string $CSVseperator: csv file is seperated (, or ;)
-      * @param static bool $orderByDate: sort column is date
+      * @param private string $main_directory: file directory
+      * @param private array $files: files to insert
+      * @param private bool $ColumnName: file contains labels
+      * @param private string $csvEncodingFile: file coding
+      * @param private string $csvEncodingOutput: file encode
+      * @param private string $orderColumn: sort global by
+      * @param private string $fixIdColumn: list has id
+      * @param private string $orderDirection: sort direction
+      * @param private string $CSVseperator: csv file is seperated (, or ;)
+      * @param private bool $orderByDate: sort column is date
     */
-    static $main_directory     = '/';
-    static $files          = array(
-      'global_name' => array(
-        'file' => 'add_path/file_name.csv',
-        'title' => true,
-        'file_coding' => 'UTF-8',
-        'encoding' => 'Windows-1252',
-        'id_column' => false,
-        'order_column' => '',
-        'order_direction' => 'ASC',
-        'order_bydate' => false,
-        'seperator' => ','
-      )
-    );
+    private $main_directory     = '/';
+    private $files              = array();
     // defaults
-    static $ColumnName        = true;
-    static $csvEncodingFile   = 'UTF-8';
-    static $csvEncodingOutput = 'Windows-1252';
-    static $orderColumn       = '';
-    static $fixIdColumn       = false;  // CSV only
-    static $orderDirection    = 'ASC';
-    static $CSVseperator      = ',';
-    static $orderByDate       = false;
+    private $ColumnName        = true;
+    private $csvEncodingFile   = 'UTF-8';
+    private $csvEncodingOutput = 'Windows-1252';
+    private $orderColumn       = '';
+    private $fixIdColumn       = false;  // CSV only
+    private $orderDirection    = 'ASC';
+    private $CSVseperator      = ',';
+    private $orderByDate       = false;
+    private $SSLstream         = true;
 
 
     /* 1.2 ON LOAD RUN
@@ -92,31 +81,47 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
     /* 1.4 JSON GLOBAL
     /------------------------*/
     function Add_Files_as_Global(){
-      if(!empty(SELF::$files)):
+      if(!empty($this->files)):
         // vars
         $root = $_SERVER['DOCUMENT_ROOT'];
         // for each file
-        foreach (SELF::$files as $file_key => $file) {
+        foreach ($this->files as $file_key => $file) {
           // file path
-          $path       = substr($file["file"], 0, 4) === 'http' ? $file["file"] : $root . SELF::$main_directory . $file["file"];
+          $path       = substr($file["file"], 0, 4) === 'http' ? $file["file"] : $root . $this->main_directory . $file["file"];
           $path_parts = pathinfo($path);
           // check if file exists
-          if(PARENT::CheckFileExistence($path)):
+          if(prefix_core_BaseFunctions::CheckFileExistence($path)):
             // create global
             global $$file_key;
             // file configuration
-            $title           = array_key_exists('title', $file) ? $file["title"] : SELF::$ColumnName;
-            $file_coding     = array_key_exists('file_coding', $file) ? $file["file_coding"] : SELF::$csvEncodingFile;
-            $encoding        = array_key_exists('encoding', $file) ? $file["encoding"] : SELF::$csvEncodingFile;
-            $id_column       = array_key_exists('id_column', $file) ? $file["id_column"] : SELF::$fixIdColumn;
-            $order_column    = array_key_exists('order_column', $file) ? $file["order_column"] : SELF::$orderColumn;
-            $order_direction = array_key_exists('order_direction', $file) ? $file["order_direction"] : SELF::$orderDirection;
-            $order_bydate    = array_key_exists('order_bydate', $file) ? $file["order_bydate"] : SELF::$orderByDate;
-            $seperator       = array_key_exists('seperator', $file) ? $file["seperator"] : SELF::$CSVseperator;
+            $title           = array_key_exists('title', $file) ? $file["title"] : $this->ColumnName;
+            $file_coding     = array_key_exists('file_coding', $file) ? $file["file_coding"] : $this->csvEncodingFile;
+            $encoding        = array_key_exists('encoding', $file) ? $file["encoding"] : $this->csvEncodingFile;
+            $id_column       = array_key_exists('id_column', $file) ? $file["id_column"] : $this->fixIdColumn;
+            $order_column    = array_key_exists('order_column', $file) ? $file["order_column"] : $this->orderColumn;
+            $order_direction = array_key_exists('order_direction', $file) ? $file["order_direction"] : $this->orderDirection;
+            $order_bydate    = array_key_exists('order_bydate', $file) ? $file["order_bydate"] : $this->orderByDate;
+            $seperator       = array_key_exists('seperator', $file) ? $file["seperator"] : $this->CSVseperator;
+            $sslStream       = array_key_exists('ssl_stream', $file) ? $file["ssl_stream"] : $this->SSLstream;
+            // ssl stream
+            if($sslStream !== true):
+              $stream_settings = array(
+                                  "ssl"=>array(
+                                    "verify_peer"=> false,
+                                    "verify_peer_name"=> false
+                                  ),
+                                  'http' => array(
+                                    'timeout' => 30
+                                  )
+                                );
+            else:
+              $stream_settings = array();
+            endif;
+            $stream          = stream_context_create($stream_settings);
             // check file type
             if($path_parts['extension'] == 'json'):
               // get content from a json file
-              $file_content = file_get_contents($path);
+              $file_content = file_get_contents($path, 0, $stream);
               // utf 8 bom fix
               $file_content = ltrim($file_content, chr(239).chr(187).chr(191));
               // decode file
@@ -168,7 +173,7 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
               // get content from a csv file
               $dataArray = array();
               $row = 0;
-              if (($handle = fopen($path, 'r')) !== false) {
+              if (($handle = fopen($path, 'r', false, $stream)) !== false) {
                   while (($data = fgetcsv($handle, 1000, $seperator)) !== false) {
 
                       ++$row;
@@ -203,7 +208,7 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
             endif;
             // sort array
             if($order_column !== ''):
-              $$file_key = PARENT::MultidArraySort($$file_key, $order_column, $order_direction, $order_bydate);
+              $$file_key = prefix_core_BaseFunctions::MultidArraySort($$file_key, $order_column, $order_direction, $order_bydate);
             endif;
 
           else:
@@ -231,8 +236,8 @@ class prefix_FileEmbed extends prefix_core_BaseFunctions {
       // class configuration
       $myConfig = $configuration['FileEmbed'];
       // update vars
-      SELF::$main_directory = array_key_exists('directory', $myConfig) ? $myConfig['directory'] : SELF::$DEMO;
-      SELF::$files = array_key_exists('files', $myConfig) ? $myConfig['files'] : SELF::$DEMO;
+      $this->main_directory = array_key_exists('directory', $myConfig) ? $myConfig['directory'] : $this->main_directory;
+      $this->files = array_key_exists('files', $myConfig) ? $myConfig['files'] : $this->files;
     endif;
   }
 
