@@ -5,7 +5,7 @@
  * Wordpress - add custom fields for alt tag translations
  * https://github.com/david-gap/classes
  * Author: David Voglgsang
- * @version     1.1.1
+ * @version     2.0
  *
 */
 
@@ -28,7 +28,7 @@ Table of Contents:
 =======================================================*/
 
 
-class prefix_WPimgAlt extends prefix_core_BaseFunctions {
+class prefix_WPimgAttr {
 
   /*==================================================================================
     1.0 INIT & VARS
@@ -38,17 +38,17 @@ class prefix_WPimgAlt extends prefix_core_BaseFunctions {
   /------------------------*/
   /**
     * default vars (if configuration file is missing or broken)
-    * @param static string $WPimgAlt_content: simple way to disable img alt for the_content
-    * @param static string $WPimgAlt_attachmentt: simple way to disable img attachment alt
-    * @param static string $WPimgAlt_shortcode: simple way to disable img in shortcode alt
-    * @param static array $WPimgAlt_languages: List of Languages, first one is default
-    * @param static string $WPimgAlt_prefix: Prefix for variables
+    * @param private string $WPimgAttr_Alt_content: simple way to disable img alt for the_content
+    * @param private string $WPimgAttr_Alt_attachmentt: simple way to disable img attachment alt
+    * @param private string $WPimgAttr_Alt_shortcode: simple way to disable img in shortcode alt
+    * @param private array $WPimgAttr_Alt_languages: List of Languages, first one is default
+    * @param private string $WPimgAttr_Alt_prefix: Prefix for variables
   */
-  static $WPimgAlt_content      = true;
-  static $WPimgAlt_attachment   = true;
-  static $WPimgAlt_shortcode    = true;
-  static $WPimgAlt_languages    = array("de", "en", "fr", "it");
-  static $WPimgAlt_prefix       = 'WPimgAlt_';
+  private $WPimgAttr_Alt_content             = true;
+  private $WPimgAttr_Alt_attachment          = true;
+  private $WPimgAttr_Alt_shortcode           = true;
+  private static $WPimgAttr_Alt_languages    = array("de", "en", "fr", "it");
+  private static $WPimgAttr_Alt_prefix       = 'WPimgAttr_Alt_';
 
 
   /* 1.2 ON LOAD RUN
@@ -57,23 +57,23 @@ class prefix_WPimgAlt extends prefix_core_BaseFunctions {
     // update default vars with configuration file
     SELF::updateVars();
     // add custom fields
-    if(SELF::$WPimgAlt_content !== false || SELF::$WPimgAlt_attachment !== false):
+    if($this->WPimgAttr_Alt_content !== false || $this->WPimgAttr_Alt_attachment !== false):
       // add custom fields
-      add_filter( 'attachment_fields_to_edit', array( $this, 'WPimgAlt_meta_CustomFields' ), null, 2 );
+      add_filter( 'attachment_fields_to_edit', array( $this, 'WPimgAttr_Alt_meta_CustomFields' ), null, 2 );
       // update custom fields
-      add_action('add_attachment', array( $this, 'WPimgAlt_meta_Attachments_Save' ),  10, 2 );
-      add_action('edit_attachment', array( $this, 'WPimgAlt_meta_Attachments_Save' ),  10, 2 );
+      add_action('add_attachment', array( $this, 'WPimgAttr_Alt_meta_Attachments_Save' ),  10, 2 );
+      add_action('edit_attachment', array( $this, 'WPimgAttr_Alt_meta_Attachments_Save' ),  10, 2 );
     endif;
     // alt img in the_content
-    if(SELF::$WPimgAlt_content !== false):
+    if($this->WPimgAttr_Alt_content !== false):
       add_filter('the_content', array( $this, 'IMGalt_Content' ) );
     endif;
     // alt img in do_shortcode
-    if(SELF::$WPimgAlt_shortcode !== false):
+    if($this->WPimgAttr_Alt_shortcode !== false):
       add_filter('do_shortcode', array( $this, 'IMGalt_Content' ) );
     endif;
     // alt img for attachments
-    if(SELF::$WPimgAlt_attachment !== false):
+    if($this->WPimgAttr_Alt_attachment !== false):
       add_filter( 'wp_get_attachment_image_attributes', array( $this, 'IMGalt_Attachment' ), 10, 2 );
     endif;
   }
@@ -101,33 +101,33 @@ class prefix_WPimgAlt extends prefix_core_BaseFunctions {
       // get configuration
       global $configuration;
       // if configuration file exists && class-settings
-      if($configuration && array_key_exists('prefix_WPimgAlt', $configuration)):
+      if($configuration && array_key_exists('WPimgAttr', $configuration)):
         // class configuration
-        $myConfig = $configuration['prefix_WPimgAlt'];
+        $myConfig = $configuration['WPimgAttr'];
         // update vars
-        SELF::$WPimgAlt_content = array_key_exists('WPimgAlt_content', $myConfig) ? $myConfig['WPimgAlt_content'] : SELF::$WPimgAlt_content;
-        SELF::$WPimgAlt_attachment = array_key_exists('WPimgAlt_attachment', $myConfig) ? $myConfig['WPimgAlt_attachment'] : SELF::$WPimgAlt_attachment;
-        SELF::$WPimgAlt_shortcode = array_key_exists('WPimgAlt_shortcode', $myConfig) ? $myConfig['WPimgAlt_shortcode'] : SELF::$WPimgAlt_shortcode;
-        SELF::$WPimgAlt_languages = array_key_exists('WPimgAlt_languages', $myConfig) ? $myConfig['WPimgAlt_languages'] : SELF::$WPimgAlt_languages;
+        $this->WPimgAttr_Alt_content = array_key_exists('Alt_content', $myConfig) ? $myConfig['Alt_content'] : $this->WPimgAttr_Alt_content;
+        $this->WPimgAttr_Alt_attachment = array_key_exists('Alt_attachment', $myConfig) ? $myConfig['Alt_attachment'] : $this->WPimgAttr_Alt_attachment;
+        $this->WPimgAttr_Alt_shortcode = array_key_exists('Alt_shortcode', $myConfig) ? $myConfig['Alt_shortcode'] : $this->WPimgAttr_Alt_shortcode;
+        SELF::$WPimgAttr_Alt_languages = array_key_exists('Alt_languages', $myConfig) ? $myConfig['Alt_languages'] : SELF::$WPimgAttr_Alt_languages;
       endif;
     }
 
 
     /* 2.2 ADD CUSTOM FIELDS
     /------------------------*/
-    function WPimgAlt_meta_CustomFields( $form_fields, $post ) {
+    function WPimgAttr_Alt_meta_CustomFields( $form_fields, $post ) {
       //output for each language
-      if(is_array(SELF::$WPimgAlt_languages)):
+      if(is_array(SELF::$WPimgAttr_Alt_languages)):
         // repeat output for each language (exept first one - is default)
-        foreach (SELF::$WPimgAlt_languages as $key => $lang) {
+        foreach (SELF::$WPimgAttr_Alt_languages as $key => $lang) {
           if($key > 0):
             // get saved value
-            $var_name = SELF::$WPimgAlt_prefix . $lang;
+            $var_name = SELF::$WPimgAttr_Alt_prefix . $lang;
             $value = get_post_meta($post->ID, $var_name, true);
             // create custom field
             $form_fields[$var_name] = array(
                 'value' => $value ? $value : '',
-                'label' => __( 'Alternative Text', 'WPimgAlt' ) . ' (' . $lang . ')',
+                'label' => __( 'Alternative Text', 'WPimgAttr' ) . ' (' . $lang . ')',
                 'input' => 'text'
             );
           endif;
@@ -140,14 +140,14 @@ class prefix_WPimgAlt extends prefix_core_BaseFunctions {
 
     /* 2.3 SAVE METABOXES
     /------------------------*/
-    public function WPimgAlt_meta_Attachments_Save($post_id) {
+    public function WPimgAttr_Alt_meta_Attachments_Save($post_id) {
       if( isset( $_POST['attachment'] ) ):
         //Not save if the user hasn't submitted changes
         if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ):
           return;
         endif;
         // Verifying whether input is coming from the proper form
-        if ( ! wp_verify_nonce ( $_POST['WPimgAlt_lang_de'] ) ):
+        if ( ! wp_verify_nonce ( $_POST['WPimgAttr_Alt_lang_de'] ) ):
           return;
         endif;
         // Making sure the user has permission
@@ -158,18 +158,18 @@ class prefix_WPimgAlt extends prefix_core_BaseFunctions {
         endif;
       endif;
       // save fields
-      SELF::WPimgAlt_saveAltAttributes($post_id);
+      SELF::WPimgAttr_Alt_saveAltAttributes($post_id);
     }
 
 
     /* 2.4 SAVE CUSTOM FIELDS
     /------------------------*/
-    public function WPimgAlt_saveAltAttributes(int $id = 0){
+    public function WPimgAttr_Alt_saveAltAttributes(int $id = 0){
       // save field for each language
-      foreach (SELF::$WPimgAlt_languages as $key => $lang) {
+      foreach (SELF::$WPimgAttr_Alt_languages as $key => $lang) {
         if($key > 0):
           // get field name
-          $var_name = SELF::$WPimgAlt_prefix . $lang;
+          $var_name = SELF::$WPimgAttr_Alt_prefix . $lang;
           // save value
           if ( isset( $_REQUEST['attachments'][ $id ][$var_name] ) ):
               $new_value = $_REQUEST['attachments'][ $id ][$var_name];
@@ -185,14 +185,14 @@ class prefix_WPimgAlt extends prefix_core_BaseFunctions {
     public static function getAltAttribute(int $id = 0){
       // vars
       $output = '';
-      $lang = PARENT::getCurrentLang();
+      $lang = prefix_core_BaseFunctions::getCurrentLang();
       // check if active lang is default or not
-      if($lang == SELF::$WPimgAlt_languages[0]):
+      if($lang == SELF::$WPimgAttr_Alt_languages[0]):
         // default language
         $output .= get_post_meta($id, '_wp_attachment_image_alt', TRUE);
       else:
         // alternative text
-        $name = SELF::$WPimgAlt_prefix . $lang;
+        $name = SELF::$WPimgAttr_Alt_prefix . $lang;
         $output .= get_post_meta($id, $name, true);
       endif;
       // output
