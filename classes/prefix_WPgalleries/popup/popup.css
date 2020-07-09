@@ -1,0 +1,218 @@
+/**
+ * Popup CSS File
+ *
+ * @author         David Voglgsang
+ *
+ */
+/*==================================================================================
+  FUNCTIONS
+==================================================================================*/
+@keyframes loadingdots {
+  0%, 20% {
+    color: rgba(0, 0, 0, 0);
+    text-shadow: 5px 0 0 rgba(0, 0, 0, 0), 10px 0 0 rgba(0, 0, 0, 0);
+  }
+  40% {
+    color: white;
+    text-shadow: 5px 0 0 rgba(0, 0, 0, 0), 10px 0 0 rgba(0, 0, 0, 0);
+  }
+  60% {
+    text-shadow: 5px 0 0 white, 10px 0 0 rgba(0, 0, 0, 0);
+  }
+  80%, 100% {
+    text-shadow: 5px 0 0 white, 10px 0 0 white;
+  }
+}
+/*==================================================================================
+  POP UP
+==================================================================================*/
+.loading {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  align-content: center;
+  align-items: center;
+  background-image: url("images/popup-loading.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 60px;
+  min-width: 150px;
+  padding-top: 120px !important;
+}
+.loading:after {
+  content: " .";
+  animation: loadingdots 1s steps(5, end) infinite;
+  height: 20px;
+  font-size: 16px;
+}
+.loading:before {
+  display: block;
+  content: "";
+  height: 20px;
+  font-size: 16px;
+  content: "wird geladen";
+}
+html[data-lang=en] .loading:before {
+  content: "loading";
+}
+html[data-lang=fr] .loading:before {
+  content: "en cours de chargement";
+}
+
+.popup-noscroll {
+  overflow: hidden;
+}
+
+.popup {
+  position: fixed;
+  left: 0;
+  top: 0;
+  background-color: black;
+  background-color: rgba(0, 0, 0, 0.75);
+  width: 100vw;
+  height: 100vh;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  z-index: 1199;
+  opacity: 1;
+  pointer-events: auto;
+  user-select: none;
+  transition: 0.3s;
+}
+.popup.closed {
+  opacity: 0;
+  pointer-events: none;
+  z-index: -1;
+}
+.popup .popup-container {
+  position: relative;
+  width: 100%;
+  width: fit-content;
+  max-width: 800px;
+  min-width: 304px;
+  margin: 40px;
+  max-height: 100%;
+}
+@media (max-width: 767px) {
+  .popup .popup-container {
+    margin: 0;
+    height: 100vh;
+  }
+}
+.popup .popup-container.img-content .popup-content img {
+  max-width: 100%;
+  max-height: calc(100vh - 90px);
+}
+@media (max-width: 767px) {
+  .popup .popup-container.img-content .popup-content img {
+    max-height: 100vh;
+  }
+}
+.popup .popup-container .popup-content {
+  background-color: black;
+  padding: 5px;
+  position: relative;
+  line-height: 0;
+  min-width: 400px;
+}
+@media (max-width: 767px) {
+  .popup .popup-container .popup-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+  }
+}
+.popup .popup-container .close {
+  color: transparent;
+  display: flex;
+  width: 38px;
+  height: 38px;
+  text-align: center;
+  justify-content: center;
+  align-content: center;
+  cursor: pointer;
+  position: absolute;
+  z-index: 231;
+  right: -40px;
+  top: -40px;
+  background-image: url("images/popup-close.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 30px;
+}
+@media (max-width: 767px) {
+  .popup .popup-container .close {
+    background-color: rgba(0, 0, 0, 0.4);
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background-size: 20px 20px;
+  }
+}
+
+/*==================================================================================
+  NAVIGATION ARROWS
+==================================================================================*/
+.popup .popup-content:hover .popup-arrow,
+.popup .popup-content:hover .swiper-arrow {
+  opacity: 1;
+}
+@media (max-width: 767px) {
+  .popup .popup-content:hover .popup-arrow,
+.popup .popup-content:hover .swiper-arrow {
+    opacity: 0;
+  }
+}
+
+.popup-arrow {
+  background-color: rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  display: block;
+  position: absolute;
+  top: calc(50% - 35px);
+  border: solid transparent;
+  border-width: 5px 10px;
+  background-image: url("images/popup-arrow.svg");
+  background-size: contain;
+  background-position: center;
+  width: 40px;
+  height: 70px;
+  transition: 0.3s;
+  z-index: 1;
+}
+@media (max-width: 767px) {
+  .popup-arrow {
+    top: calc(50% - 30px);
+    width: 40px;
+    height: 60px;
+  }
+}
+.popup-arrow.back {
+  left: 20px;
+}
+@media (max-width: 767px) {
+  .popup-arrow.back {
+    left: 5vw;
+  }
+}
+.popup-arrow.next {
+  right: 20px;
+  transform: rotate(180deg);
+}
+@media (max-width: 767px) {
+  .popup-arrow.next {
+    right: 5vw;
+  }
+}
+.popup-arrow.hidden {
+  opacity: 0;
+}

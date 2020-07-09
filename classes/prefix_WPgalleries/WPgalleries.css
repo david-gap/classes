@@ -1,0 +1,263 @@
+/**
+ * WPgalleries CSS File
+ *
+ * @author         David Voglgsang
+ *
+ */
+/*==================================================================================
+  FUNCTIONS
+==================================================================================*/
+/*==================================================================================
+  GLOBAL
+==================================================================================*/
+.galleries-block {
+  position: relative;
+}
+.galleries-block .galleries-inner {
+  user-select: none;
+}
+.galleries-block .galleries-inner > div {
+  position: relative;
+}
+.galleries-block .galleries-inner > div.videobutton:before {
+  display: block;
+  content: "";
+  width: 0;
+  height: 0;
+  border-top: 30px solid transparent;
+  border-bottom: 30px solid transparent;
+  border-left: 30px solid white;
+  position: absolute;
+  top: calc(calc(100% / 2) - 45px);
+  left: calc(calc(100% / 2) - 15px);
+  opacity: 0.75;
+}
+
+/*==================================================================================
+  GRID
+==================================================================================*/
+.layout-grid .galleries-inner {
+  display: grid;
+  grid-gap: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  line-height: 0;
+}
+@media (max-width: 767px) {
+  .layout-grid .galleries-inner {
+    grid-gap: 2.5vw;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.layout-grid .galleries-inner > div {
+  width: 100%;
+  height: 225px;
+}
+@media (max-width: 767px) {
+  .layout-grid .galleries-inner > div {
+    height: 35vw;
+  }
+}
+@media (max-width: 767px) {
+  .layout-grid .galleries-inner > div img {
+    height: calc(50vw - 3.75vw);
+  }
+}
+.layout-grid .galleries-inner > div.videobutton:before {
+  top: calc(50% -15px);
+}
+
+html.InternetExplorer .layout-grid .galleries-inner {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+html.InternetExplorer .layout-grid .galleries-inner > div {
+  width: calc(33.33% - 14px);
+  margin-bottom: 20px;
+}
+@media (max-width: 767px) {
+  html.InternetExplorer .layout-grid .galleries-inner > div {
+    width: calc(50% - 20px);
+  }
+}
+
+/*==================================================================================
+  SWIPER
+==================================================================================*/
+.layout-swiper {
+  width: 100%;
+  overflow: hidden;
+}
+@media (max-width: 767px) {
+  .layout-swiper {
+    height: calc(45vw - 30px);
+  }
+}
+.layout-swiper.fullwidth {
+  width: 100vw;
+  max-width: none;
+  margin-left: calc(-50vw + 50%);
+}
+.layout-swiper .galleries-inner {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+}
+.layout-swiper .galleries-inner > div {
+  scroll-snap-align: start;
+  flex: 0 0 25vw;
+  flex-basis: calc(25% - 20px);
+  justify-content: center;
+  align-items: center;
+  max-width: calc(25% - 20px);
+  margin: 0 30px 0 0;
+}
+@media (max-width: 767px) {
+  .layout-swiper .galleries-inner > div {
+    flex: 0 0 50vw;
+    flex-basis: calc(50% - 10px);
+    height: 45vw;
+    margin: 0 20px 0 0;
+    max-width: 50% !important;
+  }
+}
+.layout-swiper .galleries-inner > div:last-child {
+  margin-right: 0;
+}
+
+.layout-swiper {
+  height: calc(255px - 30px);
+}
+@media (max-width: 767px) {
+  .layout-swiper {
+    height: calc(45vw - 30px);
+  }
+}
+.layout-swiper .galleries-inner {
+  height: 255px;
+  height: 45vw;
+}
+.layout-swiper .galleries-inner > div {
+  height: calc(255px - 30px);
+}
+@media (max-width: 767px) {
+  .layout-swiper .galleries-inner > div {
+    height: calc(45vw - 30px);
+  }
+}
+
+/*==================================================================================
+  GRID & SWIPER CONTENT
+==================================================================================*/
+.galleries-block .galleries-inner > div {
+  padding-bottom: 0;
+}
+.galleries-block .galleries-inner > div img {
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  object-fit: cover;
+}
+.galleries-block .galleries-inner > div img.video-mp4, .galleries-block .galleries-inner > div img.video-quicktime, .galleries-block .galleries-inner > div img.video-videopress, .galleries-block .galleries-inner > div img.image-svg-xml, .galleries-block .galleries-inner > div img.audio-mpeg {
+  background-size: 40% !important;
+}
+
+/*==================================================================================
+  FULLSCREEN
+==================================================================================*/
+.layout-fullscreen {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  margin-left: calc(-50vw + 50%);
+  overflow: hidden;
+}
+@media (max-width: 767px) {
+  .layout-fullscreen {
+    width: 100%;
+    height: 50vw;
+    margin-left: 0;
+  }
+}
+.layout-fullscreen .galleries-inner {
+  height: calc(100vh + 30px);
+  display: flex;
+  align-items: flex-start;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+}
+@media (max-width: 767px) {
+  .layout-fullscreen .galleries-inner {
+    height: calc(50vw + 30px);
+  }
+}
+.layout-fullscreen .galleries-inner > div {
+  scroll-snap-align: start;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  flex: 0 0 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+/*==================================================================================
+  NAVIGATION ARROWS
+==================================================================================*/
+.galleries-arrow {
+  background-color: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  display: block;
+  position: absolute;
+  top: calc(50% - 35px);
+  border: solid transparent;
+  border-width: 5px 10px;
+  background-size: contain;
+  background-position: center;
+  width: 40px;
+  height: 70px;
+  transition: 0.3s;
+  z-index: 1;
+}
+@media (max-width: 767px) {
+  .galleries-arrow {
+    opacity: 1;
+    top: calc(50% - 20px);
+    width: 30px;
+    height: 40px;
+  }
+}
+.galleries-arrow.back {
+  left: 20px;
+}
+@media (max-width: 767px) {
+  .galleries-arrow.back {
+    left: 5vw;
+  }
+}
+.galleries-arrow.next {
+  right: 20px;
+  transform: rotate(180deg);
+}
+@media (max-width: 767px) {
+  .galleries-arrow.next {
+    right: 5vw;
+  }
+}
+.galleries-arrow.hidden {
+  opacity: 0;
+}
+.galleries-arrow > svg {
+  width: 100%;
+  height: 100%;
+  fill: white;
+}

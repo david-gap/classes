@@ -2,7 +2,6 @@
  * WPgalleries CSS File
  *
  * @author         David Voglgsang
- * @version        1.2
  *
  */
 
@@ -11,8 +10,8 @@
 /*==================================================================================
   FUNCTIONS
 ==================================================================================*/
-@mixin mobile {
-  @media (max-width: #{840px - 1px}) {
+@mixin GalleryMobile {
+  @media (max-width: #{768px - 1px}) {
     @content;
   }
 }
@@ -59,18 +58,18 @@
     grid-gap: 20px;
     grid-template-columns: repeat(4, 1fr);
     line-height: 0;
-    @include mobile {
+    @include GalleryMobile {
       grid-gap: 2.5vw;
       grid-template-columns: repeat(2, 1fr);
     }
     > div {
       width: 100%;
       height: 225px;
-      @include mobile {
+      @include GalleryMobile {
         height: 35vw;
       }
       img {
-        @include mobile {
+        @include GalleryMobile {
           height: calc(50vw - 3.75vw);
         }
       }
@@ -91,7 +90,7 @@ html.InternetExplorer {
       > div {
         width: calc(33.33% - 14px);
         margin-bottom: 20px;
-        @include mobile {
+        @include GalleryMobile {
           width: calc(50% - 20px);
         }
       }
@@ -107,7 +106,7 @@ html.InternetExplorer {
 .layout-swiper {
   width: 100%;
   overflow: hidden;
-  @include mobile {
+  @include GalleryMobile {
     height: calc(45vw - 30px);
   }
   &.fullwidth {
@@ -131,7 +130,7 @@ html.InternetExplorer {
       align-items: center;
       max-width: calc(25% - 20px);
       margin: 0 30px 0 0;
-      @include mobile {
+      @include GalleryMobile {
         flex: 0 0 50vw;
         flex-basis: calc(50% - 10px);
         height: 45vw;
@@ -146,7 +145,7 @@ html.InternetExplorer {
 }
 .layout-swiper {
   height: calc(255px - 30px);
-  @include mobile {
+  @include GalleryMobile {
     height: calc(45vw - 30px);
   }
   .galleries-inner {
@@ -154,7 +153,7 @@ html.InternetExplorer {
     height: 45vw;
     > div {
       height: calc(255px - 30px);
-      @include mobile {
+      @include GalleryMobile {
         height: calc(45vw - 30px);
       }
     }
@@ -197,7 +196,7 @@ html.InternetExplorer {
   max-width: none;
   margin-left: calc(-50vw + 50%);
   overflow: hidden;
-  @include mobile {
+  @include GalleryMobile {
     width: 100%;
     height: 50vw;
     margin-left: 0;
@@ -212,7 +211,7 @@ html.InternetExplorer {
     overflow-x: scroll;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
-    @include mobile {
+    @include GalleryMobile {
       height: calc(50vw + 30px);
     }
     > div {
@@ -246,7 +245,7 @@ html.InternetExplorer {
   height: 70px;
   transition: .3s;
   z-index: 1;
-  @include mobile {
+  @include GalleryMobile {
     opacity: 1;
     top: calc(50% - 20px);
     width: 30px;
@@ -254,14 +253,14 @@ html.InternetExplorer {
   }
   &.back {
     left: 20px;
-    @include mobile {
+    @include GalleryMobile {
       left: 5vw;
     }
   }
   &.next {
     right: 20px;
     transform: rotate(180deg);
-    @include mobile {
+    @include GalleryMobile {
       right: 5vw;
     }
   }

@@ -1,4 +1,4 @@
-**Version 1.3.3** (27.04.2020)
+**Version 2.0** (09.07.2020)
 
 Custom class "WPgalleries"
 
@@ -13,6 +13,7 @@ Custom class "WPgalleries"
 * $WPgalleries_block_max: max entries on block list
 * $WPgalleries_detailpage: enable detail page for cpt
 * $WPgalleries_assets: enable js/css register
+* $WPgalleries_assets_popup: enable js/css register for img popup
 
 ## CONFIGURATION FILE
 ```
@@ -29,6 +30,7 @@ Custom class "WPgalleries"
   },
   "detailpage": false,
   "assets": true,
+  "assets_popup": true,
   "others": {
     "0": "other cpt slug"
   }
@@ -61,4 +63,9 @@ Define Swiper columns desktop step attribute and mobile mstep.
 Defaults are 4/2
 ```
 [galleries step="4" mstep="2"]
+```
+
+Activate popup
+```
+[galleries popup="true"]
 ```

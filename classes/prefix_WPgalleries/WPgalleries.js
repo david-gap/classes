@@ -2,7 +2,6 @@
  * javascript/jQuery functions for WPgalleries Class
  *
  * @author      David Voglgsang
- * @version     1.1
  *
  */
 
@@ -15,7 +14,7 @@ jQuery(function ($) {
   /* Global Settings
   /––––––––––––––––––––––––*/
   // mobile breakpoint
-  var breakpoint = 840;
+  var breakpoint = 767;
 
 
   /* Debouncer
