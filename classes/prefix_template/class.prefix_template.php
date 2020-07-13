@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.0
+ * @version     2.1
  *
 */
 
@@ -17,23 +17,27 @@ Table of Contents:
   1.1 CONFIGURATION
   1.2 ON LOAD RUN
   1.3 BACKEND ARRAY
+  1.4 PAGE OPTIONS - CREATE META BOX
 2.0 FUNCTIONS
   2.1 GET CONFIGURATION FORM CONFIG FILE
   2.2 ACTIVATE CONTAINER CSS CLASS FOR HEADER/FOOTER
   2.3 STICKY MENU
+  2.4 SAVE METABOXES
 3.0 OUTPUT
   3.1 SORTABLE HEADER CONTENT
   3.2 SORTABLE FOOTER CONTENT
-  3.3 PLACEHOLDER
-  3.4 LOGO
-  3.5 CHECK IF MAINMENU IS ACTIVE
-  3.6 ADDRESS BLOCK
-  3.7 DIVIDE HEADER FROM CONTENT
-  3.8 FOOTER MENU
-  3.9 COPYRIGHT
-  3.10 SOCIAL MEDIA
-  3.11 CONTACT BLOCK
-  3.12 ICON BLOCK
+  3.3 BACKEND PAGE OPTIONS - METABOX
+  3.4 PAGE OPTIONS
+  3.5 PLACEHOLDER
+  3.6 LOGO
+  3.7 CHECK IF MAINMENU IS ACTIVE
+  3.8 ADDRESS BLOCK
+  3.9 DIVIDE HEADER FROM CONTENT
+  3.10 FOOTER MENU
+  3.11 COPYRIGHT
+  3.12 SOCIAL MEDIA
+  3.13 CONTACT BLOCK
+  3.14 ICON BLOCK
 =======================================================*/
 
 
@@ -62,6 +66,9 @@ class prefix_template {
     * @param static string $template_header_logo_link: Logo link with wordpress fallback
     * @param static array $template_header_logo_d: desktop logo configuration
     * @param static array $template_header_logo_m: mobile logo configuration
+    * @param static bool $template_page_active: activate page options
+    * @param static array $template_page_options: show/hide template elements
+    * @param static array $template_page_additional: additional custom fields template elements
     * @param static bool $template_footer_active: activate footer
     * @param static string $template_footer_cr: copyright text
     * @param static string $template_footer_custom: custom html
@@ -124,6 +131,14 @@ class prefix_template {
     "height" => "",
     "alt" => ""
   );
+  static $template_page_active      = true;
+  static $template_page_options     = array(
+    "header" => true,
+    "title" => true,
+    "sidebar" => true,
+    "footer" => true
+  );
+  static $template_page_additional  = array();
   static $template_footer_active    = true;
   static $template_footer_cr        = "";
   static $template_footer_custom    = "";
@@ -141,6 +156,13 @@ class prefix_template {
   public function __construct() {
     // update default vars with configuration file
     SELF::updateVars();
+    // add page options to backend
+    if(SELF::$template_page_active !== false):
+      // metabox for option selection
+      add_action( 'add_meta_boxes', array( $this, 'WPtemplate_Metabox' ) );
+      // update custom fields
+      add_action('save_post', array( $this, 'WPtemplate_meta_Save' ),  10, 2 );
+    endif;
   }
 
   /* 1.3 BACKEND ARRAY
@@ -152,6 +174,38 @@ class prefix_template {
       "value" => ""
     ),
   );
+
+
+  /* 1.4 PAGE OPTIONS - CREATE META BOX
+  /------------------------*/
+  function WPtemplate_Metabox() {
+    // get core post types
+    $core_args = array(
+      'public' => true,
+      '_builtin' => true
+    );
+    $core_pt = get_post_types( $core_args );
+    // get custom post types
+    $custom_args = array(
+      'public' => true,
+      'publicly_queryable' => true
+    );
+    $custom_pt = get_post_types( $custom_args );
+    // merge & clean post types
+    $post_types = array_merge($core_pt, $custom_pt);
+    unset($post_types['attachment']);
+    // register meta box for all selected post types
+    foreach( $post_types as $post_type ){
+        add_meta_box(
+            'template_page_options',
+            __( 'Options', 'template' ),
+            array($this, 'WPtemplate_pageoptions'),
+            $post_type,
+            'side',
+            'low'
+        );
+    }
+  }
 
 
 
@@ -191,6 +245,12 @@ class prefix_template {
           SELF::$template_header_logo_d = array_key_exists('logo_desktop', $header) ? $header['logo_desktop'] : SELF::$template_header_logo_d;
           SELF::$template_header_logo_m = array_key_exists('logo_mobile', $header) ? $header['logo_mobile'] : SELF::$template_header_logo_m;
         endif;
+        if($configuration && array_key_exists('page', $myConfig)):
+          $page = $myConfig['page'];
+          SELF::$template_page_active = array_key_exists('active', $page) ? $page['active'] : SELF::$template_page_active;
+          SELF::$template_page_options = array_key_exists('options', $page) ? array_merge(SELF::$template_page_options, $page['options']) : SELF::$template_page_options;
+          SELF::$template_page_additional = array_key_exists('additional', $page) ? $page['additional'] : SELF::$template_page_additional;
+        endif;
         if($configuration && array_key_exists('footer', $myConfig)):
           $footer = $myConfig['footer'];
           SELF::$template_footer_active = array_key_exists('active', $footer) ? $footer['active'] : SELF::$template_ph_custom;
@@ -223,6 +283,23 @@ class prefix_template {
       if($sticky === true):
         return 'stickyable';
       endif;
+    }
+
+
+    /* 2.4 SAVE METABOXES
+    /------------------------*/
+    public function WPtemplate_meta_Save($post_id) {
+      // //Not save if the user hasn't submitted changes
+      if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ):
+        return;
+      endif;
+      // Making sure the user has permission
+      if( ! current_user_can( 'edit_post', $post_id ) ):
+        return;
+      endif;
+      // save page optons
+      $options = $_POST['template_page_options'] && $_POST['template_page_options'] !== '' ? serialize($_POST['template_page_options']) : '';
+      update_post_meta($post_id, 'template_page_options', $options);
     }
 
 
@@ -307,8 +384,62 @@ class prefix_template {
       }
     }
 
+    /* 3.3 BACKEND PAGE OPTIONS - METABOX
+    /------------------------*/
+    function WPtemplate_pageoptions($post) {
+        // vars
+        $output = '';
+        $get_options = get_post_meta($post->ID, 'template_page_options', true);
+        $options = unserialize($get_options);
+        // output
+        echo '<div class="wrap" id="WPtemplate">';
+          echo '<p><b>' . __( 'Hide Elements', 'template' ) . '</b></p>';
+          echo '<ul>';
+            foreach (SELF::$template_page_options as $key => $value) {
+              // check if option is active
+              if($value !== false):
+                $active = prefix_core_BaseFunctions::setChecked($key, $options);
+                echo '<li><label><input type="checkbox" name="template_page_options[]" value="' . $key . '" ' . $active . '>' . __( 'Hide ' . $key, 'template' ) . '</label></li>';
+              endif;
+            }
+            foreach (SELF::$template_page_additional as $key => $value) {
+              // check if additional option are available
+              if($value !== false):
+                $active = prefix_core_BaseFunctions::setChecked($key, $options);
+                echo '<li><label><input type="checkbox" name="template_page_options[]" value="' . $key . '" ' . $active . '>' . $value . '</label></li>';
+              endif;
+            }
+          echo '</ul>';
+        echo '</div>';
+    }
 
-    /* 3.3 PLACEHOLDER
+
+    /* 3.4 PAGE OPTIONS
+    /------------------------*/
+    static public function PageOptions($id) {
+        // vars
+        $output = array();
+        $get_options = get_post_meta($id, 'template_page_options', true);
+        $options = $get_options && $get_options !== '' ? unserialize($get_options) : array();
+        // check activity
+        foreach (SELF::$template_page_options as $key => $value) {
+          // check if option is active
+          if($value !== false && in_array($key, $options)):
+            $output[] = $key;
+          endif;
+        }
+        foreach (SELF::$template_page_additional as $key => $value) {
+          // check if additional option are available
+          if(in_array($key, $options)):
+            $output[] = $key;
+          endif;
+        }
+        // output
+        return $output;
+    }
+
+
+    /* 3.5 PLACEHOLDER
     /------------------------*/
     static public function SitePlaceholder(){
       // vars
@@ -327,7 +458,7 @@ class prefix_template {
     }
 
 
-    /* 3.4 LOGO
+    /* 3.6 LOGO
     /------------------------*/
     public static function Logo(string $link = "", array $desktop = array(), array $mobile = array()){
       // vars
@@ -358,7 +489,7 @@ class prefix_template {
     }
 
 
-    /* 3.5 CHECK IF MAINMENU IS ACTIVE
+    /* 3.7 CHECK IF MAINMENU IS ACTIVE
     /------------------------*/
     public static function WP_MainMenu(bool $active = true){
       if($active === true):
@@ -388,7 +519,7 @@ class prefix_template {
     }
 
 
-    /* 3.6 ADDRESS BLOCK
+    /* 3.8 ADDRESS BLOCK
     /------------------------*/
     /**
       * @param array $address: given address content
@@ -455,7 +586,7 @@ class prefix_template {
     }
 
 
-    /* 3.7 DIVIDE HEADER FROM CONTENT
+    /* 3.9 DIVIDE HEADER FROM CONTENT
     /------------------------*/
     public static function Divider(bool $divider = true){
       if($divider === true):
@@ -464,7 +595,7 @@ class prefix_template {
     }
 
 
-    /* 3.8 FOOTER MENU
+    /* 3.10 FOOTER MENU
     /------------------------*/
     public static function WP_FooterMenu(bool $active = true){
       if ( has_nav_menu( 'footermenu' ) && $active === true ) :
@@ -481,7 +612,7 @@ class prefix_template {
     }
 
 
-    /* 3.9 COPYRIGHT
+    /* 3.11 COPYRIGHT
     /------------------------*/
     public static function Copyright(string $cr = ""){
       // vars
@@ -495,7 +626,7 @@ class prefix_template {
     }
 
 
-    /* 3.10 SOCIAL MEDIA
+    /* 3.12 SOCIAL MEDIA
     /------------------------*/
     public static function SocialMedia(array $sm = array()){
       // value fallback
@@ -535,7 +666,7 @@ class prefix_template {
     }
 
 
-    /* 3.11 CONTACT BLOCK
+    /* 3.13 CONTACT BLOCK
     /------------------------*/
     public static function ContactBlock(array $contacts = array()){
       if($contacts):
@@ -580,7 +711,7 @@ class prefix_template {
     }
 
 
-    /* 3.12 ICON BLOCK
+    /* 3.14 ICON BLOCK
     /------------------------*/
     /**
       * @param array $icons: list of svg icons with link, css clss or additional attributes

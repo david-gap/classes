@@ -1,4 +1,4 @@
-**Version 2.0** (06.07.2020)
+**Version 2.1** (13.07.2020)
 
 Custom class "template" with template parts and header / footer builder
 
@@ -18,6 +18,9 @@ Custom class "template" with template parts and header / footer builder
 * $template_header_logo_link: Logo link with wordpress fallback
 * $template_header_logo_d: desktop logo configuration
 * $template_header_logo_m: mobile logo configuration
+* $template_page_active: activate page options
+* $template_page_options: show/hide template elements
+* $template_page_additional: additional custom fields template elements
 * $template_footer_active: activate footer
 * $template_footer_cr: copyright text
 * $template_footer_custom: custom html
@@ -77,6 +80,18 @@ Custom class "template" with template parts and header / footer builder
     "desktop_menu": false,
     "custom": ""
   },
+  "page": {
+    "active": true,
+    "options": {
+      "header": true,
+      "title": true,
+      "sidebar": true,
+      "footer": true
+    },
+    "additional":  {
+      "custom_var": "Custom name"
+    }
+  },
   "footer": {
     "active": true,
     "copyright": "Copyright © Text",
@@ -118,6 +133,12 @@ First variable to set container true or false
 Set second variable to true if you would like to add class attribute to the output
 ```php
 echo prefix_template::AddContainer(prefix_template::$template_container, true);
+```
+
+### PAGE OPTIONS
+Enter page id to get backend settings
+```php
+echo prefix_template::PageOptions($page_id);
 ```
 
 ### SITE PLACEHOLDER
