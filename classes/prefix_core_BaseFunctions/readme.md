@@ -1,4 +1,4 @@
-**Version 2.5** (27.05.2020)
+**Version 2.6** (23.07.2020)
 
 Custom class "prefix_core_BaseFunctions" used as a library for useful functions
 
@@ -108,6 +108,14 @@ return true
 Sort multidimensional array by a key
 ```php
 core_BaseFunctions::MultidArraySort($array, "keyname", "DESC", false);
+return true
+```
+
+### 1.14 CLEAN ARRAY
+Clean array from empty values.
+Use second attribute for multidimensional arrays to repeat the cleaning.
+```php
+core_BaseFunctions::CleanArray($array, 3);
 return true
 ```
 

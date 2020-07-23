@@ -4,7 +4,7 @@
  *
  * Base dev functions - parent for all custom classes
  * Author:      David Voglgsnag
- * @version     2.5
+ * @version     2.6
  *
  */
 
@@ -25,6 +25,7 @@
    1.11 CLEAN PHONE NUMBER
    1.12 DELETE FOLDER
    1.13 SORT ARRAY
+   1.14 CLEAN ARRAY
  2.0 DATES
    2.1 CHECK IF VARS ARE OUT OF DATE
    2.2 DATE RANGE FORMAT
@@ -378,6 +379,36 @@ class prefix_core_BaseFunctions {
           }
       }
       return $new_array;
+    }
+
+
+    /* 1.14 CLEAN ARRAY
+    /------------------------*/
+    /**
+      * @param array $array: array to sort
+      * @param string $on: select column to sort by
+      * @param string $order: order direction
+      * @param bool $date: if sort value is a date
+      * @return array sorted array
+    */
+    public static function CleanArray(array $fields = array(), int $repeat = 0){
+      $new_fields = array();
+      foreach ($fields as $key => $value) {
+        if(is_array($value)):
+          if(strlen(implode($value)) !== 0):
+            $new_fields[$key] = SELF::CleanArray($value);
+          endif;
+        else:
+          if($value !== NULL && $value !== FALSE && $value !== ''):
+            $new_fields[$key] = $value;
+          endif;
+        endif;
+      }
+      if($repeat >= 1):
+        $repeat--;
+        $new_fields = SELF::CleanArray($new_fields, $repeat);
+      endif;
+      return $new_fields;
     }
 
 
