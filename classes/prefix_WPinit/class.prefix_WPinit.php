@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.2
+ * @version     2.3
  *
 */
 
@@ -44,29 +44,39 @@ class prefix_WPinit {
       * default vars
       * @param private array $WPinit_support: select theme support
       * @param private array $WPinit_google_fonts: google fonts
-      * @param private bool $WPinit_css: activate theme styling
+      * @param private int $WPinit_css: activate theme styling
+      * @param private int $WPinit_cachebust: activate cachebust styling file
+      * @param private int $WPinit_cachebust_file: theme cachebust styling path
       * @param private int $WPinit_css_version: theme styling version
       * @param private string $WPinit_css_path: theme styling path (theme is root)
-      * @param private bool $WPinit_js: activate theme js
+      * @param private int $WPinit_js: activate theme js
       * @param private int $WPinit_js_version: theme js version
       * @param private string $WPinit_js_path: theme js path (theme is root)
-      * @param private bool $WPinit_jquery: activate jquery
-      * @param private array $WPinit_admin_menu: disable backend menus
+      * @param private int $WPinit_jquery: activate jquery
+      * @param private array $WPinit_admin_menu: disable backend menus from not admins
       * @param private array $WPinit_menus: list of all wanted WP menus
     */
     private $WPinit_support          = array("title-tag", "menus", "html5", "post-thumbnails");
     private $WPinit_google_fonts     = array();
-    private $WPinit_css              = true;
+    private $WPinit_css              = 1;
+    private $WPinit_cachebust        = 1;
+    private $WPinit_cachebust_file   = '/dist/rev-manifest.json';
     private $WPinit_css_version      = 1.0;
     private $WPinit_css_path         = "/dist/style.min.css";
-    private $WPinit_js               = true;
+    private $WPinit_js               = 1;
     private $WPinit_js_version       = 1.0;
     private $WPinit_js_path          = "/dist/script.min.js";
-    private $WPinit_jquery           = true;
+    private $WPinit_jquery           = 1;
     private $WPinit_admin_menu       = array();
     private $WPinit_menus            = array(
-      'mainmenu' => 'Main Menu',
-      'footermenu' => 'Footer Menu'
+      array(
+        'key' => 'mainmenu',
+        'value' => 'Main Menu'
+      ),
+      array(
+        'key' => 'footermenu',
+        'value' => 'Footer Menu'
+      )
     );
 
 
@@ -99,12 +109,71 @@ class prefix_WPinit {
 
     /* 1.3 BACKEND ARRAY
     /------------------------*/
+    static $classtitle = 'WP init';
+    static $classkey = 'wp';
     static $backend = array(
-      "key" => array(
-        "label" => "",
-        "type" => "",
-        "value" => ""
+      "support" => array(
+        "label" => "Wordpress Support",
+        "type" => "array_addable"
       ),
+      "google_fonts" => array(
+        "label" => "Embed Google Fonts",
+        "type" => "array_addable"
+      ),
+      "css" => array(
+        "label" => "Embed CSS file",
+        "type" => "switchbutton"
+      ),
+      "cachebust" => array(
+        "label" => "Activate Cache Busting",
+        "type" => "switchbutton"
+      ),
+      "jquery" => array(
+        "label" => "Embed Jquery file",
+        "type" => "switchbutton"
+      ),
+      "js" => array(
+        "label" => "Embed JS file",
+        "type" => "switchbutton"
+      ),
+      "css_version" => array(
+        "label" => "CSS Version",
+        "type" => "text"
+      ),
+      "js_version" => array(
+        "label" => "JS Version",
+        "type" => "text"
+      ),
+      // "css_path" => array(
+      //   "label" => "CSS file path",
+      //   "type" => "text"
+      // ),
+      // "cachebust_file" => array(
+      //   "label" => "Cache Busting file path",
+      //   "type" => "text"
+      // ),
+      // "js_path" => array(
+      //   "label" => "JS file path",
+      //   "type" => "text"
+      // ),
+      "admin_menu" => array(
+        "label" => "Hide backend menu for not admins",
+        "type" => "array_addable"
+      ),
+      "menus" => array(
+        "label" => "Registered menu",
+        "type" => "array_addable",
+        "value" => array(
+          "key" => array(
+            "label" => "Slug",
+            "type" => "text"
+          ),
+          "value" => array(
+            "label" => "Name",
+            "type" => "text"
+          )
+        )
+      )
     );
 
 
@@ -126,10 +195,12 @@ class prefix_WPinit {
         $this->WPinit_support = array_key_exists('support', $myConfig) ? $myConfig['support'] : $this->WPinit_support;
         $this->WPinit_google_fonts = array_key_exists('google_fonts', $myConfig) ? $myConfig['google_fonts'] : $this->WPinit_google_fonts;
         $this->WPinit_css = array_key_exists('css', $myConfig) ? $myConfig['css'] : $this->WPinit_css;
+        $this->WPinit_cachebust = array_key_exists('cachebust', $myConfig) ? $myConfig['cachebust'] : $this->WPinit_cachebust;
+        $this->WPinit_cachebust_file = array_key_exists('cachebust_file', $myConfig) ? $myConfig['cachebust_file'] : $this->WPinit_cachebust_file;
         $this->WPinit_css_path = array_key_exists('css_path', $myConfig) ? $myConfig['css_path'] : $this->WPinit_css_path;
         $this->WPinit_css_version = array_key_exists('css_version', $myConfig) ? $myConfig['css_version'] : $this->WPinit_css_path;
         $this->WPinit_js = array_key_exists('js', $myConfig) ? $myConfig['js'] : $this->WPinit_js;
-        $this->WPinit_js_version = array_key_exists('js_version', $myConfig) ? $myConfig['js_version'] : $this->WPinit_js_path;
+        $this->WPinit_js_version = array_key_exists('js_version', $myConfig) ? $myConfig['js_version'] : $this->WPinit_js_version;
         $this->WPinit_js_path = array_key_exists('js_path', $myConfig) ? $myConfig['js_path'] : $this->WPinit_js_path;
         $this->WPinit_jquery = array_key_exists('jquery', $myConfig) ? $myConfig['jquery'] : $this->WPinit_jquery;
         $this->WPinit_admin_menu = array_key_exists('admin_menu', $myConfig) ? $myConfig['admin_menu'] : $this->WPinit_admin_menu;
@@ -181,21 +252,28 @@ class prefix_WPinit {
     // >> https://developer.wordpress.org/reference/functions/wp_enqueue_script/
     function WPinit_enqueue() {
       // jQuery (from wp core)
-      if ($this->WPinit_jquery !== false):
+      if ($this->WPinit_jquery == 1):
         wp_deregister_script( 'jquery' );
         wp_register_script('jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js', false, '3.3.1');
         wp_enqueue_script( 'jquery' );
       endif;
       // scripts
-      if ($this->WPinit_js !== false):
+      if ($this->WPinit_js == 1):
         wp_register_script('theme/scripts', get_stylesheet_directory_uri() . $this->WPinit_js_path, false, $this->WPinit_js_version, true);
         wp_enqueue_script('theme/scripts');
         # get theme directory for javascript files
         wp_localize_script( 'theme/scripts', 'theme_directory', get_stylesheet_directory_uri());
       endif;
       // styles
-      if ($this->WPinit_css !== false):
-        wp_enqueue_style('theme/styles', get_stylesheet_directory_uri() . $this->WPinit_css_path, false, $this->WPinit_css_version);
+      if ($this->WPinit_css == 1):
+        if($this->WPinit_cachebust == 1):
+          $bust_file = get_stylesheet_directory_uri() . $this->WPinit_cachebust_file;
+          $css_manifest_content = json_decode(file_get_contents($bust_file), true);
+          $file = '/dist/'.$css_manifest_content['style.min.css'];
+        else:
+          $file = $this->WPinit_css_path;
+        endif;
+        wp_enqueue_style('theme/styles', get_stylesheet_directory_uri() . $file, false, $this->WPinit_css_version);
       endif;
     }
 
@@ -249,6 +327,12 @@ class prefix_WPinit {
     * Removes some menus by page.
     */
     function Backend_remove_menus(){
+      // get current login user's role
+      $roles = wp_get_current_user()->roles;
+      // test role
+      if( in_array('administrator',$roles)){
+      return;
+      }
       if(!empty($this->WPinit_admin_menu)):
         foreach ($this->WPinit_admin_menu as $key => $value) {
           remove_menu_page( $value );
@@ -272,7 +356,11 @@ class prefix_WPinit {
     // => https://codex.wordpress.org/Function_Reference/register_nav_menus
     function WPinit_theme_menus() {
       if(is_array($this->$WPinit_menus)):
-        register_nav_menus($this->$WPinit_menus);
+        $menus = array();
+        foreach ($this->$WPinit_menus as $key => $menu) {
+          $menus[$menu["key"]] = $menu["value"];
+        }
+        register_nav_menus($menus);
       endif;
     }
 
