@@ -1,4 +1,4 @@
-**Version 2.0** (07.07.2020)
+**Version 2.1** (24.07.2020)
 
 Custom class "WPimgAttr" adding custom fields for each language to WP media and inseting the alt attribute in front end.
 
@@ -12,9 +12,9 @@ Custom class "WPimgAttr" adding custom fields for each language to WP media and 
 ## CONFIGURATION FILE
 ```
 "WPimgAlt": {
-  "WPimgAlt_content": true,
-  "WPimgAlt_attachment": true,
-  "WPimgAlt_shortcode": true,
+  "WPimgAlt_content": 1,
+  "WPimgAlt_attachment": 1,
+  "WPimgAlt_shortcode": 1,
   "WPimgAlt_languages": {
     "0": "de",
     "1": "en",

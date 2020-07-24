@@ -5,7 +5,7 @@
  * Wordpress - add custom fields for alt tag translations
  * https://github.com/david-gap/classes
  * Author: David Voglgsang
- * @version     2.0
+ * @version     2.1
  *
 */
 
@@ -38,15 +38,15 @@ class prefix_WPimgAttr {
   /------------------------*/
   /**
     * default vars (if configuration file is missing or broken)
-    * @param private string $WPimgAttr_Alt_content: simple way to disable img alt for the_content
-    * @param private string $WPimgAttr_Alt_attachmentt: simple way to disable img attachment alt
-    * @param private string $WPimgAttr_Alt_shortcode: simple way to disable img in shortcode alt
+    * @param private bool $WPimgAttr_Alt_content: simple way to disable img alt for the_content
+    * @param private bool $WPimgAttr_Alt_attachmentt: simple way to disable img attachment alt
+    * @param private bool $WPimgAttr_Alt_shortcode: simple way to disable img in shortcode alt
     * @param private array $WPimgAttr_Alt_languages: List of Languages, first one is default
     * @param private string $WPimgAttr_Alt_prefix: Prefix for variables
   */
-  private $WPimgAttr_Alt_content             = true;
-  private $WPimgAttr_Alt_attachment          = true;
-  private $WPimgAttr_Alt_shortcode           = true;
+  private $WPimgAttr_Alt_content             = 1;
+  private $WPimgAttr_Alt_attachment          = 1;
+  private $WPimgAttr_Alt_shortcode           = 1;
   private static $WPimgAttr_Alt_languages    = array("de", "en", "fr", "it");
   private static $WPimgAttr_Alt_prefix       = 'WPimgAttr_Alt_';
 
@@ -57,7 +57,7 @@ class prefix_WPimgAttr {
     // update default vars with configuration file
     SELF::updateVars();
     // add custom fields
-    if($this->WPimgAttr_Alt_content !== false || $this->WPimgAttr_Alt_attachment !== false):
+    if($this->WPimgAttr_Alt_content == 1 || $this->WPimgAttr_Alt_attachment == 1):
       // add custom fields
       add_filter( 'attachment_fields_to_edit', array( $this, 'WPimgAttr_Alt_meta_CustomFields' ), null, 2 );
       // update custom fields
@@ -65,15 +65,15 @@ class prefix_WPimgAttr {
       add_action('edit_attachment', array( $this, 'WPimgAttr_Alt_meta_Attachments_Save' ),  10, 2 );
     endif;
     // alt img in the_content
-    if($this->WPimgAttr_Alt_content !== false):
+    if($this->WPimgAttr_Alt_content == 1):
       add_filter('the_content', array( $this, 'IMGalt_Content' ) );
     endif;
     // alt img in do_shortcode
-    if($this->WPimgAttr_Alt_shortcode !== false):
+    if($this->WPimgAttr_Alt_shortcode == 1):
       add_filter('do_shortcode', array( $this, 'IMGalt_Content' ) );
     endif;
     // alt img for attachments
-    if($this->WPimgAttr_Alt_attachment !== false):
+    if($this->WPimgAttr_Alt_attachment == 1):
       add_filter( 'wp_get_attachment_image_attributes', array( $this, 'IMGalt_Attachment' ), 10, 2 );
     endif;
   }
@@ -81,12 +81,25 @@ class prefix_WPimgAttr {
 
   /* 1.3 BACKEND ARRAY
   /------------------------*/
+  static $classtitle = 'Image attributes';
+  static $classkey = 'WPimgAttr';
   static $backend = array(
-    "key" => array(
-      "label" => "",
-      "type" => "",
-      "value" => ""
+    "Alt_content" => array(
+      "label" => "Repalce img alt inside content",
+      "type" => "switchbutton"
     ),
+    "Alt_attachment" => array(
+      "label" => "Repalce img alt inside atttachments",
+      "type" => "switchbutton"
+    ),
+    "Alt_shortcode" => array(
+      "label" => "Repalce img alt inside shortcodes",
+      "type" => "switchbutton"
+    ),
+    "Alt_languages" => array(
+      "label" => "Add languages",
+      "type" => "array_addable"
+    )
   );
 
 
