@@ -1,26 +1,26 @@
-**Version 2.0** (06.07.2020)
+**Version 2.1** (24.07.2020)
 
 Custom class "prefix_WPseo" for default SEO settings.
 
 ## CONFIGURATION OPTIONS
-* $WPseo_logo: Logo
+* $WPseo_logo: Logo image ID from WP media
 * $WPseo_tracking: Google tracking code (analytics or tag manager)
 * $WPseo_favicon: fav icon link
-* $WPseo_icon: default screen icon
-* $WPseo_icon_72: apple screen icon 72
-* $WPseo_icon_114: apple screen icon 114
+* $WPseo_icon: default screen icon ID from WP media
+* $WPseo_icon_72: apple screen icon 72 ID from WP media
+* $WPseo_icon_114: apple screen icon 114 ID from WP media
 * $WPseo_datastructure: turn datastructure on/off
 * $WPseo_datastructure_add: additional structure attributes
 
 ## CONFIGURATION FILE
 ```
 "seo": {
-  "logo": "",
+  "logo": 0,
   "google-tracking": "",
   "favicon": "",
-  "apple-touch-icon": "",
-  "apple-touch-icon-72": "",
-  "apple-touch-icon-114": "",
+  "apple-touch-icon": 0,
+  "apple-touch-icon-72": 0,
+  "apple-touch-icon-114": 0,
   "data-structure": true,
   "data-structure-add": {
     "type": "Website"

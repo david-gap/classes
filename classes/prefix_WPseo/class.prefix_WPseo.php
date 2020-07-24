@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.0
+ * @version     2.1
  *
 */
 
@@ -35,21 +35,21 @@ class prefix_WPseo {
     /------------------------*/
     /**
       * default vars (if configuration file is missing or broken)
-      * @param private string $WPseo_logo: Logo
+      * @param private int $WPseo_logo: Logo
       * @param private string $WPseo_tracking: Google tracking code (analytics or tag manager)
-      * @param private string $WPseo_favicon: fav icon link
-      * @param private string $WPseo_icon: default screen icon
-      * @param private string $WPseo_icon_72: apple screen icon 72
-      * @param private string $WPseo_icon_114: apple screen icon 114
+      * @param private int $WPseo_favicon: fav icon link
+      * @param private int $WPseo_icon: default screen icon
+      * @param private int $WPseo_icon_72: apple screen icon 72
+      * @param private int $WPseo_icon_114: apple screen icon 114
       * @param private bool $WPseo_datastructure: turn datastructure on/off
       * @param private array $WPseo_datastructure_add: additional structure attributes
     */
-    private $WPseo_logo               = '';
+    private $WPseo_logo               = 0;
     private static $WPseo_tracking    = '';
-    private $WPseo_favicon            = '';
-    private $WPseo_icon               = '';
-    private $WPseo_icon_72            = '';
-    private $WPseo_icon_114           = '';
+    private $WPseo_favicon            = 0;
+    private $WPseo_icon               = 0;
+    private $WPseo_icon_72            = 0;
+    private $WPseo_icon_114           = 0;
     private $WPseo_datastructure      = true;
     private $WPseo_datastructure_add  = array(
       "type" => "Website"
@@ -62,7 +62,6 @@ class prefix_WPseo {
       "country" => "Country",
       "city" => "City",
       "phone" => "0041",
-      "mobile" => "0041 2",
       "email" => "info@mail.com"
     );
 
@@ -82,6 +81,8 @@ class prefix_WPseo {
 
     /* 1.3 BACKEND ARRAY
     /------------------------*/
+    static $classtitle = 'WP SEO';
+    static $classkey = 'seo';
     static $backend = array(
       "logo" => array(
         "label" => "Logo",
@@ -105,18 +106,7 @@ class prefix_WPseo {
       ),
       "data-structure" => array(
         "label" => "Activate Data-Structures",
-        "type" => "checkbox",
-        "value" => ""
-      ),
-      "data-structure-add" => array(
-        "label" => "Additional Data",
-        "type" => "multiple",
-        "value" => array(
-          "data-structure" => array(
-            "label" => "Main Type",
-            "type" => "select"
-          )
-        )
+        "type" => "checkbox"
       ),
       "address" =>  array(
         "label" => "Address block",
@@ -150,12 +140,22 @@ class prefix_WPseo {
             "label" => "Phone",
             "type" => "text"
           ),
-          "mobile" => array(
-            "label" => "Mobile",
-            "type" => "text"
-          ),
           "email" => array(
             "label" => "E-Mail",
+            "type" => "text"
+          )
+        )
+      ),
+      "data-structure-add" => array(
+        "label" => "Additional Data",
+        "type" => "array_addable",
+        "value" => array(
+          "key" => array(
+            "label" => "Data key",
+            "type" => "text"
+          ),
+          "value" => array(
+            "label" => "Data value",
             "type" => "text"
           )
         )
@@ -194,18 +194,22 @@ class prefix_WPseo {
     /* 2.2 FAVICON
     /------------------------*/
     public static function FavIcon(){
-      if($this->WPseo_favicon !== ""):
-        echo '<link rel="icon" href="' . $this->WPseo_favicon . '" />';
+      if($this->WPseo_favicon !== 0):
+        $get_fav = wp_get_attachment_image_src($this->WPseo_favicon, 'full');
+        echo '<link rel="icon" href="' . $get_fav[0] . '" />';
       endif;
       // apple touch icons
-      if($this->WPseo_icon !== ""):
-        echo '<link rel="apple-touch-icon" href="' . $this->WPseo_icon . '" />';
+      if($this->WPseo_icon !== 0):
+        $get_touch_1 = wp_get_attachment_image_src($this->WPseo_icon, 'full');
+        echo '<link rel="apple-touch-icon" href="' . $get_touch_1[0] . '" />';
       endif;
-      if($this->WPseo_icon_72 !== ""):
-        echo '<link rel="apple-touch-icon" sizes="72x72" href="' . $this->WPseo_icon_72 . '" />';
+      if($this->WPseo_icon_72 !== 0):
+        $get_touch_2 = wp_get_attachment_image_src($this->WPseo_icon_72, 'full');
+        echo '<link rel="apple-touch-icon" sizes="72x72" href="' . $get_touch_2[0] . '" />';
       endif;
-      if($this->WPseo_icon_114 !== ""):
-        echo '<link rel="apple-touch-icon" sizes="114x114" href="' . $this->WPseo_icon_114 . '" />';
+      if($this->WPseo_icon_114 !== 0):
+        $get_touch_3 = wp_get_attachment_image_src($this->WPseo_icon_114, 'full');
+        echo '<link rel="apple-touch-icon" sizes="114x114" href="' . $get_touch_3[0] . '" />';
       endif;
     }
 
@@ -264,26 +268,27 @@ class prefix_WPseo {
       // vars
       $trackingcode = SELF::$WPseo_tracking;
       $output = '';
-
-      if(strpos($trackingcode, 'GTM-') === 0 && $body === false):
-        // GTM head
-        $output .= "<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':";
-        $output .= "new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],";
-        $output .= "j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=";
-        $output .= "'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);";
-        $output .= "})(window,document,'script','dataLayer','" . $trackingcode . "');</script>";
-      elseif(strpos($trackingcode, 'GTM-') === 0 && $body === true):
-        // GTM body
-        $output .= '<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=' . $trackingcode . '" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>';
-      elseif(strpos($trackingcode, 'UA-') === 0 && $body === false):
-        // analytics
-        $output .= '<script async src="https://www.googletagmanager.com/gtag/js?id=' . $trackingcode . '"></script>';
-        $output .= '<script>';
-        $output .= 'window.dataLayer = window.dataLayer || [];';
-        $output .= 'function gtag(){dataLayer.push(arguments);}';
-        $output .= 'gtag("js", new Date());';
-        $output .= 'gtag("config", "' . $trackingcode . '");';
-        $output .= '</script>';
+      if(1 == get_option('blog_public')):
+        if(strpos($trackingcode, 'GTM-') === 0 && $body === false):
+          // GTM head
+          $output .= "<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':";
+          $output .= "new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],";
+          $output .= "j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=";
+          $output .= "'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);";
+          $output .= "})(window,document,'script','dataLayer','" . $trackingcode . "');</script>";
+        elseif(strpos($trackingcode, 'GTM-') === 0 && $body === true):
+          // GTM body
+          $output .= '<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=' . $trackingcode . '" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>';
+        elseif(strpos($trackingcode, 'UA-') === 0 && $body === false):
+          // analytics
+          $output .= '<script async src="https://www.googletagmanager.com/gtag/js?id=' . $trackingcode . '"></script>';
+          $output .= '<script>';
+          $output .= 'window.dataLayer = window.dataLayer || [];';
+          $output .= 'function gtag(){dataLayer.push(arguments);}';
+          $output .= 'gtag("js", new Date());';
+          $output .= 'gtag("config", "' . $trackingcode . '");';
+          $output .= '</script>';
+        endif;
       endif;
 
       echo $output;
@@ -298,13 +303,13 @@ class prefix_WPseo {
 
       if($this->WPseo_datastructure == true):
         $address = $this->WPseo_address;
-        $additional = $this->WPseo_datastructure_add;
-        $logo = $this->WPseo_logo;
+        $additionals = $this->WPseo_datastructure_add;
+        $logo = $this->WPseo_logo !== 0 ? wp_get_attachment_image_src($this->WPseo_logo, 'full') : '';
 
         $output .= '<script type="application/ld+json">';
           $output .= '{';
             $output .= '"@context": "http://schema.org",';
-            $output .= !empty($logo) ? '"image": "' . $logo . '",' : '';
+            $output .= !empty($logo) ? '"image": "' . $logo[0] . '",' : '';
             $output .= key_exists('company' , $address) ? '"name": "' . $address["company"] . '",' : '';
             $output .= key_exists('phone' , $address) ? '"telephone": "' . $address["phone"] . '",' : '';
             $output .= key_exists('email' , $address) ? '"email": "' . $address["email"] . '",' : '';
@@ -316,11 +321,12 @@ class prefix_WPseo {
               $output .= key_exists('postalCode' , $address) ? '"postalCode": "' . $address["postalCode"] . '"' : '';
             $output .= '},';
             $output .= '"url": "' . get_bloginfo('url') . '"';
-            if($additional):
+            if($additionals):
+              $count_adds = count($additionals);
               $adds = 1;
-              foreach ($additional as $key => $value) {
-                $output .= $adds > 1 ? ',' : '';
-                $output .= '"' . $key . '": "' . $value . '",';
+              foreach ($additionals as $key => $additional) {
+                $output .= ',';
+                $output .= '"' . $additional["key"] . '": "' . $additional["value"] . '"';
                 $adds++;
               }
             endif;
