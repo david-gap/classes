@@ -6,7 +6,7 @@
  * IMG dominant color - WP compatible
  * https://github.com/david-gap/classes
  * Author:      David Voglgsang
- * @version     2.0
+ * @version     2.1
  *
  */
 
@@ -46,15 +46,15 @@ class prefix_imgDC {
     /------------------------*/
     /**
       * default vars
-      * @param private boolable $imgDC_wp: activate WP settings
-      * @param private boolable $imgDC_content: simple way to disable the lazy loading inside the_content
-      * @param private boolable $imgDC_assets: include classes assets. Disable it if you use your own files
+      * @param private int $imgDC_wp: activate WP settings
+      * @param private int $imgDC_content: simple way to disable the lazy loading inside the_content
+      * @param private int $imgDC_assets: include classes assets. Disable it if you use your own files
       * @param private array $imgDC_nocolor_files: exclude file types from dominant color generator
       * @param private string $imgDC_defaultcolor: default color
     */
-    private $imgDC_wp                     = false;
-    private $imgDC_content                = true;
-    private $imgDC_assets                 = true;
+    private $imgDC_wp                     = 0;
+    private $imgDC_content                = 1;
+    private $imgDC_assets                 = 1;
     private static $imgDC_nocolor_files   = array('video/mp4', 'video/quicktime', 'video/videopress', 'audio/mpeg');
     private static $imgDC_defaultcolor    = 'ffffff';
 
@@ -65,9 +65,9 @@ class prefix_imgDC {
       // update default vars with configuration file
       SELF::updateVars();
       // if wordpress is active
-      if($this->imgDC_wp !== false):
+      if($this->imgDC_wp == 1):
         // lazy loading content img
-        if($this->imgDC_content !== false):
+        if($this->imgDC_content == 1):
           add_filter('the_content', array( $this, 'ContentLazyLoading' ), 12 );
           add_filter('do_shortcode_tag', array( $this, 'ContentLazyLoading' ), 12 );
         endif;
@@ -80,7 +80,7 @@ class prefix_imgDC {
         add_action( 'admin_menu', array( $this, 'imgDC_backendPage' ) );
         // add class assets
         add_action('admin_enqueue_scripts', array( $this, 'imgDC_backend_enqueue_scripts_and_styles' ) );
-        if($this->$imgDC_assets !== false):
+        if($this->$imgDC_assets == 1):
           add_action('wp_enqueue_scripts', array( $this, 'imgDC_frontend_enqueue_scripts_and_styles' ) );
         endif;
       endif;
@@ -89,12 +89,29 @@ class prefix_imgDC {
 
     /* 1.3 BACKEND ARRAY
     /------------------------*/
+    static $classtitle = 'IMG dominant content preloader';
+    static $classkey = 'imgDC';
     static $backend = array(
-      "key" => array(
-        "label" => "",
-        "type" => "",
-        "value" => ""
+      "wp" => array(
+        "label" => "Activate",
+        "type" => "switchbutton"
       ),
+      "content" => array(
+        "label" => "Use in the content and shortcodes",
+        "type" => "switchbutton"
+      ),
+      "assets" => array(
+        "label" => "Embed assets",
+        "type" => "switchbutton"
+      ),
+      "nocolor_files" => array(
+        "label" => "Ignored file types",
+        "type" => "array_addable"
+      ),
+      "defaultcolor" => array(
+        "label" => "Default color",
+        "type" => "text"
+      )
     );
 
 
