@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.1
+ * @version     2.2
  *
 */
 
@@ -51,7 +51,7 @@ class prefix_template {
   /------------------------*/
   /**
     * default vars
-    * @param static bool $template_container: activate container
+    * @param static int $template_container: activate container
     * @param static string $template_coloring: template coloring (dark/light)
     * @param static bool $template_ph_active: activate placeholder
     * @param static bool $template_ph_address: placeholder show address block
@@ -74,7 +74,7 @@ class prefix_template {
     * @param static string $template_footer_custom: custom html
     * @param static array $template_footer_sort: Sort and activate blocks inside footer builder
   */
-  static $template_container        = true;
+  static $template_container        = 1;
   static $template_coloring         = "light";
   static $template_ph_active        = true;
   static $template_ph_address       = true;
@@ -108,15 +108,15 @@ class prefix_template {
     "mail" => "",
     "whatsapp" => ""
   );
-  static $template_header_divider   = true;
-  static $template_header_sticky    = true;
-  static $template_header_dmenu     = true;
+  static $template_header_divider   = 1;
+  static $template_header_sticky    = 1;
+  static $template_header_dmenu     = 1;
   static $template_header_custom    = "";
   static $template_header_sort      = array(
-    "logo" => true,
-    "menu" => true,
-    "socialmedia" => false,
-    "custom" => false
+    "logo" => 1,
+    "menu" => 1,
+    "socialmedia" => 0,
+    "custom" => 0
   );
   static $template_header_logo_link = "";
   static $template_header_logo_d    = array(
@@ -131,23 +131,23 @@ class prefix_template {
     "height" => "",
     "alt" => ""
   );
-  static $template_page_active      = true;
+  static $template_page_active      = 1;
   static $template_page_options     = array(
-    "header" => true,
-    "title" => true,
-    "sidebar" => true,
-    "footer" => true
+    "header" => 1,
+    "title" => 1,
+    "sidebar" => 1,
+    "footer" => 1
   );
   static $template_page_additional  = array();
-  static $template_footer_active    = true;
+  static $template_footer_active    = 1;
   static $template_footer_cr        = "";
   static $template_footer_custom    = "";
   static $template_footer_sort      = array(
-    "menu" => true,
-    "socialmedia" => true,
-    "copyright" => true,
-    "address" => true,
-    "custom" => false
+    "menu" => 1,
+    "socialmedia" => 1,
+    "copyright" => 1,
+    "address" => 1,
+    "custom" => 0
   );
 
 
@@ -157,7 +157,7 @@ class prefix_template {
     // update default vars with configuration file
     SELF::updateVars();
     // add page options to backend
-    if(SELF::$template_page_active !== false):
+    if(SELF::$template_page_active == 1):
       // metabox for option selection
       add_action( 'add_meta_boxes', array( $this, 'WPtemplate_Metabox' ) );
       // update custom fields
@@ -167,12 +167,327 @@ class prefix_template {
 
   /* 1.3 BACKEND ARRAY
   /------------------------*/
+  static $classtitle = 'Template';
+  static $classkey = 'template';
   static $backend = array(
-    "key" => array(
-      "label" => "",
-      "type" => "",
-      "value" => ""
+    "container" => array(
+      "label" => "Activate container",
+      "type" => "switchbutton"
     ),
+    "coloring" => array(
+      "label" => "Body css (light/dark)",
+      "type" => "text"
+    ),
+    "address" => array(
+      "label" => "Addressblock information",
+      "type" => "multiple",
+      "value" => array(
+        "company" => array(
+          "label" => "Company",
+          "type" => "text"
+        ),
+        "street" => array(
+          "label" => "Street",
+          "type" => "text"
+        ),
+        "street2" => array(
+          "label" => "Street add",
+          "type" => "text"
+        ),
+        "postalCode" => array(
+          "label" => "Postcode",
+          "type" => "text"
+        ),
+        "city" => array(
+          "label" => "City",
+          "type" => "text"
+        ),
+        "phone" => array(
+          "label" => "Phone",
+          "type" => "text"
+        ),
+        "mobile" => array(
+          "label" => "Mobile",
+          "type" => "text"
+        ),
+        "email" => array(
+          "label" => "E-Mail",
+          "type" => "text"
+        ),
+        "labels" => array(
+          "label" => "Labels",
+          "type" => "multiple",
+          "value" => array(
+            "company" => array(
+              "label" => "Company",
+              "type" => "text"
+            ),
+            "street" => array(
+              "label" => "Street",
+              "type" => "text"
+            ),
+            "street2" => array(
+              "label" => "Street add",
+              "type" => "text"
+            ),
+            "postalCode" => array(
+              "label" => "Postcode",
+              "type" => "text"
+            ),
+            "city" => array(
+              "label" => "City",
+              "type" => "text"
+            ),
+            "phone" => array(
+              "label" => "Phone",
+              "type" => "text"
+            ),
+            "mobile" => array(
+              "label" => "Mobile",
+              "type" => "text"
+            ),
+            "email" => array(
+              "label" => "E-Mail",
+              "type" => "text"
+            )
+          )
+        )
+      )
+    ),
+    "socialmedia" => array(
+      "label" => "Social Media block (Icons)",
+      "type" => "multiple",
+      "value" => array(
+        "facebook" => array(
+          "label" => "Facebook",
+          "type" => "text"
+        ),
+        "instagram" => array(
+          "label" => "Instagram",
+          "type" => "text"
+        )
+      )
+    ),
+    "contactblock" => array(
+      "label" => "Contact block (Icons)",
+      "type" => "multiple",
+      "value" => array(
+        "phone" => array(
+          "label" => "Phone",
+          "type" => "text"
+        ),
+        "mail" => array(
+          "label" => "Mail",
+          "type" => "text"
+        ),
+        "whatsapp" => array(
+          "label" => "WhatsApp",
+          "type" => "text"
+        )
+      )
+    ),
+    // "placeholder" => array(
+    //   "label" => "Placeholder",
+    //   "type" => "multiple",
+    //   "value" => array(
+    //     "active" => array(
+    //       "label" => "Activate placeholder",
+    //       "type" => "checkbox"
+    //     ),
+    //     "address" => array(
+    //       "label" => "Add Adressblock",
+    //       "type" => "checkbox"
+    //     ),
+    //     "custom" => array(
+    //       "label" => "Custom output",
+    //       "type" => "textarea"
+    //     )
+    //   )
+    // ),
+    "header" => array(
+      "label" => "Header",
+      "type" => "multiple",
+      "value" => array(
+        "divider" => array(
+          "label" => "Activate divider",
+          "type" => "switchbutton"
+        ),
+        "sticky" => array(
+          "label" => "Sticky Menu",
+          "type" => "switchbutton"
+        ),
+        "desktop_menu" => array(
+          "label" => "Desktop menu",
+          "type" => "switchbutton"
+        ),
+        "custom" => array(
+          "label" => "Custom Element",
+          "type" => "textarea"
+        ),
+        "logo_link" => array(
+          "label" => "Custom Logo link",
+          "type" => "text"
+        ),
+        "logo_desktop" => array(
+          "label" => "Logo desktop",
+          "type" => "multiple",
+          "value" => array(
+            "img" => array(
+              "label" => "URL",
+              "type" => "img"
+            ),
+            "width" => array(
+              "label" => "Width",
+              "type" => "text"
+            ),
+            "height" => array(
+              "label" => "Height",
+              "type" => "text"
+            ),
+            "alt" => array(
+              "label" => "Alternative text",
+              "type" => "text"
+            )
+          )
+        ),
+        "logo_mobile" => array(
+          "label" => "Logo mobile",
+          "type" => "multiple",
+          "value" => array(
+            "img" => array(
+              "label" => "URL",
+              "type" => "img"
+            ),
+            "width" => array(
+              "label" => "Width",
+              "type" => "text"
+            ),
+            "height" => array(
+              "label" => "Height",
+              "type" => "text"
+            ),
+            "alt" => array(
+              "label" => "Alternative text",
+              "type" => "text"
+            )
+          )
+        ),
+        "sort" => array(
+          "label" => "Sort and activate",
+          "type" => "multiple",
+          "css" => "sortable",
+          "value" => array(
+            "logo" => array(
+              "label" => "Logo",
+              "type" => "switchbutton"
+            ),
+            "menu" => array(
+              "label" => "Menu",
+              "type" => "switchbutton"
+            ),
+            "socialmedia" => array(
+              "label" => "social media",
+              "type" => "switchbutton"
+            ),
+            "custom" => array(
+              "label" => "Custom",
+              "type" => "switchbutton"
+            )
+          )
+        )
+      )
+    ),
+    "page" => array(
+      "label" => "Page",
+      "type" => "multiple",
+      "value" => array(
+        "active" => array(
+          "label" => "Activate header",
+          "type" => "switchbutton"
+        ),
+        "options" => array(
+          "label" => "Page options",
+          "type" => "multiple",
+          "value" => array(
+            "header" => array(
+              "label" => "Hide header",
+              "type" => "switchbutton"
+            ),
+            "title" => array(
+              "label" => "Hide title",
+              "type" => "switchbutton"
+            ),
+            "sidebar" => array(
+              "label" => "Hide sidebar",
+              "type" => "switchbutton"
+            ),
+            "footer" => array(
+              "label" => "Hide footer",
+              "type" => "switchbutton"
+            )
+          )
+        ),
+        "additional" => array(
+          "label" => "Add page options",
+          "type" => "array_addable",
+          "value" => array(
+            "key" => array(
+              "label" => "Option label",
+              "type" => "text"
+            ),
+            "value" => array(
+              "label" => "Option key",
+              "type" => "text"
+            )
+          )
+        )
+      )
+    ),
+    "footer" => array(
+      "label" => "Footer",
+      "type" => "multiple",
+      "value" => array(
+        "active" => array(
+          "label" => "Activate footer",
+          "type" => "switchbutton"
+        ),
+        "copyright" => array(
+          "label" => "Copyright",
+          "type" => "text"
+        ),
+        "custom" => array(
+          "label" => "Custom Element",
+          "type" => "textarea"
+        ),
+        "sort" => array(
+          "label" => "Sort and activate",
+          "type" => "multiple",
+          "css" => "sortable",
+          "value" => array(
+            "menu" => array(
+              "label" => "Menu",
+              "type" => "switchbutton"
+            ),
+            "socialmedia" => array(
+              "label" => "Social media",
+              "type" => "switchbutton"
+            ),
+            "copyright" => array(
+              "label" => "Copyright",
+              "type" => "switchbutton"
+            ),
+            "address" => array(
+              "label" => "Address block",
+              "type" => "switchbutton"
+            ),
+            "custom" => array(
+              "label" => "Custom",
+              "type" => "switchbutton"
+            )
+          )
+        )
+      )
+    )
   );
 
 
@@ -265,13 +580,13 @@ class prefix_template {
     /* 2.2 ACTIVATE CONTAINER CSS CLASS FOR HEADER/FOOTER
     /------------------------*/
     // $container to activate, $wrap to add the class attribute
-    public static function AddContainer(bool $container = true, bool $wrap = true){
+    public static function AddContainer(int $container = 0, bool $wrap = true){
       // fallback if config file is missing
       $active = $container ? $container : SELF::$template_container;
       // check if container is active
-      if($active === true && $wrap === true):
+      if($active === 1 && $wrap === true):
         return 'class="container"';
-      elseif($active === true):
+      elseif($active === 1):
         return 'container';
       endif;
     }
@@ -279,8 +594,8 @@ class prefix_template {
 
     /* 2.3 STICKY MENU
     /------------------------*/
-    public static function CheckSticky(bool $sticky = true){
-      if($sticky === true):
+    public static function CheckSticky(int $sticky = 1){
+      if($sticky === 1):
         return 'stickyable';
       endif;
     }
@@ -317,23 +632,23 @@ class prefix_template {
       foreach ($order as $key => $value) {
         switch ($key) {
           case 'menu':
-            echo $value === true ? SELF::WP_MainMenu(SELF::$template_header_dmenu) : '';
+            echo $value == 1 ? SELF::WP_MainMenu(SELF::$template_header_dmenu) : '';
             break;
           case 'logo':
-            echo $value === true ? SELF::Logo("", SELF::$template_header_logo_d, SELF::$template_header_logo_m) : '';
+            echo $value == 1 ? SELF::Logo(SELF::$template_header_logo_link, SELF::$template_header_logo_d, SELF::$template_header_logo_m) : '';
             break;
           case 'socialmedia':
-            echo $value === true ? SELF::SocialMedia(SELF::$template_socialmedia) : '';
+            echo $value == 1 ? SELF::SocialMedia(SELF::$template_socialmedia) : '';
             break;
           case 'contactblock':
-            echo $value === true ? SELF::ContactBlock(SELF::$template_contactblock) : '';
+            echo $value == 1 ? SELF::ContactBlock(SELF::$template_contactblock) : '';
             break;
           case 'custom':
             // WP check
             if (function_exists('do_shortcode')):
-              echo $value === true ? do_shortcode(str_replace("'", '"', SELF::$template_header_custom)) : '';
+              echo $value == 1 ? do_shortcode(str_replace("'", '"', SELF::$template_header_custom)) : '';
             else:
-              echo $value === true ? str_replace("'", '"', SELF::$template_header_custom) : '';
+              echo $value == 1 ? str_replace("'", '"', SELF::$template_header_custom) : '';
             endif;
             break;
 
@@ -354,26 +669,26 @@ class prefix_template {
       foreach ($order as $key => $value) {
         switch ($key) {
           case 'menu':
-            echo $value === true ? SELF::WP_FooterMenu($value) : '';
+            echo $value == 1 ? SELF::WP_FooterMenu($value) : '';
             break;
           case 'address':
-            echo $value === true ? SELF::AddressBlock(SELF::$template_address) : '';
+            echo $value == 1 ? SELF::AddressBlock(SELF::$template_address) : '';
             break;
           case 'copyright':
-            echo $value === true && !empty(SELF::$template_footer_cr) ? SELF::Copyright(SELF::$template_footer_cr) : '';
+            echo $value == 1 && !empty(SELF::$template_footer_cr) ? SELF::Copyright(SELF::$template_footer_cr) : '';
             break;
           case 'socialmedia':
-            echo $value === true ? SELF::Socialmedia(SELF::$template_socialmedia) : '';
+            echo $value == 1 ? SELF::Socialmedia(SELF::$template_socialmedia) : '';
             break;
           case 'contactblock':
-            echo $value === true ? SELF::ContactBlock(SELF::$template_contactblock) : '';
+            echo $value == 1 ? SELF::ContactBlock(SELF::$template_contactblock) : '';
             break;
           case 'custom':
             // WP check
             if (function_exists('do_shortcode')):
-              echo $value === true ? do_shortcode(str_replace("'", '"', SELF::$template_footer_custom)) : '';
+              echo $value == 1 ? do_shortcode(str_replace("'", '"', SELF::$template_footer_custom)) : '';
             else:
-              echo $value === true ? str_replace("'", '"', SELF::$template_footer_custom) : '';
+              echo $value == 1 ? str_replace("'", '"', SELF::$template_footer_custom) : '';
             endif;
             break;
 
@@ -402,11 +717,11 @@ class prefix_template {
                 echo '<li><label><input type="checkbox" name="template_page_options[]" value="' . $key . '" ' . $active . '>' . __( 'Hide ' . $key, 'template' ) . '</label></li>';
               endif;
             }
-            foreach (SELF::$template_page_additional as $key => $value) {
+            foreach (SELF::$template_page_additional as $key => $additional) {
               // check if additional option are available
-              if($value !== false):
-                $active = prefix_core_BaseFunctions::setChecked($key, $options);
-                echo '<li><label><input type="checkbox" name="template_page_options[]" value="' . $key . '" ' . $active . '>' . $value . '</label></li>';
+              if(array_key_exists('key', $additional) && array_key_exists('value', $additional)):
+                $active = prefix_core_BaseFunctions::setChecked($additional["key"], $options);
+                echo '<li><label><input type="checkbox" name="template_page_options[]" value="' . $additional["key"] . '" ' . $active . '>' . $additional["value"] . '</label></li>';
               endif;
             }
           echo '</ul>';
@@ -467,19 +782,21 @@ class prefix_template {
       $link = function_exists("get_bloginfo") && $link == "" ? get_bloginfo('url') : $link;
       $add_desktop = $mobile['img'] !== "" ? 'class="desktop"' : '';
       $add_container = $desktop['img'] == "" && $mobile['img'] == "" ? ' text_logo' : '';
+      $img_desktop = array_key_exists('img', $desktop) ? wp_get_attachment_image_src($desktop['img'], 'full') : '';
+      $img_mobile = array_key_exists('img', $mobile) ? wp_get_attachment_image_src($mobile['img'], 'full') : '';
       // output
-      $output .= '<a href="' . get_bloginfo('url') . '" class="logo' . $add_container .'">';
-      if($desktop['img'] !== ""):
+      $output .= '<a href="' . $link . '" class="logo' . $add_container .'">';
+      if($img_desktop !== ""):
         $desktop_add = '';
-        $desktop_add .= $desktop['width'] !== "" ? ' width="' . $desktop['width'] . '"' : '';
-        $desktop_add .= $desktop['height'] !== "" ? ' height="' . $desktop['height'] . '"' : '';
+        $desktop_add .= array_key_exists('width', $desktop) && $desktop['width'] !== "" ? ' width="' . $desktop['width'] . '"' : '';
+        $desktop_add .= array_key_exists('height', $desktop) && $desktop['height'] !== "" ? ' height="' . $desktop['height'] . '"' : '';
         $desktop_add .= $desktop['alt'] !== "" ? ' alt="' . $desktop['alt'] . '"' : '';
-        $output .= '<img src="' . $desktop['img'] . '" ' . $add_desktop . $desktop_add . '>';
+        $output .= '<img src="' . $img_desktop[0] . '" ' . $add_desktop . $desktop_add . '>';
         $mobile_add = '';
-        $mobile_add .= $mobile['width'] !== "" ? ' width="' . $mobile['width'] . '"' : '';
-        $mobile_add .= $mobile['height'] !== "" ? ' height="' . $mobile['height'] . '"' : '';
+        $mobile_add .= array_key_exists('width', $mobile) && $mobile['width'] !== "" ? ' width="' . $mobile['width'] . '"' : '';
+        $mobile_add .= array_key_exists('height', $mobile) && $mobile['height'] !== "" ? ' height="' . $mobile['height'] . '"' : '';
         $mobile_add .= $mobile['alt'] !== "" ? ' alt="' . $mobile['alt'] . '"' : '';
-        $output .= $mobile['img'] !== "" ? '<img src="' . $mobile['img'] . '" class="mobile"' . $mobile_add . '>' : '';
+        $output .= $img_mobile[0] !== "" ? '<img src="' . $img_mobile[0] . '" class="mobile"' . $mobile_add . '>' : '';
       else:
         $output .= $page_name;
       endif;
@@ -491,8 +808,8 @@ class prefix_template {
 
     /* 3.7 CHECK IF MAINMENU IS ACTIVE
     /------------------------*/
-    public static function WP_MainMenu(bool $active = true){
-      if($active === true):
+    public static function WP_MainMenu(int $active = 1){
+      if($active === 1):
         $menu_active = 'hidden_mobile';
         $hamburger_active = 'mobile';
       else:
@@ -588,8 +905,8 @@ class prefix_template {
 
     /* 3.9 DIVIDE HEADER FROM CONTENT
     /------------------------*/
-    public static function Divider(bool $divider = true){
-      if($divider === true):
+    public static function Divider(int $divider = 1){
+      if($divider === 1):
         return '<hr class="divider" />';
       endif;
     }

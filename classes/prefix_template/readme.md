@@ -1,4 +1,4 @@
-**Version 2.1** (13.07.2020)
+**Version 2.2** (24.07.2020)
 
 Custom class "template" with template parts and header / footer builder
 
@@ -29,7 +29,7 @@ Custom class "template" with template parts and header / footer builder
 ## CONFIGURATION FILE
 ```
 "template": {
-  "container": true,
+  "container": 1,
   "coloring": "light",
   "placeholder": {
     "active": true,
@@ -59,10 +59,10 @@ Custom class "template" with template parts and header / footer builder
   },
   "header": {
     "sort": {
-      "logo": true,
-      "menu": true,
-      "socialmedia": true,
-      "custom": false
+      "logo": 1,
+      "menu": 1,
+      "socialmedia": 1,
+      "custom": 0
     },
     "logo_link": "",
     "logo_desktop": {
@@ -75,33 +75,33 @@ Custom class "template" with template parts and header / footer builder
       "width": "",
       "height": ""
     },
-    "divider": true,
-    "sticky": true,
-    "desktop_menu": false,
+    "divider": 1,
+    "sticky": 1,
+    "desktop_menu": 0,
     "custom": ""
   },
   "page": {
-    "active": true,
+    "active": 1,
     "options": {
-      "header": true,
-      "title": true,
-      "sidebar": true,
-      "footer": true
+      "header": 1,
+      "title": 1,
+      "sidebar": 1,
+      "footer": 1
     },
     "additional":  {
       "custom_var": "Custom name"
     }
   },
   "footer": {
-    "active": true,
+    "active": 1,
     "copyright": "Copyright © Text",
     "custom": "<div>custom</div>",
     "sort": {
-      "menu": true,
-      "socialmedia": true,
-      "copyright": true,
-      "address": true,
-      "custom": false
+      "menu": 1,
+      "socialmedia": 1,
+      "copyright": 1,
+      "address": 1,
+      "custom": 0
     }
   }
 }
