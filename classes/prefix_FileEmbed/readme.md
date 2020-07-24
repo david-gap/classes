@@ -1,4 +1,4 @@
-**Version 2.0** (07.07.2020)
+**Version 2.1** (24.07.2020)
 
 Custom class "prefix_FileEmbed" to set file content as a global
 
@@ -11,17 +11,18 @@ Custom class "prefix_FileEmbed" to set file content as a global
 "FileEmbed": {
   "directory": "/",
   "files": {
-    "global_name": {
+    "0": {
+      "key": "global name",
       "file": "add_path/file_name.csv",
-      "title": true,
+      "title": 1,
       "file_coding": "UTF-8",
       "encoding": "Windows-1252",
-      "id_column": false,
+      "id_column": '',
       "order_column": "",
       "order_direction": "ASC",
-      "order_bydate": false,
+      "order_bydate": 0,
       "seperator": ",",
-      "ssl_stream": true
+      "ssl_stream": 1
     }
   }
 }
