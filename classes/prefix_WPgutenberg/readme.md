@@ -1,25 +1,29 @@
-**Version 2.0.1** (06.07.2020)
+**Version 2.1.1** (24.07.2020)
 
 Custom class "WPgutenberg" to select allowed guttenberg blocks and add style options
 
 ## CONFIGURATION OPTIONS
 * WPgutenberg_active: disable gutenberg
 * WPgutenberg_css: disable gutenberg styling
+* $WPgutenberg_Stylesfile: Add the file with the additional gutenberg css classes
 * $WPgutenberg_AllowedBlocks: List allowed gutenberg blocks
-* $WPgutenberg_Stylesfile: path template styling options
+* $WPgutenberg_CustomAllowedBlocks: List custom allowed gutenberg blocks
 
 ## CONFIGURATION FILE
 ```
 "gutenberg": {
   "active": true,
   "css": true,
+  "Stylesfile": 0,
   "AllowedBlocks": {
     "0": "core/paragraph",
     "1": "core/image",
     "2": "core/heading",
     "3": "core/list"
   },
-  "Stylesfile": "config/classes/prefix_WPgutenberg/gutenberg-editor.js"
+  "CustomAllowedBlocks": {
+    "0": "acf/customblock"
+  }
 }
 ```
 
