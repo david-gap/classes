@@ -1,4 +1,4 @@
-**Version 2.2** (24.07.2020)
+**Version 2.2.1** (24.07.2020)
 
 Custom class "template" with template parts and header / footer builder
 
@@ -89,7 +89,10 @@ Custom class "template" with template parts and header / footer builder
       "footer": 1
     },
     "additional":  {
-      "custom_var": "Custom name"
+      "0": {
+        "key": "Custom var"
+        "value": "Custom name"
+      }
     }
   },
   "footer": {

@@ -1,4 +1,4 @@
-**Version 2.3** (24.07.2020)
+**Version 2.3.1** (24.07.2020)
 
 Custom class "WPinit" basic functions
 
@@ -39,8 +39,14 @@ Custom class "WPinit" basic functions
     "0": "users.php"
   },
   "menus": {
-    "mainmenu": "Main Menu",
-    "footermenu": "Footer Menu"
+    "0": {
+      "key": "mainmenu"
+      "value": "Main Menu"
+    },
+    "1": {
+      "key": "footermenu"
+      "value": "Footer Menu"
+    }
   }
 }
 ```

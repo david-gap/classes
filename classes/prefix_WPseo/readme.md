@@ -1,4 +1,4 @@
-**Version 2.1.1** (24.07.2020)
+**Version 2.1.2** (24.07.2020)
 
 Custom class "prefix_WPseo" for default SEO settings.
 
@@ -23,7 +23,10 @@ Custom class "prefix_WPseo" for default SEO settings.
   "apple-touch-icon-114": 0,
   "data-structure": true,
   "data-structure-add": {
-    "type": "Website"
+    "0": {
+      "key": "type"
+      "value": "Website"
+    }
   },
   "address": {
     "company": "Company",
