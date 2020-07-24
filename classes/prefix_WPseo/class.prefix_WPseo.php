@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.1
+ * @version     2.1.1
  *
 */
 
@@ -41,7 +41,7 @@ class prefix_WPseo {
       * @param private int $WPseo_icon: default screen icon
       * @param private int $WPseo_icon_72: apple screen icon 72
       * @param private int $WPseo_icon_114: apple screen icon 114
-      * @param private bool $WPseo_datastructure: turn datastructure on/off
+      * @param private int $WPseo_datastructure: turn datastructure on/off
       * @param private array $WPseo_datastructure_add: additional structure attributes
     */
     private $WPseo_logo               = 0;
@@ -50,7 +50,7 @@ class prefix_WPseo {
     private $WPseo_icon               = 0;
     private $WPseo_icon_72            = 0;
     private $WPseo_icon_114           = 0;
-    private $WPseo_datastructure      = true;
+    private $WPseo_datastructure      = 0;
     private $WPseo_datastructure_add  = array(
       "type" => "Website"
     );
@@ -106,7 +106,7 @@ class prefix_WPseo {
       ),
       "data-structure" => array(
         "label" => "Activate Data-Structures",
-        "type" => "checkbox"
+        "type" => "switchbutton"
       ),
       "address" =>  array(
         "label" => "Address block",
@@ -301,7 +301,7 @@ class prefix_WPseo {
       // vars
       $output = '';
 
-      if($this->WPseo_datastructure == true):
+      if($this->WPseo_datastructure == 1):
         $address = $this->WPseo_address;
         $additionals = $this->WPseo_datastructure_add;
         $logo = $this->WPseo_logo !== 0 ? wp_get_attachment_image_src($this->WPseo_logo, 'full') : '';
