@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.0
+ * @version     2.1
  *
 */
 
@@ -57,12 +57,17 @@ class prefix_WPsearch {
 
     /* 1.3 BACKEND ARRAY
     /------------------------*/
+    static $classtitle = 'ACF searchable';
+    static $classkey = 'WPsearch';
     static $backend = array(
-      "key" => array(
-        "label" => "",
-        "type" => "",
-        "value" => ""
+      "acf" => array(
+        "label" => "Field slugs",
+        "type" => "array_addable"
       ),
+      "taxonomies" => array(
+        "label" => "Taxonomies",
+        "type" => "array_addable"
+      )
     );
 
 
