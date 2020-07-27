@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.0
+ * @version     2.1
  *
 */
 
@@ -41,11 +41,11 @@ class prefix_WPgalleries {
     /**
       * default vars (if configuration file is missing or broken)
       * @param private array $WPgalleries_slug: post type slug
-      * @param private bool $WPgalleries_detailpage: enable detail page for cpt
-      * @param private bool $WPgalleries_assets: enable js/css register
-      * @param private bool $WPgalleries_assets_popup: enable js/css register for img popup
+      * @param private int $WPgalleries_detailpage: enable detail page for cpt
+      * @param private int $WPgalleries_assets: enable js/css register
+      * @param private int $WPgalleries_assets_popup: enable js/css register for img popup
       * @param private array $WPgalleries_others: support for other CPTs
-      * @param private bool $WPgalleries_cpt: Activate galleries CPT
+      * @param private int $WPgalleries_cpt: Activate galleries CPT
       * @param private string $WPgalleries_cpt_label: CPT Label
       * @param private string $WPgalleries_cpt_rewrite: CPT rewrite
       * @param private string $WPgalleries_cpt_icon: CPT backend icon
@@ -54,11 +54,11 @@ class prefix_WPgalleries {
     */
     private $WPgalleries_slug               = 'galleries';
     private $WPgalleries_others             = array();
-    private $WPgalleries_detailpage         = false;
-    private $WPgalleries_assets             = true;
-    private $WPgalleries_assets_popup       = true;
+    private $WPgalleries_detailpage         = 0;
+    private $WPgalleries_assets             = 1;
+    private $WPgalleries_assets_popup       = 1;
     private STATIC $WPgalleries_noimg_files = array('video/mp4', 'video/quicktime', 'video/videopress', 'audio/mpeg');
-    private $WPgalleries_cpt                = true;
+    private $WPgalleries_cpt                = 1;
     private $WPgalleries_cpt_label          = 'galleries';
     private $WPgalleries_cpt_rewrite        = 'galleries';
     private $WPgalleries_cpt_icon           = "dashicons-format-gallery";
@@ -72,20 +72,20 @@ class prefix_WPgalleries {
       // update default vars with configuration file
       SELF::updateVars();
       // register cpt and redirect pages
-      if($this->WPgalleries_cpt === true):
+      if($this->WPgalleries_cpt == 1):
         add_action( 'init', array( $this, 'WPgalleries_register_cpt' ) );
         // redirect detail page
-        if($this->WPgalleries_detailpage == false):
+        if($this->WPgalleries_detailpage == 0):
           add_action( 'template_redirect', array( $this, 'WPgalleries_redirect_cpt' ) );
         endif;
       endif;
       // add class assets
-      if($this->WPgalleries_assets !== false):
+      if($this->WPgalleries_assets == 1):
         add_action('wp_enqueue_scripts', array( $this, 'WPgalleries_frontend_enqueue_scripts_and_styles' ) );
       endif;
       add_action('admin_enqueue_scripts', array( $this, 'WPgalleries_backend_enqueue_scripts_and_styles' ) );
       // add class assets
-      if($this->WPgalleries_assets_popup !== false):
+      if($this->WPgalleries_assets_popup == 1):
         add_action('wp_enqueue_scripts', array( $this, 'WPgalleries_frontend_popup_enqueue_scripts_and_styles' ) );
       endif;
       // shortcodes
@@ -99,12 +99,49 @@ class prefix_WPgalleries {
 
     /* 1.3 BACKEND ARRAY
     /------------------------*/
+    static $classtitle = 'Galleries';
+    static $classkey = 'WPgalleries';
     static $backend = array(
-      "key" => array(
-        "label" => "",
-        "type" => "",
-        "value" => ""
+      "cpt" => array(
+        "label" => "Register CPT",
+        "type" => "switchbutton"
       ),
+      "label" => array(
+        "label" => "CPT label",
+        "type" => "text"
+      ),
+      "rewrite" => array(
+        "label" => "CPT rewrite",
+        "type" => "text"
+      ),
+      "icon" => array(
+        "label" => "CPT icon",
+        "type" => "text"
+      ),
+      "support" => array(
+        "label" => "CPT support",
+        "type" => "array_addable"
+      ),
+      "taxanomies" => array(
+        "label" => "Add taxonomies",
+        "type" => "array_addable"
+      ),
+      "detailpage" => array(
+        "label" => "Actiate detail page",
+        "type" => "switchbutton"
+      ),
+      "assets" => array(
+        "label" => "Embed assets",
+        "type" => "switchbutton"
+      ),
+      "assets_popup" => array(
+        "label" => "Embed popup assets",
+        "type" => "switchbutton"
+      ),
+      "others" => array(
+        "label" => "Activate on other post types",
+        "type" => "array_addable"
+      )
     );
 
 
@@ -134,7 +171,7 @@ class prefix_WPgalleries {
           'rewrite' => false,
           'capability_type' => 'post'
       );
-      if($this->WPgalleries_detailpage !== false):
+      if($this->WPgalleries_detailpage == 1):
         $args['exclude_from_search'] = false;
         $args['has_archive'] = true;
         $args['publicly_queryable'] = true;

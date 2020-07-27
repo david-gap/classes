@@ -107,6 +107,8 @@ html[data-lang=fr] .loading:before {
 .popup .popup-container.img-content .popup-content img {
   max-width: 100%;
   max-height: calc(100vh - 90px);
+  width: auto;
+  height: auto;
 }
 @media (max-width: 767px) {
   .popup .popup-container.img-content .popup-content img {
@@ -215,4 +217,5 @@ html[data-lang=fr] .loading:before {
 }
 .popup-arrow.hidden {
   opacity: 0;
+  pointer-events: none;
 }

@@ -115,6 +115,8 @@ $breakpoint: 767px;
         img {
           max-width: 100%;
           max-height: calc(100vh - 90px);
+          width: auto;
+          height: auto;
           @media (max-width: $breakpoint) {
             max-height: 100vh;
           }
@@ -216,5 +218,6 @@ $breakpoint: 767px;
   }
   &.hidden {
     opacity: 0;
+    pointer-events: none;
   }
 }

@@ -1,10 +1,10 @@
-**Version 2.0** (09.07.2020)
+**Version 2.1** (27.07.2020)
 
 Custom class "WPgalleries"
 
 ## CONFIGURATION OPTIONS
 * $WPgalleries_slug: post type slug
-* $WPgalleries: Activate galleries CPT
+* $WPgalleries_cpt: Activate galleries CPT
 * $WPgalleries_cpt_label: CPT Label
 * $WPgalleries_cpt_rewrite: CPT rewrite
 * $WPgalleries_cpt_icon: CPT backend icon
@@ -18,6 +18,7 @@ Custom class "WPgalleries"
 ## CONFIGURATION FILE
 ```
 "WPgalleries": {
+  "cpt": 1,
   "label": "Galleries",
   "rewrite": "galleries",
   "icon": "dashicons-calendar-alt",
@@ -28,9 +29,9 @@ Custom class "WPgalleries"
       "query_var": true
     }
   },
-  "detailpage": false,
-  "assets": true,
-  "assets_popup": true,
+  "detailpage": 0,
+  "assets": 1,
+  "assets_popup": 1,
   "others": {
     "0": "other cpt slug"
   }
