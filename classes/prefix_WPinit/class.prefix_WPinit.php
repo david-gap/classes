@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.3
+ * @version     2.3.2
  *
 */
 
@@ -286,10 +286,11 @@ class prefix_WPinit {
         $output = '<link href="https://fonts.googleapis.com/css?family=';
         if(is_array($this->WPinit_google_fonts)):
           // array output
-          $row = 1;
+          $row = count($this->WPinit_google_fonts);
           foreach ($this->WPinit_google_fonts as $value) {
-            $output .= $row > 1 ? '|' : '';
             $output .= $value;
+            $output .= $row > 1 ? '|' : '';
+            $row--;
           }
         else:
           // fallback for a string
