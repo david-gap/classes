@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.3.2
+ * @version     2.4.2
  *
 */
 
@@ -23,11 +23,12 @@ Table of Contents:
   2.3 RESET INLINE IMAGE DIMENSIONS (FOR CSS-SCALING OF IMAGES)
   2.4 ENQUEUE SCRIPTS/STYLES
   2.5 EMBED GOOGLE FONTS
-  2.6 HIDE CORE-UPDATES FOR NON-ADMINS
-  2.7 THEME SUPPORT
-  2.8 BACKEND CONTROL
-  2.9 REGISTER MENUS
-  2.10 CLEAN THE CONTENT
+  2.6 EMBED TYPEKIT FONTS
+  2.7 HIDE CORE-UPDATES FOR NON-ADMINS
+  2.8 THEME SUPPORT
+  2.9 BACKEND CONTROL
+  2.10 REGISTER MENUS
+  2.11 CLEAN THE CONTENT
 3.0 OUTPUT
 =======================================================*/
 
@@ -43,7 +44,6 @@ class prefix_WPinit {
     /**
       * default vars
       * @param private array $WPinit_support: select theme support
-      * @param private array $WPinit_google_fonts: google fonts
       * @param private int $WPinit_css: activate theme styling
       * @param private int $WPinit_cachebust: activate cachebust styling file
       * @param private int $WPinit_cachebust_file: theme cachebust styling path
@@ -55,9 +55,10 @@ class prefix_WPinit {
       * @param private int $WPinit_jquery: activate jquery
       * @param private array $WPinit_admin_menu: disable backend menus from not admins
       * @param private array $WPinit_menus: list of all wanted WP menus
+      * @param private string $WPinit_typekit_id: typekit fonts
+      * @param private array $WPinit_google_fonts: google fonts
     */
     private $WPinit_support          = array("title-tag", "menus", "html5", "post-thumbnails");
-    private $WPinit_google_fonts     = array();
     private $WPinit_css              = 1;
     private $WPinit_cachebust        = 1;
     private $WPinit_cachebust_file   = '/dist/rev-manifest.json';
@@ -78,6 +79,8 @@ class prefix_WPinit {
         'value' => 'Footer Menu'
       )
     );
+    private $WPinit_typekit_id       = '';
+    private $WPinit_google_fonts     = array();
 
 
     /* 1.2 ON LOAD RUN
@@ -101,6 +104,8 @@ class prefix_WPinit {
       SELF::theme_support();
       // add google fonts
       add_action( 'wp_footer', array( $this, 'GoogleFonts' ) );
+      // add typekit fonts
+      add_action( 'wp_head', array( $this, 'TypekitFonts' ) );
       // add menu
       add_action( 'init', array( $this, 'WPinit_theme_menus' ) );
       // clean the content
@@ -114,10 +119,6 @@ class prefix_WPinit {
     static $backend = array(
       "support" => array(
         "label" => "Wordpress Support",
-        "type" => "array_addable"
-      ),
-      "google_fonts" => array(
-        "label" => "Embed Google Fonts",
         "type" => "array_addable"
       ),
       "css" => array(
@@ -173,6 +174,14 @@ class prefix_WPinit {
             "type" => "text"
           )
         )
+      ),
+      "typekit_id" => array(
+        "label" => "Typekit ID",
+        "type" => "text"
+      ),
+      "google_fonts" => array(
+        "label" => "Embed Google Fonts",
+        "type" => "array_addable"
       )
     );
 
@@ -194,6 +203,7 @@ class prefix_WPinit {
         // update vars
         $this->WPinit_support = array_key_exists('support', $myConfig) ? $myConfig['support'] : $this->WPinit_support;
         $this->WPinit_google_fonts = array_key_exists('google_fonts', $myConfig) ? $myConfig['google_fonts'] : $this->WPinit_google_fonts;
+        $this->WPinit_typekit_id = array_key_exists('typekit_id', $myConfig) ? $myConfig['typekit_id'] : $this->WPinit_typekit_id;
         $this->WPinit_css = array_key_exists('css', $myConfig) ? $myConfig['css'] : $this->WPinit_css;
         $this->WPinit_cachebust = array_key_exists('cachebust', $myConfig) ? $myConfig['cachebust'] : $this->WPinit_cachebust;
         $this->WPinit_cachebust_file = array_key_exists('cachebust_file', $myConfig) ? $myConfig['cachebust_file'] : $this->WPinit_cachebust_file;
@@ -304,14 +314,25 @@ class prefix_WPinit {
     }
 
 
-    /* 2.6 HIDE CORE-UPDATES FOR NON-ADMINS
+    /* 2.6 EMBED TYPEKIT FONTS
+    /------------------------*/
+    function TypekitFonts(){
+      if($this->WPinit_typekit_id !== ''):
+        // embed typekit
+        $output = '<link rel="stylesheet" href="https://use.typekit.net/' . $this->WPinit_typekit_id . '.css">';
+        echo $output;
+      endif;
+    }
+
+
+    /* 2.7 HIDE CORE-UPDATES FOR NON-ADMINS
     /------------------------*/
     function wp_onlyadmin_update() {
       if (!current_user_can('update_core')) { remove_action( 'admin_notices', 'update_nag', 3 ); }
     }
 
 
-    /* 2.7 THEME SUPPORT
+    /* 2.8 THEME SUPPORT
     /------------------------*/
     function theme_support()  {
       if($this->WPinit_support):
@@ -322,7 +343,7 @@ class prefix_WPinit {
     }
 
 
-    /* 2.8 BACKEND CONTROL
+    /* 2.9 BACKEND CONTROL
     /------------------------*/
     /**
     * Removes some menus by page.
@@ -352,7 +373,7 @@ class prefix_WPinit {
     }
 
 
-    /* 2.9 REGISTER MENUS
+    /* 2.10 REGISTER MENUS
     /------------------------*/
     // => https://codex.wordpress.org/Function_Reference/register_nav_menus
     function WPinit_theme_menus() {
@@ -366,7 +387,7 @@ class prefix_WPinit {
     }
 
 
-    /* 2.10 CLEAN THE CONTENT
+    /* 2.11 CLEAN THE CONTENT
     /------------------------*/
     function WPinit_CleanContent( $content ) {
       return preg_replace( '/[\r\n]+/', "\n", $content );

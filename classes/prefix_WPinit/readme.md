@@ -1,10 +1,9 @@
-**Version 2.3.2** (25.07.2020)
+**Version 2.4.2** (25.07.2020)
 
 Custom class "WPinit" basic functions
 
 ## CONFIGURATION OPTIONS
 * $WPinit_support: select theme support
-* $WPinit_google_fonts: google fonts
 * $WPinit_css: activate theme styling
 * $WPinit_cachebust: activate cachebust styling file
 * $WPinit_css_version: theme styling version
@@ -15,6 +14,8 @@ Custom class "WPinit" basic functions
 * $WPinit_jquery: activate jquery
 * $WPinit_admin_menu: disable backend menus from not admins
 * $WPinit_menus: list of all wanted WP menus
+* $WPinit_typekit_id: typekit fonts
+* $WPinit_google_fonts: google fonts
 
 ## CONFIGURATION FILE
 ```
@@ -23,9 +24,6 @@ Custom class "WPinit" basic functions
     "0": "title-tag",
     "1": "menus",
     "2": "html5"
-  },
-  "google_fonts": {
-    "0": "Roboto"
   },
   "css" : "1",
   "cachebust" : "1",
@@ -47,6 +45,10 @@ Custom class "WPinit" basic functions
       "key": "footermenu"
       "value": "Footer Menu"
     }
+  },
+  "typekit_id" : "",
+  "google_fonts": {
+    "0": "Roboto"
   }
 }
 ```
