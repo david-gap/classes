@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.2
+ * @version     2.2.2
  *
 */
 
@@ -827,7 +827,7 @@ class prefix_template {
           'depth' => 2,
           'theme_location' => 'mainmenu'
         ]);
-        $output .= '<button class="hamburger ' . $hamburger_active . '">';
+        $output .= '<button class="hamburger ' . $hamburger_active . '" aria-label="Main Menu">';
           $output .= '<span>&nbsp;</span>';
         $output .= '</button>';
       endif;
