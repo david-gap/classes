@@ -1,4 +1,4 @@
-**Version 2.4.2** (25.07.2020)
+**Version 2.5.2** (28.07.2020)
 
 Custom class "WPinit" basic functions
 
@@ -12,6 +12,7 @@ Custom class "WPinit" basic functions
 * $WPinit_js_version: theme js version
 * $WPinit_js_path: theme js path (theme is root)
 * $WPinit_jquery: activate jquery
+* $WPinit_upload_svg: enable svg upload
 * $WPinit_admin_menu: disable backend menus from not admins
 * $WPinit_menus: list of all wanted WP menus
 * $WPinit_typekit_id: typekit fonts

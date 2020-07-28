@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.4.2
+ * @version     2.5.2
  *
 */
 
@@ -29,6 +29,7 @@ Table of Contents:
   2.9 BACKEND CONTROL
   2.10 REGISTER MENUS
   2.11 CLEAN THE CONTENT
+  2.12 ADD FILE TYPES TO UPLOADER
 3.0 OUTPUT
 =======================================================*/
 
@@ -53,9 +54,11 @@ class prefix_WPinit {
       * @param private int $WPinit_js_version: theme js version
       * @param private string $WPinit_js_path: theme js path (theme is root)
       * @param private int $WPinit_jquery: activate jquery
+      * @param private int $WPinit_upload_svg: enable svg upload
       * @param private array $WPinit_admin_menu: disable backend menus from not admins
       * @param private array $WPinit_menus: list of all wanted WP menus
       * @param private string $WPinit_typekit_id: typekit fonts
+      * @param private array $WPinit_google_fonts: google fonts
       * @param private array $WPinit_google_fonts: google fonts
     */
     private $WPinit_support          = array("title-tag", "menus", "html5", "post-thumbnails");
@@ -68,6 +71,7 @@ class prefix_WPinit {
     private $WPinit_js_version       = 1.0;
     private $WPinit_js_path          = "/dist/script.min.js";
     private $WPinit_jquery           = 1;
+    private $WPinit_upload_svg       = 1;
     private $WPinit_admin_menu       = array();
     private $WPinit_menus            = array(
       array(
@@ -79,6 +83,7 @@ class prefix_WPinit {
         'value' => 'Footer Menu'
       )
     );
+    private $WPinit_upload_types     = array();
     private $WPinit_typekit_id       = '';
     private $WPinit_google_fonts     = array();
 
@@ -110,6 +115,12 @@ class prefix_WPinit {
       add_action( 'init', array( $this, 'WPinit_theme_menus' ) );
       // clean the content
       add_filter( 'the_content', array( $this, 'WPinit_CleanContent' ) );
+      // enable upload types
+      // add_filter( 'upload_mimes', array( $this, 'AddUploadTypes' ), 1, 1 );
+      // backend css/js files
+      add_action('admin_enqueue_scripts', array( $this, 'WPinit_enqueue' ));
+      add_action( 'admin_head', array( $this, 'GoogleFonts' ) );
+      add_action( 'admin_head', array( $this, 'TypekitFonts' ) );
     }
 
     /* 1.3 BACKEND ARRAY
@@ -137,6 +148,10 @@ class prefix_WPinit {
         "label" => "Embed JS file",
         "type" => "switchbutton"
       ),
+      // "upload_svg" => array(
+      //   "label" => "Enable SVG upload",
+      //   "type" => "switchbutton"
+      // ),
       "css_version" => array(
         "label" => "CSS Version",
         "type" => "text"
@@ -163,6 +178,20 @@ class prefix_WPinit {
       ),
       "menus" => array(
         "label" => "Registered menu",
+        "type" => "array_addable",
+        "value" => array(
+          "key" => array(
+            "label" => "Slug",
+            "type" => "text"
+          ),
+          "value" => array(
+            "label" => "Name",
+            "type" => "text"
+          )
+        )
+      ),
+      "upload_types" => array(
+        "label" => "Add file types to uploader",
         "type" => "array_addable",
         "value" => array(
           "key" => array(
@@ -214,7 +243,9 @@ class prefix_WPinit {
         $this->WPinit_js_path = array_key_exists('js_path', $myConfig) ? $myConfig['js_path'] : $this->WPinit_js_path;
         $this->WPinit_jquery = array_key_exists('jquery', $myConfig) ? $myConfig['jquery'] : $this->WPinit_jquery;
         $this->WPinit_admin_menu = array_key_exists('admin_menu', $myConfig) ? $myConfig['admin_menu'] : $this->WPinit_admin_menu;
-        $this->$WPinit_menus = array_key_exists('menus', $myConfig) ? $myConfig['menus'] : $this->$WPinit_menus;
+        $this->WPinit_menus = array_key_exists('menus', $myConfig) ? $myConfig['menus'] : $this->WPinit_menus;
+        $this->WPinit_upload_svg = array_key_exists('upload_svg', $myConfig) ? $myConfig['upload_svg'] : $this->WPinit_upload_svg;
+        $this->WPinit_upload_types = array_key_exists('upload_types', $myConfig) ? $myConfig['upload_types'] : $this->WPinit_upload_types;
       endif;
     }
 
@@ -377,9 +408,9 @@ class prefix_WPinit {
     /------------------------*/
     // => https://codex.wordpress.org/Function_Reference/register_nav_menus
     function WPinit_theme_menus() {
-      if(is_array($this->$WPinit_menus)):
+      if(is_array($this->WPinit_menus)):
         $menus = array();
-        foreach ($this->$WPinit_menus as $key => $menu) {
+        foreach ($this->WPinit_menus as $key => $menu) {
           $menus[$menu["key"]] = $menu["value"];
         }
         register_nav_menus($menus);
@@ -391,6 +422,25 @@ class prefix_WPinit {
     /------------------------*/
     function WPinit_CleanContent( $content ) {
       return preg_replace( '/[\r\n]+/', "\n", $content );
+    }
+
+
+    /* 2.12 ADD FILE TYPES TO UPLOADER
+    /------------------------*/
+    function AddUploadTypes($mime_types){
+      // if svg is enabled
+      if ($this->WPinit_upload_svg == 1):
+        $mime_types['svg'] = 'image/svg+xml';
+        $mime_types['svgz'] = 'image/svg+xml';
+      endif;
+      // additional file types
+      if(is_array($this->WPinit_upload_types)):
+        foreach ($this->WPinit_upload_types as $key => $type) {
+          $mime_types[$type["key"]] = $type["value"];
+        }
+      endif;
+      // return
+      return $mime_types;
     }
 
 
