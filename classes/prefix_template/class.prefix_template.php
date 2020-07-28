@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.2.2
+ * @version     2.3.2
  *
 */
 
@@ -402,7 +402,7 @@ class prefix_template {
       "type" => "multiple",
       "value" => array(
         "active" => array(
-          "label" => "Activate header",
+          "label" => "Activate page options",
           "type" => "switchbutton"
         ),
         "options" => array(
@@ -782,8 +782,8 @@ class prefix_template {
       $link = function_exists("get_bloginfo") && $link == "" ? get_bloginfo('url') : $link;
       $add_desktop = $mobile['img'] !== "" ? 'class="desktop"' : '';
       $add_container = $desktop['img'] == "" && $mobile['img'] == "" ? ' text_logo' : '';
-      $img_desktop = array_key_exists('img', $desktop) ? wp_get_attachment_image_src($desktop['img'], 'full') : '';
-      $img_mobile = array_key_exists('img', $mobile) ? wp_get_attachment_image_src($mobile['img'], 'full') : '';
+      $img_desktop = array_key_exists('img', $desktop) && $desktop['img'] !== '' ? wp_get_attachment_image_src($desktop['img'], 'full') : '';
+      $img_mobile = array_key_exists('img', $mobile) && $mobile['img'] !== '' ? wp_get_attachment_image_src($mobile['img'], 'full') : '';
       // output
       $output .= '<a href="' . $link . '" class="logo' . $add_container .'">';
       if($img_desktop !== ""):
@@ -796,7 +796,7 @@ class prefix_template {
         $mobile_add .= array_key_exists('width', $mobile) && $mobile['width'] !== "" ? ' width="' . $mobile['width'] . '"' : '';
         $mobile_add .= array_key_exists('height', $mobile) && $mobile['height'] !== "" ? ' height="' . $mobile['height'] . '"' : '';
         $mobile_add .= $mobile['alt'] !== "" ? ' alt="' . $mobile['alt'] . '"' : '';
-        $output .= $img_mobile[0] !== "" ? '<img src="' . $img_mobile[0] . '" class="mobile"' . $mobile_add . '>' : '';
+        $output .= $img_mobile !== "" ? '<img src="' . $img_mobile[0] . '" class="mobile"' . $mobile_add . '>' : '';
       else:
         $output .= $page_name;
       endif;
