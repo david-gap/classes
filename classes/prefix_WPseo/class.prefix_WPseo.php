@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.1.1
+ * @version     2.1.2
  *
 */
 
@@ -109,7 +109,7 @@ class prefix_WPseo {
         "type" => "switchbutton"
       ),
       "address" =>  array(
-        "label" => "Address block",
+        "label" => "Data-Structure Address",
         "type" => "multiple",
         "value" => array(
           "company" => array(
