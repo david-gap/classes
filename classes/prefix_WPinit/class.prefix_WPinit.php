@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.5.2
+ * @version     2.5.3
  *
 */
 
@@ -243,7 +243,7 @@ class prefix_WPinit {
         $this->WPinit_js_path = array_key_exists('js_path', $myConfig) ? $myConfig['js_path'] : $this->WPinit_js_path;
         $this->WPinit_jquery = array_key_exists('jquery', $myConfig) ? $myConfig['jquery'] : $this->WPinit_jquery;
         $this->WPinit_admin_menu = array_key_exists('admin_menu', $myConfig) ? $myConfig['admin_menu'] : $this->WPinit_admin_menu;
-        $this->WPinit_menus = array_key_exists('menus', $myConfig) ? $myConfig['menus'] : $this->WPinit_menus;
+        $this->WPinit_menus = array_key_exists('menus', $myConfig) ? array_merge($this->WPinit_menus, $myConfig['menus']) : $this->WPinit_menus;
         $this->WPinit_upload_svg = array_key_exists('upload_svg', $myConfig) ? $myConfig['upload_svg'] : $this->WPinit_upload_svg;
         $this->WPinit_upload_types = array_key_exists('upload_types', $myConfig) ? $myConfig['upload_types'] : $this->WPinit_upload_types;
       endif;
