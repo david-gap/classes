@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.3.2
+ * @version     2.4.3
  *
 */
 
@@ -38,6 +38,8 @@ Table of Contents:
   3.12 SOCIAL MEDIA
   3.13 CONTACT BLOCK
   3.14 ICON BLOCK
+  3.15 CONTENT BLOCK
+  3.16 BODY CSS
 =======================================================*/
 
 
@@ -58,28 +60,31 @@ class prefix_template {
     * @param static string $template_ph_custom: placeholder custom content
     * @param static array $template_address: address block content
     * @param static array $template_socialmedia: social media
-    * @param static bool $template_header_divider: Activate header divider
-    * @param static bool $template_header_sticky: activate sticky header
-    * @param static bool $template_header_dmenu: Activate header hamburger for desktop
+    * @param static int $template_header_divider: Activate header divider
+    * @param static int $template_header_sticky: activate sticky header
+    * @param static int $template_header_stickyload: activate sticky header on load
+    * @param static int $template_header_dmenu: Activate header hamburger for desktop
     * @param static string $template_header_custom:  Custom header html
     * @param static array $template_header_sort: Sort and activate blocks inside header builder
     * @param static string $template_header_logo_link: Logo link with wordpress fallback
     * @param static array $template_header_logo_d: desktop logo configuration
     * @param static array $template_header_logo_m: mobile logo configuration
-    * @param static bool $template_page_active: activate page options
+    * @param static string $template_header_after: html code after header
+    * @param static int $template_page_active: activate page options
     * @param static array $template_page_options: show/hide template elements
     * @param static array $template_page_additional: additional custom fields template elements
-    * @param static bool $template_footer_active: activate footer
+    * @param static int $template_footer_active: activate footer
     * @param static string $template_footer_cr: copyright text
     * @param static string $template_footer_custom: custom html
     * @param static array $template_footer_sort: Sort and activate blocks inside footer builder
+    * @param static string $template_footer_before: html code before footer
   */
-  static $template_container        = 1;
-  static $template_coloring         = "light";
-  static $template_ph_active        = true;
-  static $template_ph_address       = true;
-  static $template_ph_custom        = "";
-  static $template_address          = array(
+  static $template_container         = 1;
+  static $template_coloring          = "light";
+  static $template_ph_active         = true;
+  static $template_ph_address        = true;
+  static $template_ph_custom         = "";
+  static $template_address           = array(
     'company' => '',
     'street' => '',
     'street2' => '',
@@ -99,56 +104,60 @@ class prefix_template {
       'email' => ''
     )
   );
-  static $template_socialmedia      = array(
+  static $template_socialmedia       = array(
     "facebook" => "",
     "instagram" => ""
   );
-  static $template_contactblock     = array(
+  static $template_contactblock      = array(
     "phone" => "",
     "mail" => "",
     "whatsapp" => ""
   );
-  static $template_header_divider   = 1;
-  static $template_header_sticky    = 1;
-  static $template_header_dmenu     = 1;
-  static $template_header_custom    = "";
-  static $template_header_sort      = array(
+  static $template_header_divider    = 1;
+  static $template_header_sticky     = 1;
+  static $template_header_stickyload = 0;
+  static $template_header_dmenu      = 1;
+  static $template_header_custom     = "";
+  static $template_header_sort       = array(
     "logo" => 1,
     "menu" => 1,
     "socialmedia" => 0,
     "custom" => 0
   );
-  static $template_header_logo_link = "";
-  static $template_header_logo_d    = array(
+  static $template_header_logo_link  = "";
+  static $template_header_logo_d     = array(
     "img" => "",
     "width" => "",
     "height" => "",
     "alt" => ""
   );
-  static $template_header_logo_m    = array(
+  static $template_header_logo_m     = array(
     "img" => "",
     "width" => "",
     "height" => "",
     "alt" => ""
   );
-  static $template_page_active      = 1;
-  static $template_page_options     = array(
+  static $template_header_after      = "";
+  static $template_page_active       = 1;
+  static $template_page_options      = array(
     "header" => 1,
     "title" => 1,
+    "comments" => 1,
     "sidebar" => 1,
     "footer" => 1
   );
-  static $template_page_additional  = array();
-  static $template_footer_active    = 1;
-  static $template_footer_cr        = "";
-  static $template_footer_custom    = "";
-  static $template_footer_sort      = array(
+  static $template_page_additional   = array();
+  static $template_footer_active     = 1;
+  static $template_footer_cr         = "";
+  static $template_footer_custom     = "";
+  static $template_footer_sort       = array(
     "menu" => 1,
     "socialmedia" => 1,
     "copyright" => 1,
     "address" => 1,
     "custom" => 0
   );
+  static $template_footer_before     = "";
 
 
   /* 1.2 ON LOAD RUN
@@ -313,7 +322,11 @@ class prefix_template {
           "type" => "switchbutton"
         ),
         "sticky" => array(
-          "label" => "Sticky Menu",
+          "label" => "Sticky header",
+          "type" => "switchbutton"
+        ),
+        "sticky_onload" => array(
+          "label" => "Sticky header on load",
           "type" => "switchbutton"
         ),
         "desktop_menu" => array(
@@ -394,6 +407,10 @@ class prefix_template {
               "type" => "switchbutton"
             )
           )
+        ),
+        "after_header" => array(
+          "label" => "Custom content after header",
+          "type" => "textarea"
         )
       )
     ),
@@ -415,6 +432,10 @@ class prefix_template {
             ),
             "title" => array(
               "label" => "Hide title",
+              "type" => "switchbutton"
+            ),
+            "comments" => array(
+              "label" => "Hide comments",
               "type" => "switchbutton"
             ),
             "sidebar" => array(
@@ -485,6 +506,10 @@ class prefix_template {
               "type" => "switchbutton"
             )
           )
+        ),
+        "before_footer" => array(
+          "label" => "Custom content before footer",
+          "type" => "textarea"
         )
       )
     )
@@ -553,12 +578,14 @@ class prefix_template {
           $header = $myConfig['header'];
           SELF::$template_header_divider = array_key_exists('divider', $header) ? $header['divider'] : SELF::$template_header_divider;
           SELF::$template_header_sticky = array_key_exists('sticky', $header) ? $header['sticky'] : SELF::$template_header_sticky;
+          SELF::$template_header_stickyload = array_key_exists('sticky_onload', $header) ? $header['sticky_onload'] : SELF::$template_header_stickyload;
           SELF::$template_header_dmenu = array_key_exists('desktop_menu', $header) ? $header['desktop_menu'] : SELF::$template_header_dmenu;
           SELF::$template_header_custom = array_key_exists('custom', $header) ? $header['custom'] : SELF::$template_header_custom;
           SELF::$template_header_sort = array_key_exists('sort', $header) ? $header['sort'] : SELF::$template_header_sort;
           SELF::$template_header_logo_link = array_key_exists('logo_link', $header) ? $header['logo_link'] : SELF::$template_header_logo_link;
           SELF::$template_header_logo_d = array_key_exists('logo_desktop', $header) ? $header['logo_desktop'] : SELF::$template_header_logo_d;
           SELF::$template_header_logo_m = array_key_exists('logo_mobile', $header) ? $header['logo_mobile'] : SELF::$template_header_logo_m;
+          SELF::$template_header_after = array_key_exists('after_header', $header) ? $header['after_header'] : SELF::$template_header_after;
         endif;
         if($configuration && array_key_exists('page', $myConfig)):
           $page = $myConfig['page'];
@@ -568,10 +595,11 @@ class prefix_template {
         endif;
         if($configuration && array_key_exists('footer', $myConfig)):
           $footer = $myConfig['footer'];
-          SELF::$template_footer_active = array_key_exists('active', $footer) ? $footer['active'] : SELF::$template_ph_custom;
-          SELF::$template_footer_cr = array_key_exists('copyright', $footer) ? $footer['copyright'] : SELF::$template_ph_custom;
-          SELF::$template_footer_custom = array_key_exists('custom', $footer) ? $footer['custom'] : SELF::$template_ph_custom;
-          SELF::$template_footer_sort = array_key_exists('sort', $footer) ? $footer['sort'] : SELF::$template_ph_custom;
+          SELF::$template_footer_active = array_key_exists('active', $footer) ? $footer['active'] : SELF::$template_footer_active;
+          SELF::$template_footer_cr = array_key_exists('copyright', $footer) ? $footer['copyright'] : SELF::$template_footer_cr;
+          SELF::$template_footer_custom = array_key_exists('custom', $footer) ? $footer['custom'] : SELF::$template_footer_custom;
+          SELF::$template_footer_sort = array_key_exists('sort', $footer) ? $footer['sort'] : SELF::$template_footer_sort;
+          SELF::$template_footer_before = array_key_exists('before_footer', $footer) ? $footer['before_footer'] : SELF::$template_footer_before;
         endif;
       endif;
     }
@@ -613,8 +641,10 @@ class prefix_template {
         return;
       endif;
       // save page optons
-      $options = $_POST['template_page_options'] && $_POST['template_page_options'] !== '' ? serialize($_POST['template_page_options']) : '';
-      update_post_meta($post_id, 'template_page_options', $options);
+      if(isset($_POST['template_page_options'])):
+        $options = $_POST['template_page_options'] !== '' ? serialize($_POST['template_page_options']) : '';
+        update_post_meta($post_id, 'template_page_options', $options);
+      endif;
     }
 
 
@@ -736,6 +766,7 @@ class prefix_template {
         $output = array();
         $get_options = get_post_meta($id, 'template_page_options', true);
         $options = $get_options && $get_options !== '' ? unserialize($get_options) : array();
+        $options = apply_filters( 'template_PageOptions', $options );
         // check activity
         foreach (SELF::$template_page_options as $key => $value) {
           // check if option is active
@@ -1081,6 +1112,33 @@ class prefix_template {
       else:
         $debug_errors['template'][] = "Icon Block is empty";
       endif;
+    }
+
+
+    /* 3.15 CONTENT BLOCK
+    /------------------------*/
+    public static function ContentBlock(string $content = ''){
+      if ($content !== ''):
+        echo do_shortcode(str_replace("'", '"', $content));
+      endif;
+    }
+
+
+    /* 3.16 BODY CSS
+    /------------------------*/
+    public static function BodyCSS(){
+      $obj = get_queried_object();
+      // base classes
+      $classes = 'frontend';
+      $classes .= $obj && array_key_exists('post_type', $obj) ? ' pt-' . $obj->post_type : '';
+      $classes .= $obj && array_key_exists('name', $obj) ? ' pt-' . $obj->name : '';
+      $classes .= prefix_template::$template_coloring !== '' ? ' ' . prefix_template::$template_coloring : '';
+      $classes .= ' ' . prefix_template::CheckSticky(prefix_template::$template_header_sticky);
+      $classes .= prefix_template::$template_header_stickyload !== 0 ? ' sticky_onload' : '';
+      // apply filter
+      $classes .= ' ' . apply_filters( 'template_BodyCSS', $classes );
+      // return classes
+      echo $classes;
     }
 
 

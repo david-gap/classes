@@ -1,4 +1,4 @@
-**Version 2.3.2** (28.07.2020)
+**Version 2.4.3** (07.08.2020)
 
 Custom class "template" with template parts and header / footer builder
 
@@ -12,12 +12,14 @@ Custom class "template" with template parts and header / footer builder
 * $template_socialmedia: social media
 * $template_header_divider: Activate header divider
 * $template_header_sticky: activate sticky header
+* $template_header_stickyload: activate sticky header on load
 * $template_header_dmenu: Activate header hamburger for desktop
 * $template_header_custom:  Custom header html
 * $template_header_sort: Sort and activate blocks inside header builder
 * $template_header_logo_link: Logo link with wordpress fallback
 * $template_header_logo_d: desktop logo configuration
 * $template_header_logo_m: mobile logo configuration
+* $template_header_after: html code after header
 * $template_page_active: activate page options
 * $template_page_options: show/hide template elements
 * $template_page_additional: additional custom fields template elements
@@ -25,6 +27,7 @@ Custom class "template" with template parts and header / footer builder
 * $template_footer_cr: copyright text
 * $template_footer_custom: custom html
 * $template_footer_sort: Sort and activate blocks inside footer builder
+* $template_footer_before: html code before footer
 
 ## CONFIGURATION FILE
 ```
@@ -77,8 +80,10 @@ Custom class "template" with template parts and header / footer builder
     },
     "divider": 1,
     "sticky": 1,
+    "sticky_onload": 0;
     "desktop_menu": 0,
-    "custom": ""
+    "custom": "",
+    "after_header": ""
   },
   "page": {
     "active": 1,
@@ -105,7 +110,8 @@ Custom class "template" with template parts and header / footer builder
       "copyright": 1,
       "address": 1,
       "custom": 0
-    }
+    },
+    "before_footer": ""
   }
 }
 ```
@@ -262,3 +268,10 @@ $settings = array(
 );
 echo prefix_template::IconBlock($icons, $settings);
 ```
+
+## FILTERS
+To Add custom options by Template (ACF for example)
+template_PageOptions
+
+Add Custom CSS by template
+template_BodyCSS
