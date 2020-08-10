@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.4.3
+ * @version     2.4.4
  *
 */
 
@@ -770,18 +770,12 @@ class prefix_template {
         // check activity
         foreach (SELF::$template_page_options as $key => $value) {
           // check if option is active
-          if($value !== false && in_array($key, $options)):
-            $output[] = $key;
-          endif;
-        }
-        foreach (SELF::$template_page_additional as $key => $value) {
-          // check if additional option are available
-          if(in_array($key, $options)):
-            $output[] = $key;
+          if($value !== 0 && in_array($key, $options)):
+            unset($options[$key]);
           endif;
         }
         // output
-        return $output;
+        return $options;
     }
 
 
