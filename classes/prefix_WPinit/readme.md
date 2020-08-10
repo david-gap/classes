@@ -1,4 +1,4 @@
-**Version 2.5.3** (07.08.2020)
+**Version 2.5.4** (10.08.2020)
 
 Custom class "WPinit" basic functions
 

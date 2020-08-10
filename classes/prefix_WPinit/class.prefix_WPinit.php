@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.5.3
+ * @version     2.5.4
  *
 */
 
@@ -293,13 +293,13 @@ class prefix_WPinit {
     // >> https://developer.wordpress.org/reference/functions/wp_enqueue_script/
     function WPinit_enqueue() {
       // jQuery (from wp core)
-      if ($this->WPinit_jquery == 1):
+      if ($this->WPinit_jquery == 1 && !is_admin()):
         wp_deregister_script( 'jquery' );
         wp_register_script('jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js', false, '3.3.1');
         wp_enqueue_script( 'jquery' );
       endif;
       // scripts
-      if ($this->WPinit_js == 1):
+      if ($this->WPinit_js == 1 && !is_admin()):
         wp_register_script('theme/scripts', get_stylesheet_directory_uri() . $this->WPinit_js_path, false, $this->WPinit_js_version, true);
         wp_enqueue_script('theme/scripts');
         # get theme directory for javascript files
