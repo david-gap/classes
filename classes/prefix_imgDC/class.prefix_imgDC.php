@@ -6,7 +6,7 @@
  * IMG dominant color - WP compatible
  * https://github.com/david-gap/classes
  * Author:      David Voglgsang
- * @version     2.1
+ * @version     2.1.2
  *
  */
 
@@ -80,7 +80,7 @@ class prefix_imgDC {
         add_action( 'admin_menu', array( $this, 'imgDC_backendPage' ) );
         // add class assets
         add_action('admin_enqueue_scripts', array( $this, 'imgDC_backend_enqueue_scripts_and_styles' ) );
-        if($this->$imgDC_assets == 1):
+        if($this->imgDC_assets == 1):
           add_action('wp_enqueue_scripts', array( $this, 'imgDC_frontend_enqueue_scripts_and_styles' ) );
         endif;
       endif;
@@ -132,7 +132,7 @@ class prefix_imgDC {
         // update vars
         $this->imgDC_wp = array_key_exists('wp', $myConfig) ? $myConfig['wp'] : $this->imgDC_wp;
         $this->imgDC_content = array_key_exists('content', $myConfig) ? $myConfig['content'] : $this->imgDC_content;
-        $this->$imgDC_assets = array_key_exists('assets', $myConfig) ? $myConfig['assets'] : $this->$imgDC_assets;
+        $this->imgDC_assets = array_key_exists('assets', $myConfig) ? $myConfig['assets'] : $this->imgDC_assets;
         SELF::$imgDC_nocolor_files = array_key_exists('nocolor_files', $myConfig) ? $myConfig['nocolor_files'] : SELF::$imgDC_nocolor_files;
         SELF::$imgDC_defaultcolor = array_key_exists('defaultcolor', $myConfig) ? $myConfig['defaultcolor'] : SELF::$imgDC_defaultcolor;
       endif;
@@ -445,26 +445,27 @@ class prefix_imgDC {
         // get attachment meta data
         $metadata = wp_get_attachment_metadata($id);
         $img_type = get_post_mime_type($id);
-        $img_path = $path["baseurl"] . '/' . $metadata["file"];
+        $img_path = $path && array_key_exists('baseurl', $path) ? $path["baseurl"] : '';
+        $img_path .= $metadata && array_key_exists('file', $metadata) ? '/' . $metadata["file"] : '';
         $full_image_url = wp_get_attachment_image_src($id, 'full');
         $thumb_image_url = wp_get_attachment_image_src($id, 'thumbnail');
         // fallback - img width
-        if(strpos($additional, 'width="') === false):
+        if(strpos($additional, 'width="') == false):
             $additional .= $metadata && array_key_exists('width', $metadata) ? ' width="' . $metadata["width"] . '"' : '';
         endif;
         // fallback - img height
-        if(strpos($additional, 'height="') === false):
+        if(strpos($additional, 'height="') == false):
             $additional .= $metadata && array_key_exists('height', $metadata) ? ' height="' . $metadata["height"] . '"' : '';
         endif;
         // fallback - alt
-        if(strpos($additional, 'alt="') === false):
+        if(strpos($additional, 'alt="') == false):
             $img_alt = get_post_meta( $id, '_wp_attachment_image_alt', true);
             $additional .= $img_alt ? ' alt="' . $img_alt . '"' : '';
         endif;
         // add file type as css class
         $css .= ' ' . str_replace(array("/", "+"), array("-", "-"), $img_type);
         // fallback - srcset
-        if(strpos($additional, 'data-srcset="') === false):
+        if(strpos($additional, 'srcset="') === false):
             $srcset = wp_get_attachment_image_srcset( $id );
             if(!$srcset):
               $srcset = '';
@@ -484,7 +485,7 @@ class prefix_imgDC {
               endif;
             endif;
             // return srcset
-            $additional .= $srcset !== '' ? ' data-srcset="' . $srcset . '"' : '';
+            $additional .= $srcset !== '' ? ' srcset="' . $srcset . '"' : '';
         endif;
         // fallback - sizes
         if(strpos($additional, 'sizes="') === false):
@@ -566,7 +567,7 @@ class prefix_imgDC {
               $id = SELF::getAttachmentID_notOrginal($remove_cdn);
             endif;
           elseif($check_srcset !== false):
-            $additional .= str_replace('srcset', 'data-srcset', $value);
+            $additional .= str_replace('srcset', 'srcset', $value);
           else:
             $additional .= $value;
           endif;
