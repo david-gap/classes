@@ -1,4 +1,4 @@
-**Version 2.1.2** (28.07.2020)
+**Version 2.2.3** (11.08.2020)
 
 Custom class "prefix_WPseo" for default SEO settings.
 
@@ -10,6 +10,7 @@ Custom class "prefix_WPseo" for default SEO settings.
 * $WPseo_icon_72: apple screen icon 72 ID from WP media
 * $WPseo_icon_114: apple screen icon 114 ID from WP media
 * $WPseo_datastructure: turn datastructure on/off
+* $WPseo_datastructure_page: turn custom datastructure on/off for pages and posts
 * $WPseo_datastructure_add: additional structure attributes
 
 ## CONFIGURATION FILE
@@ -21,7 +22,8 @@ Custom class "prefix_WPseo" for default SEO settings.
   "apple-touch-icon": 0,
   "apple-touch-icon-72": 0,
   "apple-touch-icon-114": 0,
-  "data-structure": true,
+  "data-structure": 0,
+  "data-structure-page": 0,
   "data-structure-add": {
     "0": {
       "key": "type"

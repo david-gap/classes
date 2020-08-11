@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.1.2
+ * @version     2.2.3
  *
 */
 
@@ -15,13 +15,15 @@ Table of Contents:
   1.1 CONFIGURATION
   1.2 ON LOAD RUN
   1.3 BACKEND ARRAY
+  1.4 CUSTOM DATA STRUCTURE - CREATE META BOX
 2.0 FUNCTIONS
   2.1 GET CONFIGURATION FORM CONFIG FILE
   2.2 FAVICON
-  2.3 XML SITEMAP
+  2.3 SAVE METABOXES
 3.0 OUTPUT
   3.1 GOOGLE TAG MANAGER / ANALYTICS
   3.2 DATA StRUCTURE FOR GOOGLE
+  3.3 BACKEND PAGE DATA STRUCTURE - METABOX
 =======================================================*/
 
 
@@ -42,6 +44,7 @@ class prefix_WPseo {
       * @param private int $WPseo_icon_72: apple screen icon 72
       * @param private int $WPseo_icon_114: apple screen icon 114
       * @param private int $WPseo_datastructure: turn datastructure on/off
+      * @param private int $WPseo_datastructure_page: turn custom datastructure on/off for pages and posts
       * @param private array $WPseo_datastructure_add: additional structure attributes
     */
     private $WPseo_logo               = 0;
@@ -51,8 +54,12 @@ class prefix_WPseo {
     private $WPseo_icon_72            = 0;
     private $WPseo_icon_114           = 0;
     private $WPseo_datastructure      = 0;
+    private $WPseo_datastructure_page = 0;
     private $WPseo_datastructure_add  = array(
-      "type" => "Website"
+      array(
+        "key" => "type",
+        "value" => "Website"
+      )
     );
     private $WPseo_address = array(
       "company" => "Company",
@@ -77,6 +84,12 @@ class prefix_WPseo {
       add_action( 'wp_head', array( $this, 'dataStructure' ), 1 );
       // add fav icons
       add_action( 'wp_head', array( $this, 'FavIcon' ) );
+      // metabox for option selection
+      if($this->WPseo_datastructure == 1 && $this->WPseo_datastructure_page == 1):
+        add_action( 'add_meta_boxes', array( $this, 'WPseo_Metabox' ) );
+        // update custom fields
+        add_action('save_post', array( $this, 'WPseo_meta_Save' ),  10, 2 );
+      endif;
     }
 
     /* 1.3 BACKEND ARRAY
@@ -84,6 +97,10 @@ class prefix_WPseo {
     static $classtitle = 'WP SEO';
     static $classkey = 'seo';
     static $backend = array(
+      "google-tracking" => array(
+        "label" => "Google tracking",
+        "type" => "text"
+      ),
       "logo" => array(
         "label" => "Logo",
         "type" => "img"
@@ -106,6 +123,10 @@ class prefix_WPseo {
       ),
       "data-structure" => array(
         "label" => "Activate Data-Structures",
+        "type" => "switchbutton"
+      ),
+      "data-structure-page" => array(
+        "label" => "Activate custom Data-Structure for pages & posts",
         "type" => "switchbutton"
       ),
       "address" =>  array(
@@ -163,6 +184,38 @@ class prefix_WPseo {
     );
 
 
+    /* 1.4 CUSTOM DATA STRUCTURE - CREATE META BOX
+    /------------------------*/
+    function WPseo_Metabox() {
+      // get core post types
+      $core_args = array(
+        'public' => true,
+        '_builtin' => true
+      );
+      $core_pt = get_post_types( $core_args );
+      // get custom post types
+      $custom_args = array(
+        'public' => true,
+        'publicly_queryable' => true
+      );
+      $custom_pt = get_post_types( $custom_args );
+      // merge & clean post types
+      $post_types = array_merge($core_pt, $custom_pt);
+      unset($post_types['attachment']);
+      // register meta box for all selected post types
+      foreach( $post_types as $post_type ){
+          add_meta_box(
+              'WPseo_page_DataStructure',
+              __( 'Add data structure', 'WPseo' ),
+              array($this, 'WPtemplate_pageoptions'),
+              $post_type,
+              'side',
+              'low'
+          );
+      }
+    }
+
+
 
   /*==================================================================================
     2.0 FUNCTIONS
@@ -185,6 +238,7 @@ class prefix_WPseo {
         $this->WPseo_icon_72 = array_key_exists('apple-touch-icon-72', $myConfig) ? $myConfig['apple-touch-icon-72'] : $this->WPseo_icon_72;
         $this->WPseo_icon_114 = array_key_exists('apple-touch-icon-114', $myConfig) ? $myConfig['apple-touch-icon-114'] : $this->WPseo_icon_114;
         $this->WPseo_datastructure = array_key_exists('data-structure', $myConfig) ? $myConfig['data-structure'] : $this->WPseo_datastructure;
+        $this->WPseo_datastructure_page = array_key_exists('data-structure-page', $myConfig) ? $myConfig['data-structure-page'] : $this->WPseo_datastructure_page;
         $this->WPseo_datastructure_add = array_key_exists('data-structure-add', $myConfig) ? $myConfig['data-structure-add'] : $this->WPseo_datastructure_add;
         $this->WPseo_address = array_key_exists('address', $myConfig) ? $myConfig['address'] : $this->WPseo_address;
       endif;
@@ -210,6 +264,26 @@ class prefix_WPseo {
       if($this->WPseo_icon_114 !== 0):
         $get_touch_3 = wp_get_attachment_image_src($this->WPseo_icon_114, 'full');
         echo '<link rel="apple-touch-icon" sizes="114x114" href="' . $get_touch_3[0] . '" />';
+      endif;
+    }
+
+
+    /* 2.3 SAVE METABOXES
+    /------------------------*/
+    public function WPseo_meta_Save($post_id) {
+      // //Not save if the user hasn't submitted changes
+      if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ):
+        return;
+      endif;
+      // Making sure the user has permission
+      if( ! current_user_can( 'edit_post', $post_id ) ):
+        return;
+      endif;
+      // save page optons
+      if(isset($_POST['WPseo_datastructure'])):
+        update_post_meta($post_id, 'WPseo_datastructure', $_POST['WPseo_datastructure']);
+      else:
+        update_post_meta($post_id, 'WPseo_datastructure', '');
       endif;
     }
 
@@ -321,6 +395,7 @@ class prefix_WPseo {
               $output .= key_exists('postalCode' , $address) ? '"postalCode": "' . $address["postalCode"] . '"' : '';
             $output .= '},';
             $output .= '"url": "' . get_bloginfo('url') . '"';
+            // add customs
             if($additionals):
               $count_adds = count($additionals);
               $adds = 1;
@@ -330,12 +405,33 @@ class prefix_WPseo {
                 $adds++;
               }
             endif;
+            // add page customs
+            if(get_the_ID()):
+              $custom_ds = get_post_meta(get_the_ID(), 'WPseo_datastructure', true);
+              if($custom_ds !== ''):
+                $output .= ', ';
+                $output .= $custom_ds;
+              endif;
+            endif;
           $output .= '}';
         $output .= '</script>';
 
         echo $output;
 
       endif;
+    }
+
+
+    /* 3.3 BACKEND PAGE DATA STRUCTURE - METABOX
+    /------------------------*/
+    function WPtemplate_pageoptions($post) {
+        // vars
+        $output = '';
+        $custom_ds = get_post_meta($post->ID, 'WPseo_datastructure', true);
+        // output
+        echo '<div class="wrap" id="WPseo">';
+          echo '<textarea name="WPseo_datastructure" style="width:100%;">' . $custom_ds . '</textarea>';
+        echo '</div>';
     }
 
 
