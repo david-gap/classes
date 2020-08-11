@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.5.4
+ * @version     2.6.4
  *
 */
 
@@ -31,6 +31,7 @@ Table of Contents:
   2.11 CLEAN THE CONTENT
   2.12 ADD FILE TYPES TO UPLOADER
 3.0 OUTPUT
+  3.1 MENU
 =======================================================*/
 
 
@@ -115,6 +116,8 @@ class prefix_WPinit {
       add_action( 'init', array( $this, 'WPinit_theme_menus' ) );
       // clean the content
       add_filter( 'the_content', array( $this, 'WPinit_CleanContent' ) );
+      // shortcodes
+      add_shortcode( 'menu', array( $this, 'WPinit_GetMenu' ) );
       // enable upload types
       // add_filter( 'upload_mimes', array( $this, 'AddUploadTypes' ), 1, 1 );
       // backend css/js files
@@ -295,7 +298,7 @@ class prefix_WPinit {
       // jQuery (from wp core)
       if ($this->WPinit_jquery == 1 && !is_admin()):
         wp_deregister_script( 'jquery' );
-        wp_register_script('jquery', 'https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js', false, '3.3.1');
+        wp_register_script('jquery', get_template_directory_uri() . '/assets/jquery-3.5.1.min.js', false, '3.5.1');
         wp_enqueue_script( 'jquery' );
       endif;
       // scripts
@@ -448,6 +451,39 @@ class prefix_WPinit {
   /*==================================================================================
     3.0 OUTPUT
   ==================================================================================*/
+
+  /* 3.1 MENU
+  /------------------------*/
+  public static function WPinit_GetMenu($atts){
+    $config = shortcode_atts( array(
+      'slug' => 'mainmenu',
+      'css' => '',
+      'container' => '0',
+      'nav' => '1'
+    ), $atts );
+    if ( has_nav_menu( $config['slug'] ) ) :
+      // container
+      if($config['container'] == 1):
+        $container = true;
+      else:
+        $container = false;
+      endif;
+      // output
+      if($config['nav']):
+        echo '<nav>';
+      endif;
+        echo wp_nav_menu([
+          'menu_class'=> $config['css'],
+          'menu_id' => 'menu_' . $config['slug'],
+          'container'=> $container,
+          'theme_location' => $config['slug']
+        ]);
+      if($config['nav']):
+        echo '</nav>';
+      endif;
+
+    endif;
+  }
 
 
 

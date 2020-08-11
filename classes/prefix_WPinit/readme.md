@@ -1,4 +1,4 @@
-**Version 2.5.4** (10.08.2020)
+**Version 2.6.4** (11.08.2020)
 
 Custom class "WPinit" basic functions
 
@@ -55,3 +55,17 @@ Custom class "WPinit" basic functions
 ```
 
 ## USAGE
+### Wordpress Shortcode
+Call wordpress menu by slug
+```
+[galleries slug="mainmenu"]
+
+Enable container
+[galleries container="1"]
+
+Disable nav tag
+[galleries nav="0"]
+
+Add custom css
+[galleries css="css_class"]
+```
