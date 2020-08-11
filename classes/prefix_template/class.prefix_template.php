@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.4.4
+ * @version     2.4.5
  *
 */
 
@@ -644,6 +644,8 @@ class prefix_template {
       if(isset($_POST['template_page_options'])):
         $options = $_POST['template_page_options'] !== '' ? serialize($_POST['template_page_options']) : '';
         update_post_meta($post_id, 'template_page_options', $options);
+      else:
+        update_post_meta($post_id, 'template_page_options', '');
       endif;
     }
 
@@ -728,6 +730,7 @@ class prefix_template {
         }
       }
     }
+
 
     /* 3.3 BACKEND PAGE OPTIONS - METABOX
     /------------------------*/
