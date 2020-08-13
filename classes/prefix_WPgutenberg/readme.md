@@ -1,4 +1,4 @@
-**Version 2.1.1** (24.07.2020)
+**Version 2.2.1** (13.08.2020)
 
 Custom class "WPgutenberg" to select allowed guttenberg blocks and add style options
 
@@ -8,6 +8,8 @@ Custom class "WPgutenberg" to select allowed guttenberg blocks and add style opt
 * $WPgutenberg_Stylesfile: Add the file with the additional gutenberg css classes
 * $WPgutenberg_AllowedBlocks: List allowed gutenberg blocks
 * $WPgutenberg_CustomAllowedBlocks: List custom allowed gutenberg blocks
+* $WPgutenberg_ColorPalette: Custom theme color palette
+* $WPgutenberg_FontSizes: Custom theme font sizes
 
 ## CONFIGURATION FILE
 ```
@@ -23,6 +25,18 @@ Custom class "WPgutenberg" to select allowed guttenberg blocks and add style opt
   },
   "CustomAllowedBlocks": {
     "0": "acf/customblock"
+  },
+  "ColorPalette": {
+    "0": {
+      "key": "Color name",
+      "value": "Color hexa"
+    }
+  },
+  "FontSizes": {
+    "0": {
+      "key": "Size name",
+      "value": "size number without px"
+    }
   }
 }
 ```

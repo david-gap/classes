@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.1.1
+ * @version     2.2.1
  */
 
 /*=======================================================
@@ -22,7 +22,9 @@ Table of Contents:
   2.3 DISABLE GUTENBERG STYLING
   2.4 MANAGE BLOCKS
   2.5 ADD STYLES OPTIONS
+  2.6 CUSTOM THEME SUPPORT
 3.0 OUTPUT
+  3.1 RETURN CUSTOM CSS
 =======================================================*/
 
 class prefix_WPgutenberg {
@@ -40,12 +42,16 @@ class prefix_WPgutenberg {
       * @param private int $WPgutenberg_Stylesfile: Add the file with the additional gutenberg css classes
       * @param private array $WPgutenberg_AllowedBlocks: List core allowed gutenberg blocks
       * @param private array $WPgutenberg_CustomAllowedBlocks: List custom allowed gutenberg blocks
+      * @param private array $WPgutenberg_ColorPalette: Custom theme color palette
+      * @param private array $WPgutenberg_FontSizes: Custom theme font sizes
     */
-    private $WPgutenberg_active              = 0;
-    private $WPgutenberg_css                 = 0;
-    private $WPgutenberg_Stylesfile          = 0;
-    private $WPgutenberg_AllowedBlocks       = array();
-    private $WPgutenberg_CustomAllowedBlocks = array();
+    private $WPgutenberg_active               = 0;
+    private $WPgutenberg_css                  = 0;
+    private $WPgutenberg_Stylesfile           = 0;
+    private $WPgutenberg_AllowedBlocks        = array();
+    private $WPgutenberg_CustomAllowedBlocks  = array();
+    private static $WPgutenberg_ColorPalette  = array();
+    private static $WPgutenberg_FontSizes     = array();
 
 
     /* 1.2 ON LOAD RUN
@@ -66,9 +72,11 @@ class prefix_WPgutenberg {
         SELF::DisableGutenberg();
       endif;
       // disable Gutenberg block styles
-      if ($this->WPgutenberg_css == 0) :
+      if($this->WPgutenberg_css == 0):
         add_action( 'wp_enqueue_scripts', array($this, 'DisableGutenbergCSS'), 100 );
       endif;
+      // add theme support
+      SELF::CustomThemeSupport();
     }
 
     /* 1.3 BACKEND ARRAY
@@ -164,6 +172,35 @@ class prefix_WPgutenberg {
       "CustomAllowedBlocks" => array(
         "label" => "Allowed costum blocks",
         "type" => "array_addable"
+      ),
+      "ColorPalette" => array(
+        "label" => "Custom color palette",
+        "type" => "array_addable",
+        "value" => array(
+          "key" => array(
+            "label" => "Name",
+            "type" => "text"
+          ),
+          "value" => array(
+            "label" => "Color",
+            "type" => "text",
+            "css" => "colorpicker"
+          )
+        )
+      ),
+      "FontSizes" => array(
+        "label" => "Custom font sizes",
+        "type" => "array_addable",
+        "value" => array(
+          "key" => array(
+            "label" => "Name",
+            "type" => "text"
+          ),
+          "value" => array(
+            "label" => "Size (without px)",
+            "type" => "text"
+          )
+        )
       )
     );
 
@@ -189,6 +226,8 @@ class prefix_WPgutenberg {
       $this->WPgutenberg_Stylesfile = array_key_exists('Stylesfile', $myConfig) ? $myConfig['Stylesfile'] : $this->WPgutenberg_Stylesfile;
       $this->WPgutenberg_AllowedBlocks = array_key_exists('AllowedBlocks', $myConfig) ? $myConfig['AllowedBlocks'] : $this->WPgutenberg_AllowedBlocks;
       $this->WPgutenberg_CustomAllowedBlocks = array_key_exists('CustomAllowedBlocks', $myConfig) ? $myConfig['CustomAllowedBlocks'] : $this->WPgutenberg_CustomAllowedBlocks;
+      SELF::$WPgutenberg_ColorPalette = array_key_exists('ColorPalette', $myConfig) ? $myConfig['ColorPalette'] : SELF::$WPgutenberg_ColorPalette;
+      SELF::$WPgutenberg_FontSizes = array_key_exists('FontSizes', $myConfig) ? $myConfig['FontSizes'] : SELF::$WPgutenberg_FontSizes;
     endif;
   }
 
@@ -234,9 +273,65 @@ class prefix_WPgutenberg {
   }
 
 
+  /* 2.6 CUSTOM THEME SUPPORT
+  /------------------------*/
+  function CustomThemeSupport(){
+    // coloring
+    if(!empty(SELF::$WPgutenberg_ColorPalette)):
+      $newColors = array();
+      foreach (SELF::$WPgutenberg_ColorPalette as $colorkey => $color) {
+        $newColors[] = array(
+          'name'  => __( $color["key"], 'WPgutenberg' ),
+          'slug'  => prefix_core_BaseFunctions::Slugify($color["key"]),
+          'color'	=> $color["value"],
+        );
+      }
+      add_theme_support( 'editor-color-palette', $newColors );
+    endif;
+    // font sizes
+    if(!empty(SELF::$WPgutenberg_FontSizes)):
+      $newColors = array();
+      foreach (SELF::$WPgutenberg_FontSizes as $sizekey => $size) {
+        $newColors[] = array(
+          'name'  => __( $size["key"], 'WPgutenberg' ),
+          'slug'  => prefix_core_BaseFunctions::Slugify($size["key"]),
+          'size'	=> $size["value"],
+        );
+      }
+      add_theme_support( 'editor-font-sizes', $newColors );
+    endif;
+  }
+
+
 
   /*==================================================================================
     3.0 OUTPUT
   ==================================================================================*/
+
+  /* 3.1 RETURN CUSTOM CSS
+  /------------------------*/
+  function returnCustomCSS(){
+    // vars
+    $output = '';
+    // build styling
+    if(!empty(SELF::$WPgutenberg_ColorPalette) || !empty(SELF::$WPgutenberg_FontSizes)):
+      // coloring
+      if(!empty(SELF::$WPgutenberg_ColorPalette)):
+        foreach (SELF::$WPgutenberg_ColorPalette as $colorkey => $color) {
+          $output .= ' .has-' . prefix_core_BaseFunctions::Slugify($color["key"]) . '-color {color: ' . $color["value"] . ';}';
+          $output .= ' .has-' . prefix_core_BaseFunctions::Slugify($color["key"]) . '-background-color {background-color: ' . $color["value"] . ';}';
+        };
+      endif;
+      // font sizes
+      if(!empty(SELF::$WPgutenberg_FontSizes)):
+        foreach (SELF::$WPgutenberg_FontSizes as $sizekey => $size) {
+          $output .= ' .has-' . prefix_core_BaseFunctions::Slugify($size["key"]) . '-font-size {font-size: ' . $size["value"] . 'px;}';
+        };
+      endif;
+    endif;
+    // return
+    return $output;
+  }
+
 
 }
