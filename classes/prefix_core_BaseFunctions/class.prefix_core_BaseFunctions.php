@@ -4,7 +4,7 @@
  *
  * Base dev functions - parent for all custom classes
  * Author:      David Voglgsnag
- * @version     2.6
+ * @version     2.7
  *
  */
 
@@ -26,6 +26,7 @@
    1.12 DELETE FOLDER
    1.13 SORT ARRAY
    1.14 CLEAN ARRAY
+   1.15 SLUGIFY STRING
  2.0 DATES
    2.1 CHECK IF VARS ARE OUT OF DATE
    2.2 DATE RANGE FORMAT
@@ -409,6 +410,25 @@ class prefix_core_BaseFunctions {
         $new_fields = SELF::CleanArray($new_fields, $repeat);
       endif;
       return $new_fields;
+    }
+
+
+    /* 1.15 SLUGIFY STRING
+    /------------------------*/
+    /**
+      * @param string $text: text to slugify
+      * @return string sorted array
+    */
+    public static function Slugify(string $text = '') {
+      // trim (remove whitespace before/after string)
+      $text = trim($text, '-');
+      // replace umlaute
+      $text = preg_replace (['/ä/','/Ä/','/ö/','/Ö/','/ü/','/Ü/','/ß/'] , ['ae','ae','oe','oe','ue','ue','ss'], $text);
+      // replace special symbols
+      $text = preg_replace('~[^\pL\d]+~u', '-', $text);
+      // set lowercase
+      $text = strtolower($text);
+      return $text;
     }
 
 

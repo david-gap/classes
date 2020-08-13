@@ -1,4 +1,4 @@
-**Version 2.6** (23.07.2020)
+**Version 2.7** (13.08.2020)
 
 Custom class "prefix_core_BaseFunctions" used as a library for useful functions
 
@@ -117,6 +117,14 @@ Use second attribute for multidimensional arrays to repeat the cleaning.
 ```php
 core_BaseFunctions::CleanArray($array, 3);
 return true
+```
+
+### 1.15 SLUGIFY STRING
+Slugify string
+Use second attribute for multidimensional arrays to repeat the cleaning.
+```php
+core_BaseFunctions::Slugify("äöü ÄÖÜ+");
+return 'aeoeue-aeoeue-'
 ```
 
 
