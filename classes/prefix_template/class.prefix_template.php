@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.4.5
+ * @version     2.5.5
  *
 */
 
@@ -53,7 +53,9 @@ class prefix_template {
   /------------------------*/
   /**
     * default vars
-    * @param static int $template_container: activate container
+    * @param static int $template_container_header: activate container for the header
+    * @param static int $template_container: activate container for the content
+    * @param static int $template_container_footer: activate container for the footer
     * @param static string $template_coloring: template coloring (dark/light)
     * @param static bool $template_ph_active: activate placeholder
     * @param static bool $template_ph_address: placeholder show address block
@@ -79,7 +81,9 @@ class prefix_template {
     * @param static array $template_footer_sort: Sort and activate blocks inside footer builder
     * @param static string $template_footer_before: html code before footer
   */
+  static $template_container_header  = 1;
   static $template_container         = 1;
+  static $template_container_footer  = 1;
   static $template_coloring          = "light";
   static $template_ph_active         = true;
   static $template_ph_address        = true;
@@ -174,13 +178,22 @@ class prefix_template {
     endif;
   }
 
+
   /* 1.3 BACKEND ARRAY
   /------------------------*/
   static $classtitle = 'Template';
   static $classkey = 'template';
   static $backend = array(
+    "container_header" => array(
+      "label" => "Activate header container",
+      "type" => "switchbutton"
+    ),
     "container" => array(
-      "label" => "Activate container",
+      "label" => "Activate main container",
+      "type" => "switchbutton"
+    ),
+    "container_footer" => array(
+      "label" => "Activate footer container",
       "type" => "switchbutton"
     ),
     "coloring" => array(
@@ -563,7 +576,9 @@ class prefix_template {
         // class configuration
         $myConfig = $configuration['template'];
         // update vars
+        SELF::$template_container_header = array_key_exists('container_header', $myConfig) ? $myConfig['container_header'] : SELF::$template_container_header;
         SELF::$template_container = array_key_exists('container', $myConfig) ? $myConfig['container'] : SELF::$template_container;
+        SELF::$template_container_footer = array_key_exists('container_footer', $myConfig) ? $myConfig['container_footer'] : SELF::$template_container_footer;
         SELF::$template_coloring = array_key_exists('coloring', $myConfig) ? $myConfig['coloring'] : SELF::$template_coloring;
         SELF::$template_address = array_key_exists('address', $myConfig) ? $myConfig['address'] : SELF::$template_address;
         SELF::$template_socialmedia = array_key_exists('socialmedia', $myConfig) ? $myConfig['socialmedia'] : SELF::$template_socialmedia;

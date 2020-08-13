@@ -1,9 +1,11 @@
-**Version 2.4.5** (11.08.2020)
+**Version 2.5.5** (13.08.2020)
 
 Custom class "template" with template parts and header / footer builder
 
 ## CONFIGURATION OPTIONS
-* $template_container: activate container
+* $template_container_header: activate container for the header
+* $template_container: activate container for the content
+* $template_container_footer: activate container for the footer
 * $template_coloring: template coloring (dark/light)
 * $template_ph_active: activate placeholder
 * $template_ph_address: placeholder show address block
@@ -32,7 +34,9 @@ Custom class "template" with template parts and header / footer builder
 ## CONFIGURATION FILE
 ```
 "template": {
+  "container_header": 1,
   "container": 1,
+  "container_footer": 1,
   "coloring": "light",
   "placeholder": {
     "active": true,
