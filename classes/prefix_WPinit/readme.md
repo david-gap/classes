@@ -1,4 +1,4 @@
-**Version 2.6.4** (11.08.2020)
+**Version 2.7.4** (13.08.2020)
 
 Custom class "WPinit" basic functions
 
@@ -17,6 +17,7 @@ Custom class "WPinit" basic functions
 * $WPinit_menus: list of all wanted WP menus
 * $WPinit_typekit_id: typekit fonts
 * $WPinit_google_fonts: google fonts
+* $WPinit_HeaderCss: Load cutom theme css in header
 
 ## CONFIGURATION FILE
 ```

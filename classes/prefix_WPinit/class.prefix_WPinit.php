@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.6.4
+ * @version     2.7.4
  *
 */
 
@@ -32,6 +32,7 @@ Table of Contents:
   2.12 ADD FILE TYPES TO UPLOADER
 3.0 OUTPUT
   3.1 MENU
+  3.2 RETURN CUSTOM CSS
 =======================================================*/
 
 
@@ -60,7 +61,7 @@ class prefix_WPinit {
       * @param private array $WPinit_menus: list of all wanted WP menus
       * @param private string $WPinit_typekit_id: typekit fonts
       * @param private array $WPinit_google_fonts: google fonts
-      * @param private array $WPinit_google_fonts: google fonts
+      * @param private array $WPinit_HeaderCss: Load cutom theme css in header
     */
     private $WPinit_support          = array("title-tag", "menus", "html5", "post-thumbnails");
     private $WPinit_css              = 1;
@@ -87,6 +88,7 @@ class prefix_WPinit {
     private $WPinit_upload_types     = array();
     private $WPinit_typekit_id       = '';
     private $WPinit_google_fonts     = array();
+    private $WPinit_HeaderCss        = 0;
 
 
     /* 1.2 ON LOAD RUN
@@ -124,6 +126,10 @@ class prefix_WPinit {
       add_action('admin_enqueue_scripts', array( $this, 'WPinit_enqueue' ));
       add_action( 'admin_head', array( $this, 'GoogleFonts' ) );
       add_action( 'admin_head', array( $this, 'TypekitFonts' ) );
+      // return css inside head
+      if($this->WPinit_HeaderCss == 1):
+        add_action( 'wp_head', array( $this, 'BuildCustomCSS' ), 10, 1 );
+      endif;
     }
 
     /* 1.3 BACKEND ARRAY
@@ -149,6 +155,10 @@ class prefix_WPinit {
       ),
       "js" => array(
         "label" => "Embed JS file",
+        "type" => "switchbutton"
+      ),
+      "HeaderCss" => array(
+        "label" => "Load custom css inside header",
         "type" => "switchbutton"
       ),
       // "upload_svg" => array(
@@ -249,6 +259,7 @@ class prefix_WPinit {
         $this->WPinit_menus = array_key_exists('menus', $myConfig) ? array_merge($this->WPinit_menus, $myConfig['menus']) : $this->WPinit_menus;
         $this->WPinit_upload_svg = array_key_exists('upload_svg', $myConfig) ? $myConfig['upload_svg'] : $this->WPinit_upload_svg;
         $this->WPinit_upload_types = array_key_exists('upload_types', $myConfig) ? $myConfig['upload_types'] : $this->WPinit_upload_types;
+        $this->WPinit_HeaderCss = array_key_exists('HeaderCss', $myConfig) ? $myConfig['HeaderCss'] : $this->WPinit_HeaderCss;
       endif;
     }
 
@@ -482,6 +493,34 @@ class prefix_WPinit {
         echo '</nav>';
       endif;
 
+    endif;
+  }
+
+  /* 3.2 RETURN CUSTOM CSS
+  /------------------------*/
+  function BuildCustomCSS($container = true){
+    // vars
+    $output = '';
+    $classesoutput = '';
+    // build styling
+    $registered_classes = get_declared_classes();
+    foreach ($registered_classes as $class_key => $classname) {
+      if(strpos($classname, 'prefix_') === 0 && strpos($classname, '_core_') == false && method_exists($classname, 'returnCustomCSS')):
+        $classesoutput .= $classname::returnCustomCSS();
+      endif;
+    }
+    // return styling
+    if($classesoutput !== ''):
+      $output .= $container !== false ? '<style id="WPgutenberg_styles" type="text/css">' : '';
+        $output .= $classesoutput;
+      $output .= $container !== false ? '</style>' : '';
+    endif;
+
+    // return
+    if($container !== false):
+      echo $output;
+    else:
+      return $output;
     endif;
   }
 
