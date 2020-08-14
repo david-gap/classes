@@ -1,4 +1,4 @@
-**Version 2.5.5** (13.08.2020)
+**Version 2.6.5** (14.08.2020)
 
 Custom class "template" with template parts and header / footer builder
 
@@ -95,7 +95,8 @@ Custom class "template" with template parts and header / footer builder
       "header": 1,
       "title": 1,
       "sidebar": 1,
-      "footer": 1
+      "footer": 1,
+      "darkmode": 1
     },
     "additional":  {
       "0": {

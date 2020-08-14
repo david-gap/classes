@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.5.5
+ * @version     2.6.5
  *
 */
 
@@ -148,7 +148,8 @@ class prefix_template {
     "title" => 1,
     "comments" => 1,
     "sidebar" => 1,
-    "footer" => 1
+    "footer" => 1,
+    "darkmode" => 1
   );
   static $template_page_additional   = array();
   static $template_footer_active     = 1;
@@ -458,6 +459,10 @@ class prefix_template {
             "footer" => array(
               "label" => "Hide footer",
               "type" => "switchbutton"
+            ),
+            "darkmode" => array(
+              "label" => "Darkmode",
+              "type" => "switchbutton"
             )
           )
         ),
@@ -606,7 +611,7 @@ class prefix_template {
           $page = $myConfig['page'];
           SELF::$template_page_active = array_key_exists('active', $page) ? $page['active'] : SELF::$template_page_active;
           SELF::$template_page_options = array_key_exists('options', $page) ? array_merge(SELF::$template_page_options, $page['options']) : SELF::$template_page_options;
-          SELF::$template_page_additional = array_key_exists('additional', $page) ? $page['additional'] : SELF::$template_page_additional;
+          SELF::$template_page_additional = array_key_exists('additional', $page) ? array_merge(SELF::$template_page_additional, $page['additional']) : SELF::$template_page_additional;
         endif;
         if($configuration && array_key_exists('footer', $myConfig)):
           $footer = $myConfig['footer'];
@@ -756,13 +761,14 @@ class prefix_template {
         $options = unserialize($get_options);
         // output
         echo '<div class="wrap" id="WPtemplate">';
-          echo '<p><b>' . __( 'Hide Elements', 'template' ) . '</b></p>';
+          echo '<p><b>' . __( 'Page options', 'template' ) . '</b></p>';
           echo '<ul>';
             foreach (SELF::$template_page_options as $key => $value) {
               // check if option is active
-              if($value !== false):
+              if($value == 1):
                 $active = prefix_core_BaseFunctions::setChecked($key, $options);
-                echo '<li><label><input type="checkbox" name="template_page_options[]" value="' . $key . '" ' . $active . '>' . __( 'Hide ' . $key, 'template' ) . '</label></li>';
+                $hide = $key !== 'darkmode' ? 'Hide ' : '';
+                echo '<li><label><input type="checkbox" name="template_page_options[]" value="' . $key . '" ' . $active . '>' . __( $hide . $key, 'template' ) . '</label></li>';
               endif;
             }
             foreach (SELF::$template_page_additional as $key => $additional) {
@@ -1140,6 +1146,7 @@ class prefix_template {
     /------------------------*/
     public static function BodyCSS(){
       $obj = get_queried_object();
+      $page_id = get_queried_object_id();
       // base classes
       $classes = 'frontend';
       $classes .= $obj && array_key_exists('post_type', $obj) ? ' pt-' . $obj->post_type : '';
@@ -1147,6 +1154,12 @@ class prefix_template {
       $classes .= prefix_template::$template_coloring !== '' ? ' ' . prefix_template::$template_coloring : '';
       $classes .= ' ' . prefix_template::CheckSticky(prefix_template::$template_header_sticky);
       $classes .= prefix_template::$template_header_stickyload !== 0 ? ' sticky_onload' : '';
+      // dark mode
+      if($page_id > 0):
+        $get_options = get_post_meta($page_id, 'template_page_options', true);
+        $options = unserialize($get_options);
+        $classes .= $options && in_array('darkmode', $options) && SELF::$template_page_options['darkmode'] == 1 ? ' dark' : '';
+      endif;
       // apply filter
       $classes .= ' ' . apply_filters( 'template_BodyCSS', $classes );
       // return classes
