@@ -1,4 +1,4 @@
-**Version 2.7** (13.08.2020)
+**Version 2.8** (14.08.2020)
 
 Custom class "prefix_core_BaseFunctions" used as a library for useful functions
 
@@ -125,6 +125,28 @@ Use second attribute for multidimensional arrays to repeat the cleaning.
 ```php
 core_BaseFunctions::Slugify("äöü ÄÖÜ+");
 return 'aeoeue-aeoeue-'
+```
+
+### 1.16 INSERT TO ARRAY AT SPACIFIC POSITION
+insert array into other array at specific position
+```php
+$new = array(
+  "city" => "Atlantis"
+);
+$existing = array(
+  "Name" => "Max",
+  "Surname" => "Mustermann",
+  "Street" => "Mainstreet",
+  "ZIP" => "3000"
+);
+core_BaseFunctions::AddToArrayPosition($new, $existing, 4);
+return array(
+  "Name" => "Max",
+  "Surname" => "Mustermann",
+  "Street" => "Mainstreet",
+  "city" => "Atlantis",
+  "ZIP" => "3000"
+)
 ```
 
 

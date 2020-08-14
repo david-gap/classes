@@ -4,7 +4,7 @@
  *
  * Base dev functions - parent for all custom classes
  * Author:      David Voglgsnag
- * @version     2.7
+ * @version     2.8
  *
  */
 
@@ -27,6 +27,7 @@
    1.13 SORT ARRAY
    1.14 CLEAN ARRAY
    1.15 SLUGIFY STRING
+   1.16 INSERT TO ARRAY AT SPACIFIC POSITION
  2.0 DATES
    2.1 CHECK IF VARS ARE OUT OF DATE
    2.2 DATE RANGE FORMAT
@@ -429,6 +430,25 @@ class prefix_core_BaseFunctions {
       // set lowercase
       $text = strtolower($text);
       return $text;
+    }
+
+
+    /* 1.16 INSERT TO ARRAY AT SPACIFIC POSITION
+    /------------------------*/
+    /**
+      * insert array into other array at specific position
+      * @param array $new: new content
+      * @param array $existing: existing content
+      * @param int $position: position to insert
+      * @return array with new content
+    */
+    public function AddToArrayPosition(array $new = array(), array $existing = array(), $position = 1){
+      $existing = array_merge(
+          array_slice( $existing, 0, $position, true ),
+          $new,
+          array_slice( $existing, $position, null, true )
+      );
+      return $existing;
     }
 
 
