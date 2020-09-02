@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.2.3
+ * @version     2.2.4
  *
 */
 
@@ -56,20 +56,20 @@ class prefix_WPseo {
     private $WPseo_datastructure      = 0;
     private $WPseo_datastructure_page = 0;
     private $WPseo_datastructure_add  = array(
-      array(
-        "key" => "type",
-        "value" => "Website"
-      )
+      // array(
+      //   "key" => "type",
+      //   "value" => "Website"
+      // )
     );
     private $WPseo_address = array(
-      "company" => "Company",
-      "street" => "Street",
-      "street2" => "Street 2",
-      "postalCode" => "Postal Code",
-      "country" => "Country",
-      "city" => "City",
-      "phone" => "0041",
-      "email" => "info@mail.com"
+      "company" => "",
+      "street" => "",
+      "street2" => "",
+      "postalCode" => "",
+      "country" => "",
+      "city" => "",
+      "phone" => "",
+      "email" => ""
     );
 
 
@@ -145,7 +145,7 @@ class prefix_WPseo {
             "label" => "Additional Street",
             "type" => "text"
           ),
-          "zip" => array(
+          "postalCode" => array(
             "label" => "Zip Code",
             "type" => "text"
           ),
@@ -383,16 +383,22 @@ class prefix_WPseo {
         $output .= '<script type="application/ld+json">';
           $output .= '{';
             $output .= '"@context": "http://schema.org",';
+            $output .= '"@type": "organization",';
             $output .= !empty($logo) ? '"image": "' . $logo[0] . '",' : '';
-            $output .= key_exists('company' , $address) ? '"name": "' . $address["company"] . '",' : '';
-            $output .= key_exists('phone' , $address) ? '"telephone": "' . $address["phone"] . '",' : '';
-            $output .= key_exists('email' , $address) ? '"email": "' . $address["email"] . '",' : '';
+            $output .= key_exists('company' , $address) && $address["company"] !== '' ? '"name": "' . $address["company"] . '",' : '';
+            $output .= key_exists('phone' , $address) && $address["phone"] !== '' ? '"telephone": "' . $address["phone"] . '",' : '';
+            $output .= key_exists('email' , $address) && $address["email"] !== '' ? '"email": "' . $address["email"] . '",' : '';
             $output .= '"address": {';
-              $output .= '"@type": "PostalAddress",';
-              $output .= key_exists('street' , $address) ? '"streetAddress": "' . $address["street"] . '",' : '';
-              $output .= key_exists('city' , $address) ? '"addressLocality": "' . $address["city"] . '",' : '';
-              $output .= key_exists('country' , $address) ? '"addressCountry": "' . $address["country"] . '",' : '';
-              $output .= key_exists('postalCode' , $address) ? '"postalCode": "' . $address["postalCode"] . '"' : '';
+              $output .= '"@type": "PostalAddress"';
+              foreach ($address as $addr_key => $addr_value) {
+                if($addr_value !== "" && in_array($addr_key, array("street", "city", "country", "postalCode"))):
+                  $output .= ', ';
+                  $output .= $addr_key == 'street' ? '"streetAddress": "' . $address["street"] . '"' : '';
+                  $output .= $addr_key == 'city' ? '"addressLocality": "' . $address["city"] . '"' : '';
+                  $output .= $addr_key == 'country' ? '"addressCountry": "' . $address["country"] . '"' : '';
+                  $output .= $addr_key == 'postalCode' ? '"postalCode": "' . $address["postalCode"] . '"' : '';
+                endif;
+              }
             $output .= '},';
             $output .= '"url": "' . get_bloginfo('url') . '"';
             // add customs
@@ -413,6 +419,8 @@ class prefix_WPseo {
                 $output .= $custom_ds;
               endif;
             endif;
+            // apply filter
+            $output .= ' ' . apply_filters( 'WPseo_datastructure', $output );
           $output .= '}';
         $output .= '</script>';
 
