@@ -1,4 +1,4 @@
-**Version 2.2.1** (13.08.2020)
+**Version 2.3.1** (02.09.2020)
 
 Custom class "WPgutenberg" to select allowed guttenberg blocks and add style options
 
@@ -6,10 +6,12 @@ Custom class "WPgutenberg" to select allowed guttenberg blocks and add style opt
 * WPgutenberg_active: disable gutenberg
 * WPgutenberg_css: disable gutenberg styling
 * $WPgutenberg_Stylesfile: Add the file with the additional gutenberg css classes
+* $WPgutenberg_DefaultPatterns: Remove default patterns
 * $WPgutenberg_AllowedBlocks: List allowed gutenberg blocks
 * $WPgutenberg_CustomAllowedBlocks: List custom allowed gutenberg blocks
 * $WPgutenberg_ColorPalette: Custom theme color palette
 * $WPgutenberg_FontSizes: Custom theme font sizes
+* $WPgutenberg_ColorPalette_CP: Disable custom color picker
 
 ## CONFIGURATION FILE
 ```
@@ -17,6 +19,8 @@ Custom class "WPgutenberg" to select allowed guttenberg blocks and add style opt
   "active": true,
   "css": true,
   "Stylesfile": 0,
+  "Patterns": 1,
+  "ColorPalette_CP": 1,
   "AllowedBlocks": {
     "0": "core/paragraph",
     "1": "core/image",

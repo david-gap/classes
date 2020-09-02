@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.2.1
+ * @version     2.3.1
  */
 
 /*=======================================================
@@ -40,18 +40,22 @@ class prefix_WPgutenberg {
       * @param private int $WPgutenberg_active: disable gutenberg
       * @param private int $WPgutenberg_css: disable gutenberg styling
       * @param private int $WPgutenberg_Stylesfile: Add the file with the additional gutenberg css classes
+      * @param private int $WPgutenberg_DefaultPatterns: Remove default patterns
       * @param private array $WPgutenberg_AllowedBlocks: List core allowed gutenberg blocks
       * @param private array $WPgutenberg_CustomAllowedBlocks: List custom allowed gutenberg blocks
       * @param private array $WPgutenberg_ColorPalette: Custom theme color palette
       * @param private array $WPgutenberg_FontSizes: Custom theme font sizes
+      * @param private int $WPgutenberg_ColorPalette_CP: Disable custom color picker
     */
-    private $WPgutenberg_active               = 0;
-    private $WPgutenberg_css                  = 0;
-    private $WPgutenberg_Stylesfile           = 0;
-    private $WPgutenberg_AllowedBlocks        = array();
-    private $WPgutenberg_CustomAllowedBlocks  = array();
-    private static $WPgutenberg_ColorPalette  = array();
-    private static $WPgutenberg_FontSizes     = array();
+    private $WPgutenberg_active                 = 0;
+    private $WPgutenberg_css                    = 0;
+    private $WPgutenberg_Stylesfile             = 0;
+    private $WPgutenberg_DefaultPatterns        = 0;
+    private $WPgutenberg_AllowedBlocks          = array();
+    private $WPgutenberg_CustomAllowedBlocks    = array();
+    private static $WPgutenberg_ColorPalette    = array();
+    private static $WPgutenberg_FontSizes       = array();
+    private static $WPgutenberg_ColorPalette_CP = 0;
 
 
     /* 1.2 ON LOAD RUN
@@ -94,6 +98,10 @@ class prefix_WPgutenberg {
       ),
       "Stylesfile" => array(
         "label" => "Backend style options",
+        "type" => "switchbutton"
+      ),
+      "Patterns" => array(
+        "label" => "Default Patterns",
         "type" => "switchbutton"
       ),
       "AllowedBlocks" => array(
@@ -173,6 +181,10 @@ class prefix_WPgutenberg {
         "label" => "Allowed costum blocks",
         "type" => "array_addable"
       ),
+      "ColorPalette_CP" => array(
+        "label" => "Custom color picker",
+        "type" => "switchbutton"
+      ),
       "ColorPalette" => array(
         "label" => "Custom color palette",
         "type" => "array_addable",
@@ -224,10 +236,12 @@ class prefix_WPgutenberg {
       $this->WPgutenberg_active = array_key_exists('active', $myConfig) ? $myConfig['active'] : $this->WPgutenberg_active;
       $this->WPgutenberg_css = array_key_exists('css', $myConfig) ? $myConfig['css'] : $this->WPgutenberg_css;
       $this->WPgutenberg_Stylesfile = array_key_exists('Stylesfile', $myConfig) ? $myConfig['Stylesfile'] : $this->WPgutenberg_Stylesfile;
+      $this->WPgutenberg_DefaultPatterns = array_key_exists('Patterns', $myConfig) ? $myConfig['Patterns'] : $this->WPgutenberg_DefaultPatterns;
       $this->WPgutenberg_AllowedBlocks = array_key_exists('AllowedBlocks', $myConfig) ? $myConfig['AllowedBlocks'] : $this->WPgutenberg_AllowedBlocks;
       $this->WPgutenberg_CustomAllowedBlocks = array_key_exists('CustomAllowedBlocks', $myConfig) ? $myConfig['CustomAllowedBlocks'] : $this->WPgutenberg_CustomAllowedBlocks;
       SELF::$WPgutenberg_ColorPalette = array_key_exists('ColorPalette', $myConfig) ? $myConfig['ColorPalette'] : SELF::$WPgutenberg_ColorPalette;
       SELF::$WPgutenberg_FontSizes = array_key_exists('FontSizes', $myConfig) ? $myConfig['FontSizes'] : SELF::$WPgutenberg_FontSizes;
+      SELF::$WPgutenberg_ColorPalette_CP = array_key_exists('ColorPalette_CP', $myConfig) ? $myConfig['ColorPalette_CP'] : SELF::$WPgutenberg_ColorPalette_CP;
     endif;
   }
 
@@ -299,7 +313,16 @@ class prefix_WPgutenberg {
         );
       }
       add_theme_support( 'editor-font-sizes', $newColors );
+      // disable custom color picker
+      if(SELF::$WPgutenberg_ColorPalette_CP == 0):
+        add_theme_support( 'disable-custom-colors');
+      endif;
     endif;
+    // disable default patterns
+    if($this->WPgutenberg_DefaultPatterns == 0):
+      remove_theme_support( 'core-block-patterns' );
+    endif;
+
   }
 
 
