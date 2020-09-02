@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.6.5
+ * @version     2.7.5
  *
 */
 
@@ -123,10 +123,13 @@ class prefix_template {
   static $template_header_dmenu      = 1;
   static $template_header_custom     = "";
   static $template_header_sort       = array(
+    "container_start" => 1,
     "logo" => 1,
     "menu" => 1,
+    "hamburger" => 1,
     "socialmedia" => 0,
-    "custom" => 0
+    "custom" => 0,
+    "container_end" => 1
   );
   static $template_header_logo_link  = "";
   static $template_header_logo_d     = array(
@@ -156,11 +159,13 @@ class prefix_template {
   static $template_footer_cr         = "";
   static $template_footer_custom     = "";
   static $template_footer_sort       = array(
+    "container_start" => 1,
     "menu" => 1,
     "socialmedia" => 1,
     "copyright" => 1,
     "address" => 1,
-    "custom" => 0
+    "custom" => 0,
+    "container_end" => 1
   );
   static $template_footer_before     = "";
 
@@ -404,12 +409,20 @@ class prefix_template {
           "type" => "multiple",
           "css" => "sortable",
           "value" => array(
+            "container_start" => array(
+              "label" => "Container start",
+              "type" => "hr"
+            ),
             "logo" => array(
               "label" => "Logo",
               "type" => "switchbutton"
             ),
             "menu" => array(
               "label" => "Menu",
+              "type" => "switchbutton"
+            ),
+            "hamburger" => array(
+              "label" => "Hamburger",
               "type" => "switchbutton"
             ),
             "socialmedia" => array(
@@ -419,6 +432,10 @@ class prefix_template {
             "custom" => array(
               "label" => "Custom",
               "type" => "switchbutton"
+            ),
+            "container_end" => array(
+              "label" => "Container end",
+              "type" => "hr"
             )
           )
         ),
@@ -503,6 +520,10 @@ class prefix_template {
           "type" => "multiple",
           "css" => "sortable",
           "value" => array(
+            "container_start" => array(
+              "label" => "Container start",
+              "type" => "hr"
+            ),
             "menu" => array(
               "label" => "Menu",
               "type" => "switchbutton"
@@ -522,6 +543,10 @@ class prefix_template {
             "custom" => array(
               "label" => "Custom",
               "type" => "switchbutton"
+            ),
+            "container_end" => array(
+              "label" => "Container end",
+              "type" => "hr"
             )
           )
         ),
@@ -680,11 +705,47 @@ class prefix_template {
     static public function HeaderContent(){
       // vars
       $order = SELF::$template_header_sort;
+      $counter = 0;
+      $container = '<div class="header-container ' . prefix_template::AddContainer(prefix_template::$template_container_header, false) . '">';
+      $container_open = false;
+      $container_closed = false;
+
+      // open container for not defined container
+      if(!array_key_exists('container_start', $order) && prefix_template::$template_container_header !== 0):
+        echo $container;
+      endif;
+
+      // open before container
+      if(prefix_template::$template_container_header !== 0):
+        echo '<div class="before-container">';
+      endif;
 
       foreach ($order as $key => $value) {
+        $counter++;
         switch ($key) {
+          case 'container_start':
+            if(prefix_template::$template_container_header !== 0):
+              // close before container
+              echo '</div>';
+              // open container
+              echo $container;
+              $container_open = true;
+            endif;
+            break;
+          case 'container_end':
+            if($container_open !== false):
+              // close container
+              echo '</div>';
+              $container_closed = true;
+              // open after container
+              echo '<div class="after-container">';
+            endif;
+            break;
           case 'menu':
-            echo $value == 1 ? SELF::WP_MainMenu(SELF::$template_header_dmenu) : '';
+            echo $value == 1 ? SELF::WP_MainMenu(SELF::$template_header_dmenu, 'menu') : '';
+            break;
+          case 'hamburger':
+            echo $value == 1 ? SELF::WP_MainMenu(SELF::$template_header_dmenu, 'hamburger') : '';
             break;
           case 'logo':
             echo $value == 1 ? SELF::Logo(SELF::$template_header_logo_link, SELF::$template_header_logo_d, SELF::$template_header_logo_m) : '';
@@ -709,6 +770,15 @@ class prefix_template {
             break;
         }
       }
+      // check if container been closed
+      if($container_closed == false):
+        echo '</div>';
+      endif;
+
+      // close after container
+      if($container_open !== false):
+        echo '</div>';
+      endif;
     }
 
 
@@ -717,9 +787,42 @@ class prefix_template {
     static public function FooterContent(){
       // vars
       $order = SELF::$template_footer_sort;
+      $counter = 0;
+      $container = '<div class="footer-container ' . prefix_template::AddContainer(prefix_template::$template_container_footer, false) . '">';
+      $container_open = false;
+      $container_closed = false;
+
+      // open container for not defined container
+      if(!array_key_exists('container_start', $order) && prefix_template::$template_container_footer !== 0):
+        echo $container;
+      endif;
+
+      // open before container
+      if(prefix_template::$template_container_footer !== 0):
+        echo '<div class="before-container">';
+      endif;
 
       foreach ($order as $key => $value) {
+        $counter++;
         switch ($key) {
+          case 'container_start':
+            if(prefix_template::$template_container_footer !== 0):
+              // close before container
+              echo '</div>';
+              // open container
+              echo $container;
+              $container_open = true;
+            endif;
+            break;
+          case 'container_end':
+            if($container_open !== false):
+              // close container
+              echo '</div>';
+              $container_closed = true;
+              // open after container
+              echo '<div class="after-container">';
+            endif;
+            break;
           case 'menu':
             echo $value == 1 ? SELF::WP_FooterMenu($value) : '';
             break;
@@ -749,6 +852,15 @@ class prefix_template {
             break;
         }
       }
+      // check if container been closed
+      if($container_open !== false && $container_closed == false):
+        echo '</div>';
+      endif;
+
+      // close after container
+      if($container_open !== false):
+        echo '</div>';
+      endif;
     }
 
 
@@ -832,7 +944,7 @@ class prefix_template {
       $add_desktop = $mobile['img'] !== "" ? 'class="desktop"' : '';
       $add_container = $desktop['img'] == "" && $mobile['img'] == "" ? ' text_logo' : '';
       $img_desktop = array_key_exists('img', $desktop) && $desktop['img'] !== '' ? wp_get_attachment_image_src($desktop['img'], 'full') : '';
-      $img_mobile = array_key_exists('img', $mobile) && $mobile['img'] !== '' ? wp_get_attachment_image_src($mobile['img'], 'full') : '';
+      $img_mobile = array_key_exists('img', $mobile) && $mobile['img'] !== '' ? wp_get_attachment_image_src($mobile['img'], 'full') : $img_desktop;
       // output
       $output .= '<a href="' . $link . '" class="logo' . $add_container .'">';
       if($img_desktop !== ""):
@@ -857,7 +969,7 @@ class prefix_template {
 
     /* 3.7 CHECK IF MAINMENU IS ACTIVE
     /------------------------*/
-    public static function WP_MainMenu(int $active = 1){
+    public static function WP_MainMenu(int $active = 1, string $request = ''){
       if($active === 1):
         $menu_active = 'hidden_mobile';
         $hamburger_active = 'mobile';
@@ -868,17 +980,23 @@ class prefix_template {
       // output
       $output = '';
       if ( has_nav_menu( 'mainmenu' ) ) :
-        $output .= wp_nav_menu([
-          'container_class'=> $menu_active,
-          'menu_id' => 'menu_main',
-          'container'=> 'div',
-          'container_id' => 'menu-main-container',
-          'depth' => 2,
-          'theme_location' => 'mainmenu'
-        ]);
-        $output .= '<button class="hamburger ' . $hamburger_active . '" aria-label="Main Menu">';
-          $output .= '<span>&nbsp;</span>';
-        $output .= '</button>';
+        // get menu
+        if($request !== 'hamburger'):
+          $output .= wp_nav_menu([
+            'container_class'=> $menu_active,
+            'menu_id' => 'menu_main',
+            'container'=> 'div',
+            'container_id' => 'menu-main-container',
+            'depth' => 2,
+            'theme_location' => 'mainmenu'
+          ]);
+        endif;
+        // get hamburger
+        if($request !== 'menu'):
+          $output .= '<button class="hamburger ' . $hamburger_active . '" aria-label="Main Menu">';
+            $output .= '<span>&nbsp;</span>';
+          $output .= '</button>';
+        endif;
       endif;
 
       return $output;
@@ -1153,7 +1271,7 @@ class prefix_template {
       $classes .= $obj && array_key_exists('name', $obj) ? ' pt-' . $obj->name : '';
       $classes .= prefix_template::$template_coloring !== '' ? ' ' . prefix_template::$template_coloring : '';
       $classes .= ' ' . prefix_template::CheckSticky(prefix_template::$template_header_sticky);
-      $classes .= prefix_template::$template_header_stickyload !== 0 ? ' sticky_onload' : '';
+      $classes .= prefix_template::$template_header_stickyload == 1 ? ' sticky_onload' : '';
       // dark mode
       if($page_id > 0):
         $get_options = get_post_meta($page_id, 'template_page_options', true);

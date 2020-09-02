@@ -1,4 +1,4 @@
-**Version 2.6.5** (14.08.2020)
+**Version 2.7.5** (02.09.2020)
 
 Custom class "template" with template parts and header / footer builder
 
@@ -67,9 +67,12 @@ Custom class "template" with template parts and header / footer builder
   "header": {
     "sort": {
       "logo": 1,
+      "container_start": 1,
       "menu": 1,
       "socialmedia": 1,
-      "custom": 0
+      "custom": 0,
+      "container_end": 1,
+      "hamburger": 1
     },
     "logo_link": "",
     "logo_desktop": {
@@ -110,11 +113,13 @@ Custom class "template" with template parts and header / footer builder
     "copyright": "Copyright © Text",
     "custom": "<div>custom</div>",
     "sort": {
+      "container_start": 1,
       "menu": 1,
       "socialmedia": 1,
       "copyright": 1,
       "address": 1,
-      "custom": 0
+      "custom": 0,
+      "container_end": 1
     },
     "before_footer": ""
   }
