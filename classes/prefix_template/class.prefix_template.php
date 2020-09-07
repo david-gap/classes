@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.7.5
+ * @version     2.8.5
  *
 */
 
@@ -154,6 +154,20 @@ class prefix_template {
     "footer" => 1,
     "darkmode" => 1
   );
+  static $template_blog_type         = 1;
+  static $template_blog_type_options = array(
+    "default" => "-",
+    "Image" => "Image",
+    "Video" => "Video",
+    "Audio" => "Audio"
+  );
+  static $template_blog_type_parts   = array(
+    "author" => 0,
+    "date" => 0,
+    "time" => 0,
+    "categories" => 0
+  );
+  static $template_blog_dateformat   = 'd.m.Y';
   static $template_page_additional   = array();
   static $template_footer_active     = 1;
   static $template_footer_cr         = "";
@@ -499,6 +513,43 @@ class prefix_template {
         )
       )
     ),
+    "blog" => array(
+      "label" => "Blog",
+      "type" => "multiple",
+      "value" => array(
+        "type" => array(
+          "label" => "Activate blog template options",
+          "type" => "switchbutton"
+        ),
+        "show" => array(
+          "label" => "Show on overview pages",
+          "type" => "multiple",
+          "value" => array(
+            "author" => array(
+              "label" => "Activate author",
+              "type" => "switchbutton"
+            ),
+            "date" => array(
+              "label" => "Activate date",
+              "type" => "switchbutton"
+            ),
+            "time" => array(
+              "label" => "Activate time",
+              "type" => "switchbutton"
+            ),
+            "categories" => array(
+              "label" => "Activate categories",
+              "type" => "switchbutton"
+            )
+          )
+        ),
+        "dateformat" => array(
+          "label" => "Date format",
+          "type" => "text",
+          "placeholder" => "d.m.Y"
+        )
+      )
+    ),
     "footer" => array(
       "label" => "Footer",
       "type" => "multiple",
@@ -638,6 +689,12 @@ class prefix_template {
           SELF::$template_page_options = array_key_exists('options', $page) ? array_merge(SELF::$template_page_options, $page['options']) : SELF::$template_page_options;
           SELF::$template_page_additional = array_key_exists('additional', $page) ? array_merge(SELF::$template_page_additional, $page['additional']) : SELF::$template_page_additional;
         endif;
+        if($configuration && array_key_exists('blog', $myConfig)):
+          $blog = $myConfig['blog'];
+          SELF::$template_blog_type = array_key_exists('type', $blog) ? $blog['type'] : SELF::$template_blog_type;
+          SELF::$template_blog_type_parts = array_key_exists('show', $blog) ? $blog['show'] : SELF::$template_blog_type_parts;
+          SELF::$template_blog_dateformat = array_key_exists('dateformat', $blog) ? $blog['dateformat'] : SELF::$template_blog_dateformat;
+        endif;
         if($configuration && array_key_exists('footer', $myConfig)):
           $footer = $myConfig['footer'];
           SELF::$template_footer_active = array_key_exists('active', $footer) ? $footer['active'] : SELF::$template_footer_active;
@@ -691,6 +748,10 @@ class prefix_template {
         update_post_meta($post_id, 'template_page_options', $options);
       else:
         update_post_meta($post_id, 'template_page_options', '');
+      endif;
+      // save blog template
+      if("post" != $post_type && isset($_POST['template_blog_type'])):
+        update_post_meta($post_id, 'template_blog_type', $_POST['template_blog_type']);
       endif;
     }
 
@@ -873,6 +934,7 @@ class prefix_template {
         $options = unserialize($get_options);
         // output
         echo '<div class="wrap" id="WPtemplate">';
+          // page options
           echo '<p><b>' . __( 'Page options', 'template' ) . '</b></p>';
           echo '<ul>';
             foreach (SELF::$template_page_options as $key => $value) {
@@ -891,6 +953,18 @@ class prefix_template {
               endif;
             }
           echo '</ul>';
+          // blog template options
+          if(get_post_type() == "post" && SELF::$template_blog_type == 1):
+            $get_template = get_post_meta($post->ID, 'template_blog_type', true);
+            echo '<p><b>' . __( 'Blog Template', 'template' ) . '</b></p>';
+            echo '<select name="template_blog_type">';
+              foreach (SELF::$template_blog_type_options as $key => $value) {
+                // check if option is active
+                $selected = prefix_core_BaseFunctions::setSelected($key, $get_template);
+                echo '<option value="' . $key . '" ' . $selected . '>' . __( $value, 'template' ) . '</option>';
+              }
+            echo '</select>';
+          endif;
         echo '</div>';
     }
 

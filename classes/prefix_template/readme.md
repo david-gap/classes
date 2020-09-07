@@ -1,4 +1,4 @@
-**Version 2.7.5** (02.09.2020)
+**Version 2.8.5** (07.09.2020)
 
 Custom class "template" with template parts and header / footer builder
 
@@ -107,6 +107,9 @@ Custom class "template" with template parts and header / footer builder
         "value": "Custom name"
       }
     }
+  },
+  "blog": {
+    "type": 1
   },
   "footer": {
     "active": 1,
