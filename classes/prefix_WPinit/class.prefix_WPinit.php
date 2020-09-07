@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.7.5
+ * @version     2.8.5
  *
 */
 
@@ -30,11 +30,11 @@ Table of Contents:
   2.10 REGISTER MENUS
   2.11 CLEAN THE CONTENT
   2.12 ADD FILE TYPES TO UPLOADER
+  2.13 UPDATE LOCALS
 3.0 OUTPUT
   3.1 MENU
   3.2 RETURN CUSTOM CSS
 =======================================================*/
-
 
 class prefix_WPinit {
 
@@ -116,6 +116,8 @@ class prefix_WPinit {
       add_action( 'wp_head', array( $this, 'TypekitFonts' ) );
       // add menu
       add_action( 'init', array( $this, 'WPinit_theme_menus' ) );
+      // update local language
+      add_action( 'init', array( $this, 'WPinit_locals' ) );
       // clean the content
       add_filter( 'the_content', array( $this, 'WPinit_CleanContent' ) );
       // shortcodes
@@ -455,6 +457,17 @@ class prefix_WPinit {
       endif;
       // return
       return $mime_types;
+    }
+
+
+    /* 2.13 UPDATE LOCALS
+    /------------------------*/
+    function WPinit_locals(){
+      // local language for frontend
+      if (!is_admin()) {
+        $language = prefix_core_BaseFunctions::getCurrentLang() . '_' . strtoupper(prefix_core_BaseFunctions::getCurrentLang());
+        setlocale(LC_TIME, $language);
+      }
     }
 
 
