@@ -1,4 +1,4 @@
-**Version 2.8** (14.08.2020)
+**Version 2.8.1** (07.09.2020)
 
 Custom class "prefix_core_BaseFunctions" used as a library for useful functions
 
@@ -227,8 +227,10 @@ core_BaseFunctions::register_cpt_taxonomy("post", $taxonomies)
 
 ### 4.4 RETURN TAXONOMY TERMS IN A LIST
 List all taxonomy terms by taxonomy slug. Add a post ID for the post selected terms.
+With the third attribute you can return only the first entry
+Add fourth attribute with letters you would like to separate the entries
 ```php
-core_BaseFunctions::ListTaxonomies("tax_slug", 22);
+core_BaseFunctions::ListTaxonomies("tax_slug", 22, false, ', ');
 /* RESULTING: string */
 return "<ul><li>LIST WITH ALL TAXONOMIES OF THE POST WITH THE ID 22</li></ul>"
 ```

@@ -4,7 +4,7 @@
  *
  * Base dev functions - parent for all custom classes
  * Author:      David Voglgsnag
- * @version     2.8
+ * @version     2.8.1
  *
  */
 
@@ -718,9 +718,11 @@ class prefix_core_BaseFunctions {
   /**
     * @param string $slug: taxonomy slug
     * @param string $id: if you like to list selected post taxonomies
-    * @return string list
+    * @param bool $fistonly: set true to show only the first taxonomy
+    * @param $separator $tax: capters to seperate taxonomies
+    * @return string list of all post taxonomies
   */
-  public static function ListTaxonomies(string $slug = "", int $id = 0){
+  public static function ListTaxonomies(string $slug = "", int $id = 0, bool $fistonly = false, string $separator = ''){
     // vars
     $output = '';
     $taxonomy_details = $id > 0 ? get_the_terms( $id, $slug ) : get_taxonomy( $slug );
@@ -731,10 +733,17 @@ class prefix_core_BaseFunctions {
     // output
     $output .= '<ul class="list-' . $slug . '">';
       if ( ! empty( $tax ) && ! is_wp_error( $tax ) ):
+        $count = count($tax);
+        $num = 1;
         foreach ( $tax as $t ) {
             $output .= '<li class="' . $t->slug . '">';
                 $output .= $t->name;
+                $output .= $count == $num && $fistonly == false ? '' : $separator;
+                $num++;
             $output .= '</li>';
+            if($fistonly !== false):
+              break;
+            endif;
         }
       endif;
     $output .= '</ul>';
