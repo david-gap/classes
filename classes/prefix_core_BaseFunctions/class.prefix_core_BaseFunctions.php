@@ -4,7 +4,7 @@
  *
  * Base dev functions - parent for all custom classes
  * Author:      David Voglgsnag
- * @version     2.8.1
+ * @version     2.8.2
  *
  */
 
@@ -296,7 +296,7 @@ class prefix_core_BaseFunctions {
       if(strpos($ccc_number, '(') !== false):
         // check if ( is on first position
         $ccc_number_l = substr($ccc_number, 0, 1);
-        $phone_text_between = PARENT::getBetween($ccc_number , "(", ")");
+        $phone_text_between = SELF::getBetween($ccc_number , "(", ")");
         $clean_number = $ccc_number_l == "(" ? $phone_text_between . str_replace(array('(', ')'), array('', ''), $ccc_number) : str_replace(array('(' . $phone_text_between . ')'), array(''), $ccc_number);
       else:
         $clean_number = $ccc_number;
