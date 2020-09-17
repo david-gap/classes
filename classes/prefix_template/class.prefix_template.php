@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.8.6
+ * @version     2.8.7
  *
 */
 
@@ -628,6 +628,7 @@ class prefix_template {
     // merge & clean post types
     $post_types = array_merge($core_pt, $custom_pt);
     unset($post_types['attachment']);
+    unset($post_types['nav_menu_item']);
     // register meta box for all selected post types
     foreach( $post_types as $post_type ){
         add_meta_box(
@@ -750,7 +751,7 @@ class prefix_template {
         update_post_meta($post_id, 'template_page_options', '');
       endif;
       // save blog template
-      if("post" != $post_type && isset($_POST['template_blog_type'])):
+      if(isset($post_type) && "post" != $post_type && "attachment" != $post_type && "nav_menu_item" != $post_type && isset($_POST['template_blog_type'])):
         update_post_meta($post_id, 'template_blog_type', $_POST['template_blog_type']);
       endif;
     }
