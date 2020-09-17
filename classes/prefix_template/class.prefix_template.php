@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.8.5
+ * @version     2.8.6
  *
 */
 
@@ -1015,8 +1015,8 @@ class prefix_template {
       $output = '';
       $page_name = get_bloginfo();
       $link = function_exists("get_bloginfo") && $link == "" ? get_bloginfo('url') : $link;
-      $add_desktop = $mobile['img'] !== "" ? 'class="desktop"' : '';
-      $add_container = $desktop['img'] == "" && $mobile['img'] == "" ? ' text_logo' : '';
+      $add_desktop = array_key_exists('img', $mobile) && $mobile['img'] !== "" ? 'class="desktop"' : '';
+      $add_container = array_key_exists('img', $desktop) && $desktop['img'] == "" && $mobile['img'] == "" ? ' text_logo' : '';
       $img_desktop = array_key_exists('img', $desktop) && $desktop['img'] !== '' ? wp_get_attachment_image_src($desktop['img'], 'full') : '';
       $img_mobile = array_key_exists('img', $mobile) && $mobile['img'] !== '' ? wp_get_attachment_image_src($mobile['img'], 'full') : $img_desktop;
       // output
@@ -1111,33 +1111,57 @@ class prefix_template {
       $config = array_merge($defaults, $address);
 
       $output .= '<address>';
-        $output .= $config["company"] !== '' ? '<b rel="me" class="company">' . $config["labels"]["company"] . $config["company"] . '</b>' : '';
-        $output .= $config["street"] !== '' ? '<span class="street">' . $config["labels"]["street"] . $config["street"] . '</span>' : '';
-        $output .= $config["street2"] !== '' ? '<span class="street_add">' . $config["labels"]["street2"] . $config["street2"] . '</span>' : '';
+        if($config["company"] !== ''):
+          $output .= '<b rel="me" class="company">';
+            $output .= $config["labels"] && array_key_exists('company', $config["labels"]) && $config["labels"]["company"] !== '' ? $config["labels"]["company"] . ' ' : '';
+            $output .= $config["company"];
+          $output .= '</b>';
+        endif;
+        if($config["street"] !== ''):
+          $output .= '<span class="street">';
+            $output .= $config["labels"] && array_key_exists('street', $config["labels"]) && $config["labels"]["street"] !== '' ? $config["labels"]["street"] . ' ' : '';
+            $output .= $config["street"];
+          $output .= '</span>';
+        endif;
+        if($config["street2"] !== ''):
+          $output .= '<span class="street_add">';
+            $output .= $config["labels"] && array_key_exists('street2', $config["labels"]) && $config["labels"]["street2"] !== '' ? $config["labels"]["street2"] . ' ' : '';
+            $output .= $config["street2"];
+          $output .= '</span>';
+        endif;
         $output .= $config["postalCode"] !== '' && $config["city"] !== '' ? '<span class="location">' : '';
-          $output .= $config["postalCode"] !== '' ? '<span class="postalcode">' . $config["labels"]["postalCode"] . $config["postalCode"] . '</span>' : '';
+          if($config["postalCode"] !== ''):
+            $output .= '<span class="postalcode">';
+              $output .= $config["labels"] && array_key_exists('postalCode', $config["labels"]) && $config["labels"]["postalCode"] !== '' ? $config["labels"]["postalCode"] . ' ' : '';
+              $output .= $config["postalCode"];
+            $output .= '</span>';
+          endif;
           $output .= $config["postalCode"] !== '' && $config["city"] !== '' ? ' ' : '';
-          $output .= $config["city"] !== '' ? '<span class="city">' . $config["labels"]["city"] . $config["city"] . '</span>' : '';
+          if($config["city"] !== ''):
+            $output .= '<span class="city">';
+              $output .= $config["labels"] && array_key_exists('city', $config["labels"]) && $config["labels"]["city"] !== '' ? $config["labels"]["city"] . ' ' : '';
+              $output .= $config["city"];
+            $output .= '</span>';
+          endif;
         $output .= $config["postalCode"] !== '' && $config["city"] !== '' ? '</span>' : '';
         if($config["phone"] !== ''):
-          $update_phone = str_replace(array('+', ' '), array('00', ''), $config["phone"]);
-          if(strpos($update_phone, '(') !== false):
-            $update_phone_l = substr($update_phone, 0, 1);
-            $phone_text_between = prefix_core_BaseFunctions::getBetween($update_phone , "(", ")");
-            $clean_phone = $update_phone_l == "(" ? $phone_text_between . str_replace(array('(', ')'), array('', ''), $update_phone) : str_replace(array('(' . $phone_text_between . ')'), array(''), $update_phone);
-          endif;
-          $output .= '<a href="tel:' . $clean_phone . '" class="call phone_nr">' . $config["labels"]["phone"] . $config["phone"] . '</a>';
+          $output .= '<a href="tel:' . prefix_core_BaseFunctions::cleanPhoneNr($config["phone"]) . '" class="call phone_nr">';
+            $output .= $config["labels"] && array_key_exists('phone', $config["labels"]) && $config["labels"]["phone"] !== '' ? $config["labels"]["phone"] . ' ' : '';
+            $output .= $config["phone"];
+          $output .= '</a>';
         endif;
         if($config["mobile"] !== ''):
-          $update_mobile = str_replace(array('+', ' '), array('00', ''), $config["mobile"]);
-          if(strpos($update_mobile, '(') !== false):
-            $update_mobile_l = substr($update_mobile, 0, 1);
-            $mobile_text_between = prefix_core_BaseFunctions::getBetween($update_mobile , "(", ")");
-            $clean_mobile = $update_mobile_l == "(" ? $mobile_text_between . str_replace(array('(', ')'), array('', ''), $update_mobile) : str_replace(array('(' . $mobile_text_between . ')'), array(''), $update_mobile);
-          endif;
-          $output .= '<a href="tel:' . $clean_mobile . '" class="call mobile_nr">' . $config["labels"]["mobile"] . $config["mobile"] . '</a>';
+          $output .= '<a href="tel:' . prefix_core_BaseFunctions::cleanPhoneNr($config["mobile"]) . '" class="call mobile_nr">';
+            $output .= $config["labels"] && array_key_exists('mobile', $config["labels"]) && $config["labels"]["mobile"] !== '' ? $config["labels"]["mobile"] . ' ' : '';
+            $output .= $config["mobile"];
+          $output .= '</a>';
         endif;
-        $output .= $config["email"] !== '' ? '<a href="mailto:' . $config["email"] . '" class="mail">' . $config["labels"]["email"] . $config["email"] . '</a>' : '';
+        if($config["email"] !== ''):
+          $output .= '<a href="mailto:' . $config["email"] . '" class="mail">';
+            $output .= $config["labels"] && array_key_exists('email', $config["labels"]) && $config["labels"]["email"] !== '' ? $config["labels"]["email"] . ' ' : '';
+            $output .= $config["email"];
+          $output .= '</a>';
+        endif;
       $output .= '</address>';
 
       return $output;
