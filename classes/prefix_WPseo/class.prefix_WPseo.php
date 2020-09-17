@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.2.4
+ * @version     2.2.5
  *
 */
 
@@ -47,21 +47,21 @@ class prefix_WPseo {
       * @param private int $WPseo_datastructure_page: turn custom datastructure on/off for pages and posts
       * @param private array $WPseo_datastructure_add: additional structure attributes
     */
-    private $WPseo_logo               = 0;
-    private static $WPseo_tracking    = '';
-    private $WPseo_favicon            = 0;
-    private $WPseo_icon               = 0;
-    private $WPseo_icon_72            = 0;
-    private $WPseo_icon_114           = 0;
-    private $WPseo_datastructure      = 0;
-    private $WPseo_datastructure_page = 0;
-    private $WPseo_datastructure_add  = array(
+    private static $WPseo_logo               = 0;
+    private static $WPseo_tracking           = '';
+    private static $WPseo_favicon            = 0;
+    private static $WPseo_icon               = 0;
+    private static $WPseo_icon_72            = 0;
+    private static $WPseo_icon_114           = 0;
+    private static $WPseo_datastructure      = 0;
+    private static $WPseo_datastructure_page = 0;
+    private static $WPseo_datastructure_add  = array(
       // array(
       //   "key" => "type",
       //   "value" => "Website"
       // )
     );
-    private $WPseo_address = array(
+    private static $WPseo_address = array(
       "company" => "",
       "street" => "",
       "street2" => "",
@@ -85,7 +85,7 @@ class prefix_WPseo {
       // add fav icons
       add_action( 'wp_head', array( $this, 'FavIcon' ) );
       // metabox for option selection
-      if($this->WPseo_datastructure == 1 && $this->WPseo_datastructure_page == 1):
+      if(SELF::$WPseo_datastructure == 1 && SELF::$WPseo_datastructure_page == 1):
         add_action( 'add_meta_boxes', array( $this, 'WPseo_Metabox' ) );
         // update custom fields
         add_action('save_post', array( $this, 'WPseo_meta_Save' ),  10, 2 );
@@ -231,16 +231,16 @@ class prefix_WPseo {
         // class configuration
         $myConfig = $configuration['seo'];
         // update vars
-        $this->WPseo_logo = array_key_exists('logo', $myConfig) ? $myConfig['logo'] : $this->WPseo_logo;
+        SELF::$WPseo_logo = array_key_exists('logo', $myConfig) ? $myConfig['logo'] : SELF::$WPseo_logo;
         SELF::$WPseo_tracking = array_key_exists('google-tracking', $myConfig) ? $myConfig['google-tracking'] : SELF::$WPseo_tracking;
-        $this->WPseo_favicon = array_key_exists('favicon', $myConfig) ? $myConfig['favicon'] : $this->WPseo_favicon;
-        $this->WPseo_icon = array_key_exists('apple-touch-icon', $myConfig) ? $myConfig['apple-touch-icon'] : $this->WPseo_icon;
-        $this->WPseo_icon_72 = array_key_exists('apple-touch-icon-72', $myConfig) ? $myConfig['apple-touch-icon-72'] : $this->WPseo_icon_72;
-        $this->WPseo_icon_114 = array_key_exists('apple-touch-icon-114', $myConfig) ? $myConfig['apple-touch-icon-114'] : $this->WPseo_icon_114;
-        $this->WPseo_datastructure = array_key_exists('data-structure', $myConfig) ? $myConfig['data-structure'] : $this->WPseo_datastructure;
-        $this->WPseo_datastructure_page = array_key_exists('data-structure-page', $myConfig) ? $myConfig['data-structure-page'] : $this->WPseo_datastructure_page;
-        $this->WPseo_datastructure_add = array_key_exists('data-structure-add', $myConfig) ? $myConfig['data-structure-add'] : $this->WPseo_datastructure_add;
-        $this->WPseo_address = array_key_exists('address', $myConfig) ? $myConfig['address'] : $this->WPseo_address;
+        SELF::$WPseo_favicon = array_key_exists('favicon', $myConfig) ? $myConfig['favicon'] : SELF::$WPseo_favicon;
+        SELF::$WPseo_icon = array_key_exists('apple-touch-icon', $myConfig) ? $myConfig['apple-touch-icon'] : SELF::$WPseo_icon;
+        SELF::$WPseo_icon_72 = array_key_exists('apple-touch-icon-72', $myConfig) ? $myConfig['apple-touch-icon-72'] : SELF::$WPseo_icon_72;
+        SELF::$WPseo_icon_114 = array_key_exists('apple-touch-icon-114', $myConfig) ? $myConfig['apple-touch-icon-114'] : SELF::$WPseo_icon_114;
+        SELF::$WPseo_datastructure = array_key_exists('data-structure', $myConfig) ? $myConfig['data-structure'] : SELF::$WPseo_datastructure;
+        SELF::$WPseo_datastructure_page = array_key_exists('data-structure-page', $myConfig) ? $myConfig['data-structure-page'] : SELF::$WPseo_datastructure_page;
+        SELF::$WPseo_datastructure_add = array_key_exists('data-structure-add', $myConfig) ? $myConfig['data-structure-add'] : SELF::$WPseo_datastructure_add;
+        SELF::$WPseo_address = array_key_exists('address', $myConfig) ? $myConfig['address'] : SELF::$WPseo_address;
       endif;
     }
 
@@ -248,21 +248,21 @@ class prefix_WPseo {
     /* 2.2 FAVICON
     /------------------------*/
     public static function FavIcon(){
-      if($this->WPseo_favicon !== 0):
-        $get_fav = wp_get_attachment_image_src($this->WPseo_favicon, 'full');
+      if(SELF::$WPseo_favicon !== 0):
+        $get_fav = wp_get_attachment_image_src(SELF::$WPseo_favicon, 'full');
         echo '<link rel="icon" href="' . $get_fav[0] . '" />';
       endif;
       // apple touch icons
-      if($this->WPseo_icon !== 0):
-        $get_touch_1 = wp_get_attachment_image_src($this->WPseo_icon, 'full');
+      if(SELF::$WPseo_icon !== 0):
+        $get_touch_1 = wp_get_attachment_image_src(SELF::$WPseo_icon, 'full');
         echo '<link rel="apple-touch-icon" href="' . $get_touch_1[0] . '" />';
       endif;
-      if($this->WPseo_icon_72 !== 0):
-        $get_touch_2 = wp_get_attachment_image_src($this->WPseo_icon_72, 'full');
+      if(SELF::$WPseo_icon_72 !== 0):
+        $get_touch_2 = wp_get_attachment_image_src(SELF::$WPseo_icon_72, 'full');
         echo '<link rel="apple-touch-icon" sizes="72x72" href="' . $get_touch_2[0] . '" />';
       endif;
-      if($this->WPseo_icon_114 !== 0):
-        $get_touch_3 = wp_get_attachment_image_src($this->WPseo_icon_114, 'full');
+      if(SELF::$WPseo_icon_114 !== 0):
+        $get_touch_3 = wp_get_attachment_image_src(SELF::$WPseo_icon_114, 'full');
         echo '<link rel="apple-touch-icon" sizes="114x114" href="' . $get_touch_3[0] . '" />';
       endif;
     }
@@ -375,10 +375,10 @@ class prefix_WPseo {
       // vars
       $output = '';
 
-      if($this->WPseo_datastructure == 1):
-        $address = $this->WPseo_address;
-        $additionals = $this->WPseo_datastructure_add;
-        $logo = $this->WPseo_logo !== 0 ? wp_get_attachment_image_src($this->WPseo_logo, 'full') : '';
+      if(SELF::$WPseo_datastructure == 1):
+        $address = SELF::$WPseo_address;
+        $additionals = SELF::$WPseo_datastructure_add;
+        $logo = SELF::$WPseo_logo !== 0 ? wp_get_attachment_image_src(SELF::$WPseo_logo, 'full') : '';
 
         $output .= '<script type="application/ld+json">';
           $output .= '{';
