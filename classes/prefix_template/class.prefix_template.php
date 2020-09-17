@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.8.7
+ * @version     2.9.7
  *
 */
 
@@ -94,6 +94,7 @@ class prefix_template {
     'street2' => '',
     'postalCode' => '',
     'city' => '',
+    'country' => '',
     'phone' => '',
     'mobile' => '',
     'email' => '',
@@ -103,6 +104,7 @@ class prefix_template {
       'street2' => '',
       'postalCode' => '',
       'city' => '',
+      'country' => '',
       'phone' => '',
       'mobile' => '',
       'email' => ''
@@ -244,6 +246,10 @@ class prefix_template {
           "label" => "City",
           "type" => "text"
         ),
+        "country" => array(
+          "label" => "Country",
+          "type" => "text"
+        ),
         "phone" => array(
           "label" => "Phone",
           "type" => "text"
@@ -278,6 +284,10 @@ class prefix_template {
             ),
             "city" => array(
               "label" => "City",
+              "type" => "text"
+            ),
+            "country" => array(
+              "label" => "Country",
               "type" => "text"
             ),
             "phone" => array(
@@ -1145,6 +1155,12 @@ class prefix_template {
             $output .= '</span>';
           endif;
         $output .= $config["postalCode"] !== '' && $config["city"] !== '' ? '</span>' : '';
+        if($config["country"] !== ''):
+          $output .= '<span class="country">';
+            $output .= $config["labels"] && array_key_exists('country', $config["labels"]) && $config["labels"]["country"] !== '' ? $config["labels"]["country"] . ' ' : '';
+            $output .= $config["country"];
+          $output .= '</span>';
+        endif;
         if($config["phone"] !== ''):
           $output .= '<a href="tel:' . prefix_core_BaseFunctions::cleanPhoneNr($config["phone"]) . '" class="call phone_nr">';
             $output .= $config["labels"] && array_key_exists('phone', $config["labels"]) && $config["labels"]["phone"] !== '' ? $config["labels"]["phone"] . ' ' : '';
