@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.9.7
+ * @version     2.9.8
  *
 */
 
@@ -1029,7 +1029,7 @@ class prefix_template {
       $add_desktop = array_key_exists('img', $mobile) && $mobile['img'] !== "" ? 'class="desktop"' : '';
       $add_container = array_key_exists('img', $desktop) && $desktop['img'] == "" && $mobile['img'] == "" ? ' text_logo' : '';
       $img_desktop = array_key_exists('img', $desktop) && $desktop['img'] !== '' ? wp_get_attachment_image_src($desktop['img'], 'full') : '';
-      $img_mobile = array_key_exists('img', $mobile) && $mobile['img'] !== '' ? wp_get_attachment_image_src($mobile['img'], 'full') : $img_desktop;
+      $img_mobile = array_key_exists('img', $mobile) && $mobile['img'] !== '' ? wp_get_attachment_image_src($mobile['img'], 'full') : '';
       // output
       $output .= '<a href="' . $link . '" class="logo' . $add_container .'">';
       if($img_desktop !== ""):
