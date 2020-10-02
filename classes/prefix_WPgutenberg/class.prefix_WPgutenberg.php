@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.3.1
+ * @version     2.4.1
  */
 
 /*=======================================================
@@ -25,6 +25,7 @@ Table of Contents:
   2.6 CUSTOM THEME SUPPORT
 3.0 OUTPUT
   3.1 RETURN CUSTOM CSS
+  3.2 CHANGE INLINE FONT SIZE
 =======================================================*/
 
 class prefix_WPgutenberg {
@@ -41,6 +42,7 @@ class prefix_WPgutenberg {
       * @param private int $WPgutenberg_css: disable gutenberg styling
       * @param private int $WPgutenberg_Stylesfile: Add the file with the additional gutenberg css classes
       * @param private int $WPgutenberg_DefaultPatterns: Remove default patterns
+      * @param private int $WPgutenberg_fontsizeScaler: Activate fontsize scaler
       * @param private array $WPgutenberg_AllowedBlocks: List core allowed gutenberg blocks
       * @param private array $WPgutenberg_CustomAllowedBlocks: List custom allowed gutenberg blocks
       * @param private array $WPgutenberg_ColorPalette: Custom theme color palette
@@ -51,6 +53,7 @@ class prefix_WPgutenberg {
     private $WPgutenberg_css                    = 0;
     private $WPgutenberg_Stylesfile             = 0;
     private $WPgutenberg_DefaultPatterns        = 0;
+    private $WPgutenberg_fontsizeScaler         = 0;
     private $WPgutenberg_AllowedBlocks          = array();
     private $WPgutenberg_CustomAllowedBlocks    = array();
     private static $WPgutenberg_ColorPalette    = array();
@@ -81,6 +84,12 @@ class prefix_WPgutenberg {
       endif;
       // add theme support
       SELF::CustomThemeSupport();
+      // register custom blocks
+      add_action( 'init', array($this, 'WPgutenbergCustomBlocks') );
+      // Change inline font size to var
+      if($this->WPgutenberg_fontsizeScaler == 0):
+        add_filter('the_content',  array($this, 'InlineFontSize') );
+      endif;
     }
 
     /* 1.3 BACKEND ARRAY
@@ -102,6 +111,10 @@ class prefix_WPgutenberg {
       ),
       "Patterns" => array(
         "label" => "Default Patterns",
+        "type" => "switchbutton"
+      ),
+      "fontsizeScaler" => array(
+        "label" => "Fontsize scaler",
         "type" => "switchbutton"
       ),
       "AllowedBlocks" => array(
@@ -237,6 +250,7 @@ class prefix_WPgutenberg {
       $this->WPgutenberg_css = array_key_exists('css', $myConfig) ? $myConfig['css'] : $this->WPgutenberg_css;
       $this->WPgutenberg_Stylesfile = array_key_exists('Stylesfile', $myConfig) ? $myConfig['Stylesfile'] : $this->WPgutenberg_Stylesfile;
       $this->WPgutenberg_DefaultPatterns = array_key_exists('Patterns', $myConfig) ? $myConfig['Patterns'] : $this->WPgutenberg_DefaultPatterns;
+      $this->WPgutenberg_fontsizeScaler = array_key_exists('fontsizeScaler', $myConfig) ? $myConfig['fontsizeScaler'] : $this->WPgutenberg_fontsizeScaler;
       $this->WPgutenberg_AllowedBlocks = array_key_exists('AllowedBlocks', $myConfig) ? $myConfig['AllowedBlocks'] : $this->WPgutenberg_AllowedBlocks;
       $this->WPgutenberg_CustomAllowedBlocks = array_key_exists('CustomAllowedBlocks', $myConfig) ? $myConfig['CustomAllowedBlocks'] : $this->WPgutenberg_CustomAllowedBlocks;
       SELF::$WPgutenberg_ColorPalette = array_key_exists('ColorPalette', $myConfig) ? $myConfig['ColorPalette'] : SELF::$WPgutenberg_ColorPalette;
@@ -281,7 +295,7 @@ class prefix_WPgutenberg {
       wp_enqueue_script(
         'backend-gutenberg-css-classes',
         $path,
-        array( 'wp-blocks' )
+        ['wp-i18n', 'wp-element', 'wp-blocks']
       );
     endif;
   }
@@ -354,6 +368,15 @@ class prefix_WPgutenberg {
     endif;
     // return
     return $output;
+  }
+
+
+  /* 3.2 CHANGE INLINE FONT SIZE
+  /------------------------*/
+  function InlineFontSize($content) {
+    if(!is_admin()):
+      return str_replace("font-size","--font-size",$content);
+    endif;
   }
 
 
