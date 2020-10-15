@@ -1,4 +1,4 @@
-**Version 0.1** (28.09.2020)
+**Version 0.1.1** (14.10.2020)
 
 Custom class "Mautic" to embed Mautic to the page
 

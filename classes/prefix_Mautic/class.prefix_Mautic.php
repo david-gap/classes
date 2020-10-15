@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     0.1
+ * @version     0.1.1
  */
 
 /*=======================================================
@@ -127,7 +127,7 @@ class prefix_Mautic {
             $scripts .= "head.appendChild(script);";
             $scripts .= "var MauticDomain = '" . $this->Mautic_URL . "';";
             $scripts .= "var MauticLang = {";
-                $scripts .= "'submittingMessage': 'Please wait...'";
+                $scripts .= "'submittingMessage': ' '";
             $scripts .= "}";
         $scripts .= "} else if (typeof MauticSDK != 'undefined') {";
             $scripts .= "MauticSDK.onLoad();";
