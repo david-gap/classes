@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.8.5
+ * @version     2.8.6
  *
 */
 
@@ -320,6 +320,12 @@ class prefix_WPinit {
         wp_enqueue_script('theme/scripts');
         # get theme directory for javascript files
         wp_localize_script( 'theme/scripts', 'theme_directory', get_stylesheet_directory_uri());
+      endif;
+      if (is_admin()):
+        wp_register_script('theme/backend-scripts', get_stylesheet_directory_uri() . '/dist/script_backend.min.js', '0.1', true);
+        wp_enqueue_script('theme/backend-scripts');
+        # get theme directory for javascript files
+        wp_localize_script( 'theme/backend-scripts', 'theme_directory', get_stylesheet_directory_uri());
       endif;
       // styles
       if ($this->WPinit_css == 1):
