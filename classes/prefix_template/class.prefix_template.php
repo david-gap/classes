@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.10.8
+ * @version     2.11.8
  *
 */
 
@@ -154,7 +154,9 @@ class prefix_template {
     "comments" => 1,
     "sidebar" => 1,
     "footer" => 1,
-    "darkmode" => 1
+    "darkmode" => 1,
+    "beforeMain" => 1,
+    "afterMain" => 1
   );
   static $template_blog_type         = 1;
   static $template_blog_type_options = array(
@@ -513,6 +515,14 @@ class prefix_template {
             ),
             "darkmode" => array(
               "label" => "Darkmode",
+              "type" => "switchbutton"
+            ),
+            "beforeMain" => array(
+              "label" => "Code before main block",
+              "type" => "switchbutton"
+            ),
+            "afterMain" => array(
+              "label" => "Code after main block",
               "type" => "switchbutton"
             )
           )
@@ -958,9 +968,10 @@ class prefix_template {
           // page options
           echo '<p><b>' . __( 'Page options', 'template' ) . '</b></p>';
           echo '<ul>';
+            $exeptions = array('beforeMain', 'afterMain');
             foreach (SELF::$template_page_options as $key => $value) {
               // check if option is active
-              if($value == 1):
+              if($value == 1 && !in_array($key, $exeptions)):
                 $active = prefix_core_BaseFunctions::setChecked($key, $options);
                 $hide = $key !== 'darkmode' ? 'Hide ' : '';
                 echo '<li><label><input type="checkbox" name="template_page_options[]" value="' . $key . '" ' . $active . '>' . __( $hide . $key, 'template' ) . '</label></li>';
@@ -974,6 +985,21 @@ class prefix_template {
               endif;
             }
           echo '</ul>';
+          // return exeptions
+          foreach (SELF::$template_page_options as $key => $value) {
+            // check if option is active
+            if($value == 1 && in_array($key, $exeptions)):
+              if($key == 'beforeMain'):
+                $customLabel = 'Code before main block';
+              elseif($key == 'afterMain'):
+                $customLabel = 'Code after main block';
+              endif;
+              echo '<div class="exeption">';
+                echo '<p><label for="exeption-' . $key . '"><b>' . __( $customLabel, 'template' ) . '</b></label></p>';
+                echo '<textarea id="exeption-' . $key . '" name="template_page_options[' . $key . ']">' . $options[$key] . '</textarea>';
+              echo '</div>';
+            endif;
+          }
           // blog template options
           if(get_post_type() == "post" && SELF::$template_blog_type == 1):
             $get_template = get_post_meta($post->ID, 'template_blog_type', true);
