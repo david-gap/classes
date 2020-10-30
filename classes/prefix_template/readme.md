@@ -1,4 +1,4 @@
-**Version 2.11.8** (19.10.2020)
+**Version 2.12.8** (30.10.2020)
 
 Custom class "template" with template parts and header / footer builder
 
@@ -16,7 +16,7 @@ Custom class "template" with template parts and header / footer builder
 * $template_header_sticky: activate sticky header
 * $template_header_stickyload: activate sticky header on load
 * $template_header_dmenu: Activate header hamburger for desktop
-* $template_header_custom:  Custom header html
+* $template_header_custom: Custom header html
 * $template_header_sort: Sort and activate blocks inside header builder
 * $template_header_logo_link: Logo link with wordpress fallback
 * $template_header_logo_d: desktop logo configuration
@@ -25,6 +25,8 @@ Custom class "template" with template parts and header / footer builder
 * $template_page_active: activate page options
 * $template_page_options: show/hide template elements
 * $template_page_additional: additional custom fields template elements
+* $template_page_metablock: activate metablock on detail page
+* $template_page_metablockAdds: Add metabox to CPT by slugs
 * $template_footer_active: activate footer
 * $template_footer_cr: copyright text
 * $template_footer_custom: custom html
@@ -94,12 +96,21 @@ Custom class "template" with template parts and header / footer builder
   },
   "page": {
     "active": 1,
+    "metablock": {
+      "page": 1,
+      "post": 1
+    }
     "options": {
       "header": 1,
+      "time": 1,
+      "author": 1,
+      "title": 1,
       "title": 1,
       "sidebar": 1,
       "footer": 1,
-      "darkmode": 1
+      "darkmode": 1,
+      "beforeMain"; 1,
+      "afterMain"; 1
     },
     "additional":  {
       "0": {

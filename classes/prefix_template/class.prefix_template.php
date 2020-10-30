@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.11.8
+ * @version     2.12.8
  *
 */
 
@@ -75,20 +75,23 @@ class prefix_template {
     * @param static int $template_page_active: activate page options
     * @param static array $template_page_options: show/hide template elements
     * @param static array $template_page_additional: additional custom fields template elements
+    * @param static array $template_page_metablock: activate metablock on detail page/posts
+    * @param static array $template_page_metablockAdds: Add metabox to CPT by slugs
+    * @param static array $template_page_options: show/hide template elements
     * @param static int $template_footer_active: activate footer
     * @param static string $template_footer_cr: copyright text
     * @param static string $template_footer_custom: custom html
     * @param static array $template_footer_sort: Sort and activate blocks inside footer builder
     * @param static string $template_footer_before: html code before footer
   */
-  static $template_container_header  = 1;
-  static $template_container         = 1;
-  static $template_container_footer  = 1;
-  static $template_coloring          = "light";
-  static $template_ph_active         = true;
-  static $template_ph_address        = true;
-  static $template_ph_custom         = "";
-  static $template_address           = array(
+  static $template_container_header   = 1;
+  static $template_container          = 1;
+  static $template_container_footer   = 1;
+  static $template_coloring           = "light";
+  static $template_ph_active          = true;
+  static $template_ph_address         = true;
+  static $template_ph_custom          = "";
+  static $template_address            = array(
     'company' => '',
     'street' => '',
     'street2' => '',
@@ -110,21 +113,21 @@ class prefix_template {
       'email' => ''
     )
   );
-  static $template_socialmedia       = array(
+  static $template_socialmedia        = array(
     "facebook" => "",
     "instagram" => ""
   );
-  static $template_contactblock      = array(
+  static $template_contactblock       = array(
     "phone" => "",
     "mail" => "",
     "whatsapp" => ""
   );
-  static $template_header_divider    = 1;
-  static $template_header_sticky     = 1;
-  static $template_header_stickyload = 0;
-  static $template_header_dmenu      = 1;
-  static $template_header_custom     = "";
-  static $template_header_sort       = array(
+  static $template_header_divider     = 1;
+  static $template_header_sticky      = 1;
+  static $template_header_stickyload  = 0;
+  static $template_header_dmenu       = 1;
+  static $template_header_custom      = "";
+  static $template_header_sort        = array(
     "container_start" => 1,
     "logo" => 1,
     "menu" => 1,
@@ -133,23 +136,26 @@ class prefix_template {
     "custom" => 0,
     "container_end" => 1
   );
-  static $template_header_logo_link  = "";
-  static $template_header_logo_d     = array(
+  static $template_header_logo_link   = "";
+  static $template_header_logo_d      = array(
     "img" => "",
     "width" => "",
     "height" => "",
     "alt" => ""
   );
-  static $template_header_logo_m     = array(
+  static $template_header_logo_m      = array(
     "img" => "",
     "width" => "",
     "height" => "",
     "alt" => ""
   );
-  static $template_header_after      = "";
-  static $template_page_active       = 1;
-  static $template_page_options      = array(
+  static $template_header_after       = "";
+  static $template_page_active        = 1;
+  static $template_page_options       = array(
     "header" => 1,
+    "date" => 0,
+    "time" => 0,
+    "author" => 0,
     "title" => 1,
     "comments" => 1,
     "sidebar" => 1,
@@ -158,25 +164,30 @@ class prefix_template {
     "beforeMain" => 1,
     "afterMain" => 1
   );
-  static $template_blog_type         = 1;
-  static $template_blog_type_options = array(
+  static $template_page_metablock     = array(
+    "page" => 0,
+    "post" => 0
+  );
+  static $template_page_metablockAdds = array();
+  static $template_blog_type          = 1;
+  static $template_blog_type_options  = array(
     "default" => "-",
     "Image" => "Image",
     "Video" => "Video",
     "Audio" => "Audio"
   );
-  static $template_blog_type_parts   = array(
+  static $template_blog_type_parts    = array(
     "author" => 0,
     "date" => 0,
     "time" => 0,
     "categories" => 0
   );
-  static $template_blog_dateformat   = 'd.m.Y';
-  static $template_page_additional   = array();
-  static $template_footer_active     = 1;
-  static $template_footer_cr         = "";
-  static $template_footer_custom     = "";
-  static $template_footer_sort       = array(
+  static $template_blog_dateformat    = 'd.m.Y';
+  static $template_page_additional    = array();
+  static $template_footer_active      = 1;
+  static $template_footer_cr          = "";
+  static $template_footer_custom      = "";
+  static $template_footer_sort        = array(
     "container_start" => 1,
     "menu" => 1,
     "socialmedia" => 1,
@@ -185,7 +196,7 @@ class prefix_template {
     "custom" => 0,
     "container_end" => 1
   );
-  static $template_footer_before     = "";
+  static $template_footer_before      = "";
 
 
   /* 1.2 ON LOAD RUN
@@ -489,12 +500,42 @@ class prefix_template {
           "label" => "Activate page options",
           "type" => "switchbutton"
         ),
+        "metablock" => array(
+          "label" => "Activate metablock",
+          "type" => "multiple",
+          "value" => array(
+            "page" => array(
+              "label" => "Pages",
+              "type" => "switchbutton"
+            ),
+            "post" => array(
+              "label" => "Posts",
+              "type" => "switchbutton"
+            )
+          )
+        ),
+        "add_metablock" => array(
+          "label" => "Metablock for CPT",
+          "type" => "array_addable"
+        ),
         "options" => array(
           "label" => "Page options",
           "type" => "multiple",
           "value" => array(
             "header" => array(
               "label" => "Hide header",
+              "type" => "switchbutton"
+            ),
+            "date" => array(
+              "label" => "Hide date",
+              "type" => "switchbutton"
+            ),
+            "time" => array(
+              "label" => "Hide time",
+              "type" => "switchbutton"
+            ),
+            "author" => array(
+              "label" => "Hide author",
               "type" => "switchbutton"
             ),
             "title" => array(
@@ -717,6 +758,8 @@ class prefix_template {
         if($configuration && array_key_exists('page', $myConfig)):
           $page = $myConfig['page'];
           SELF::$template_page_active = array_key_exists('active', $page) ? $page['active'] : SELF::$template_page_active;
+          SELF::$template_page_metablock = array_key_exists('metablock', $page) ? $page['metablock'] : SELF::$template_page_metablock;
+          SELF::$template_page_metablockAdds = array_key_exists('add_metablock', $page) ? $page['add_metablock'] : SELF::$template_page_metablockAdds;
           SELF::$template_page_options = array_key_exists('options', $page) ? array_merge(SELF::$template_page_options, $page['options']) : SELF::$template_page_options;
           SELF::$template_page_additional = array_key_exists('additional', $page) ? array_merge(SELF::$template_page_additional, $page['additional']) : SELF::$template_page_additional;
         endif;
@@ -974,7 +1017,20 @@ class prefix_template {
               if($value == 1 && !in_array($key, $exeptions)):
                 $active = prefix_core_BaseFunctions::setChecked($key, $options);
                 $hide = $key !== 'darkmode' ? 'Hide ' : '';
-                echo '<li><label><input type="checkbox" name="template_page_options[]" value="' . $key . '" ' . $active . '>' . __( $hide . $key, 'template' ) . '</label></li>';
+                // rule for metabox before output
+                if(in_array($key, array('date', 'time', 'author'))):
+                  if(in_array($post->post_type, array('page', 'post')) && SELF::$template_page_metablock[$post->post_type] == 1 || !empty(SELF::$template_page_metablockAdds) && in_array($post->post_type, SELF::$template_page_metablockAdds)):
+                    $show = true;
+                  else:
+                    $show = false;
+                  endif;
+                else:
+                  $show = true;
+                endif;
+                // output
+                if($show == true):
+                  echo '<li><label><input type="checkbox" name="template_page_options[]" value="' . $key . '" ' . $active . '>' . __( $hide . $key, 'template' ) . '</label></li>';
+                endif;
               endif;
             }
             foreach (SELF::$template_page_additional as $key => $additional) {
@@ -1440,6 +1496,37 @@ class prefix_template {
       $classes .= ' ' . apply_filters( 'template_BodyCSS', $classes );
       // return classes
       echo $classes;
+    }
+
+
+    public static function postMeta($pt, $options){
+      $output = '';
+      // if metablock is active for post type
+      if(in_array($pt, array('page', 'post')) && SELF::$template_page_metablock[$pt] == 1 || !empty(SELF::$template_page_metablockAdds) && in_array($pt, SELF::$template_page_metablockAdds)):
+        // post meta blog
+        if(!in_array('date', $options) || !in_array('time', $options) || !in_array('author', $options)):
+          $output .= '<div class="post-meta">';
+          // meta date and time
+          if(!in_array('date', $options) || !in_array('time', $options)):
+            $output .= '<time class="entry-date" datetime="' . get_the_time( 'c' ) . '">';
+            // if date active
+            if(!in_array('date', $options)):
+              $output .= '<span class="date">' . get_the_date(prefix_template::$template_blog_dateformat) . '</span>';
+            endif;
+            // if time active
+            if(!in_array('time', $options)):
+              $output .= '<span class="time">' . get_the_date('G:i') . '</span>';
+            endif;
+            $output .= '</time>';
+          endif;
+          // meta author
+          if(!in_array('author', $options)):
+            $output .= '<span class="entry-author">' . get_the_author() . '</span>';
+          endif;
+          $output .= '</div>';
+        endif;
+      endif;
+      return $output;
     }
 
 
