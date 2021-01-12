@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.12.10
+ * @version     2.12.11
  *
 */
 
@@ -1006,6 +1006,9 @@ class prefix_template {
         // vars
         $output = '';
         $options = get_post_meta($post->ID, 'template_page_options', true);
+        if(is_string($options)):
+          $options = unserialize($options);
+        endif;
         // output
         echo '<div class="wrap" id="WPtemplate">';
           // page options
@@ -1078,7 +1081,10 @@ class prefix_template {
         // vars
         $output = array();
         $get_options = get_post_meta($id, 'template_page_options', true);
-        $options = $get_options && is_array($get_options) ? $get_options : array();
+        if(is_string($get_options)):
+          $get_options = unserialize($get_options);
+        endif;
+        $options = $get_options && $get_options != '' ? $get_options : array();
         $options = apply_filters( 'template_PageOptions', $options );
         // check activity
         foreach (SELF::$template_page_options as $key => $value) {
@@ -1489,6 +1495,9 @@ class prefix_template {
       // dark mode
       if($page_id > 0):
         $options = get_post_meta($page_id, 'template_page_options', true);
+        if(is_string($options)):
+          $options = unserialize($options);
+        endif;
         $classes .= $options && is_array($options) && in_array('darkmode', $options) && SELF::$template_page_options['darkmode'] == 1 ? ' dark' : '';
       endif;
       // apply filter
