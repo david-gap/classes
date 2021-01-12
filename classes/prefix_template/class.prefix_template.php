@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.12.9
+ * @version     2.12.10
  *
 */
 
@@ -1078,7 +1078,7 @@ class prefix_template {
         // vars
         $output = array();
         $get_options = get_post_meta($id, 'template_page_options', true);
-        $options = $get_options && $get_options !== '' ? $get_options : array();
+        $options = $get_options && is_array($get_options) ? $get_options : array();
         $options = apply_filters( 'template_PageOptions', $options );
         // check activity
         foreach (SELF::$template_page_options as $key => $value) {
@@ -1489,7 +1489,7 @@ class prefix_template {
       // dark mode
       if($page_id > 0):
         $options = get_post_meta($page_id, 'template_page_options', true);
-        $classes .= $options && in_array('darkmode', $options) && SELF::$template_page_options['darkmode'] == 1 ? ' dark' : '';
+        $classes .= $options && is_array($options) && in_array('darkmode', $options) && SELF::$template_page_options['darkmode'] == 1 ? ' dark' : '';
       endif;
       // apply filter
       $classes .= ' ' . apply_filters( 'template_BodyCSS', $classes );
