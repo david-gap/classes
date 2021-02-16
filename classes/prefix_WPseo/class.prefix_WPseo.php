@@ -4,7 +4,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.2.5
+ * @version     2.2.6
  *
 */
 
@@ -251,11 +251,12 @@ class prefix_WPseo {
       if(SELF::$WPseo_favicon !== 0):
         $get_fav = wp_get_attachment_image_src(SELF::$WPseo_favicon, 'full');
         echo '<link rel="icon" href="' . $get_fav[0] . '" />';
+        echo '<link rel="apple-touch-icon" sizes="16x16" href="' . $get_fav[0] . '" />';
       endif;
       // apple touch icons
       if(SELF::$WPseo_icon !== 0):
         $get_touch_1 = wp_get_attachment_image_src(SELF::$WPseo_icon, 'full');
-        echo '<link rel="apple-touch-icon" href="' . $get_touch_1[0] . '" />';
+        echo '<link rel="apple-touch-icon" sizes="57x57" href="' . $get_touch_1[0] . '" />';
       endif;
       if(SELF::$WPseo_icon_72 !== 0):
         $get_touch_2 = wp_get_attachment_image_src(SELF::$WPseo_icon_72, 'full');
