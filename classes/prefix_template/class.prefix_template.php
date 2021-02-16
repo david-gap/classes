@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.12.11
+ * @version     2.13.11
  *
 */
 
@@ -170,12 +170,6 @@ class prefix_template {
   );
   static $template_page_metablockAdds = array();
   static $template_blog_type          = 1;
-  static $template_blog_type_options  = array(
-    "default" => "-",
-    "Image" => "Image",
-    "Video" => "Video",
-    "Audio" => "Audio"
-  );
   static $template_blog_type_parts    = array(
     "author" => 0,
     "date" => 0,
@@ -213,6 +207,10 @@ class prefix_template {
     endif;
     // shortcodes
     add_shortcode( 'socialmedia', array( $this, 'SocialMedia' ) );
+    // add post formats
+    if(SELF::$template_blog_type == 1):
+      add_theme_support( 'post-formats', array( 'image', 'video', 'audio' ) );
+    endif;
   }
 
 
@@ -573,11 +571,11 @@ class prefix_template {
           "type" => "array_addable",
           "value" => array(
             "key" => array(
-              "label" => "Option label",
+              "label" => "Option key",
               "type" => "text"
             ),
             "value" => array(
-              "label" => "Option key",
+              "label" => "Option label",
               "type" => "text"
             )
           )
@@ -824,10 +822,6 @@ class prefix_template {
       else:
         update_post_meta($post_id, 'template_page_options', '');
       endif;
-      // save blog template
-      if(isset($_POST['template_blog_type'])):
-        update_post_meta($post_id, 'template_blog_type', $_POST['template_blog_type']);
-      endif;
     }
 
 
@@ -1059,18 +1053,6 @@ class prefix_template {
               echo '</div>';
             endif;
           }
-          // blog template options
-          if(get_post_type() == "post" && SELF::$template_blog_type == 1):
-            $get_template = get_post_meta($post->ID, 'template_blog_type', true);
-            echo '<p><b>' . __( 'Blog Template', 'template' ) . '</b></p>';
-            echo '<select name="template_blog_type">';
-              foreach (SELF::$template_blog_type_options as $key => $value) {
-                // check if option is active
-                $selected = prefix_core_BaseFunctions::setSelected($key, $get_template);
-                echo '<option value="' . $key . '" ' . $selected . '>' . __( $value, 'template' ) . '</option>';
-              }
-            echo '</select>';
-          endif;
         echo '</div>';
     }
 
