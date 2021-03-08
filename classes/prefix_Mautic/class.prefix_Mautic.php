@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     0.1.1
+ * @version     0.2.1
  */
 
 /*=======================================================
@@ -20,6 +20,7 @@ Table of Contents:
   2.1 GET SETTINGS FROM CONFIGURATION FILE
 3.0 OUTPUT
   3.1 TRACKING CODE
+  3.2 MAUTIC CONTENT EMBED
 =======================================================*/
 
 class prefix_Mautic {
@@ -48,6 +49,7 @@ class prefix_Mautic {
       SELF::updateVars();
       // add tracking code
       add_action( 'wp_footer', array($this, 'mauticTracking'), 100 );
+      add_shortcode( 'mautic', array( $this, 'mauticContent' ) );
     }
 
     /* 1.3 BACKEND ARRAY
@@ -141,6 +143,25 @@ class prefix_Mautic {
       $output .= "</script>";
     endif;
     echo $output;
+  }
+
+  /* 3.2 MAUTIC CONTENT EMBED
+  /------------------------*/
+  /**
+    * @param array $atts: list with all attributes
+    * @return string placeholder for mautic content
+    * usage [mautic slot="ContentSlot"]
+  */
+  function mauticContent($atts){
+    // vars
+    $output = '';
+    $config = shortcode_atts( array(
+      'slot' => ''
+    ), $atts );
+
+    $output .= '<div class="mautic-slot" data-slot-name="' . $config['slot'] . '"></div>';
+
+    return $output;
   }
 
 

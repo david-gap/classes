@@ -1,4 +1,4 @@
-**Version 0.1.1** (14.10.2020)
+**Version 0.2.1** (08.03.2021)
 
 Custom class "Mautic" to embed Mautic to the page
 
@@ -17,3 +17,7 @@ $Mautic_inlineFormScript: Embed form tracking code inside html
 ```
 
 ## USAGE
+Return dynamic content
+```
+[mautic slot="SlotName"]
+```
