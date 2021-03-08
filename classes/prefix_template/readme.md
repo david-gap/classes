@@ -1,4 +1,4 @@
-**Version 2.13.11** (26.02.2021)
+**Version 2.13.12** (08.03.2021)
 
 Custom class "template" with template parts and header / footer builder
 
@@ -158,7 +158,7 @@ echo prefix_template::FooterContent();
 ### STICKY
 Add to the body tag
 ```php
-echo prefix_template::CheckSticky(prefix_template::$template_header_sticky);
+echo prefix_template::CheckSticky(prefix_template::$template_header_sticky, prefix_template::$template_header_stickyload);
 ```
 
 ### CONTAINER

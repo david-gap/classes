@@ -6,7 +6,7 @@
  * https://github.com/david-gap/classes
  *
  * @author      David Voglgsang
- * @version     2.13.11
+ * @version     2.13.12
  *
 */
 
@@ -796,10 +796,17 @@ class prefix_template {
 
     /* 2.3 STICKY MENU
     /------------------------*/
-    public static function CheckSticky(int $sticky = 1){
-      if($sticky === 1):
-        return 'stickyable';
+    public static function CheckSticky(int $sticky = 1, int $stickyOnLoad = 1){
+      $output = '';
+      // sticky active on load
+      if($sticky === 1 && $stickyOnLoad === 1):
+        $output .= ' sticky';
       endif;
+      // sticky able on scroll
+      if($sticky === 1 && $stickyOnLoad !== 1):
+        $output .= ' stickyable';
+      endif;
+      return $output;
     }
 
 
@@ -1472,8 +1479,7 @@ class prefix_template {
       $classes .= $obj && array_key_exists('post_type', $obj) ? ' pt-' . $obj->post_type : '';
       $classes .= $obj && array_key_exists('name', $obj) ? ' pt-' . $obj->name : '';
       $classes .= prefix_template::$template_coloring !== '' ? ' ' . prefix_template::$template_coloring : '';
-      $classes .= ' ' . prefix_template::CheckSticky(prefix_template::$template_header_sticky);
-      $classes .= prefix_template::$template_header_stickyload == 1 ? ' sticky_onload' : '';
+      $classes .= prefix_template::CheckSticky(prefix_template::$template_header_sticky, prefix_template::$template_header_stickyload);
       // dark mode
       if($page_id > 0):
         $options = get_post_meta($page_id, 'template_page_options', true);
